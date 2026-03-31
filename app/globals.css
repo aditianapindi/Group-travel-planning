@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1A1A1A;
+  --color-secondary: #6B6B6B;
+  --color-muted: #8E8E8E;
+  --color-border: #E5E5E5;
+  --color-surface: #F7F7F7;
+  --color-primary: #4A6741;
+  --color-primary-hover: #3D5636;
+  --color-success: #2D7A4F;
+  --color-error: #C53030;
+
+  --font-heading: var(--font-dm-serif);
+  --font-body: var(--font-dm-sans);
+}
+
+body {
+  background: #FFFFFF;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Prevent iOS zoom on input focus */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Keyboard-only focus ring */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
