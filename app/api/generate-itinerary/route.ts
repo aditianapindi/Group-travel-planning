@@ -96,11 +96,15 @@ RULES:
   }
 
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
@@ -110,6 +114,8 @@ RULES:
         }),
       }
     );
+
+    clearTimeout(timeout);
 
     if (!geminiResponse.ok) {
       const errText = await geminiResponse.text();
@@ -155,6 +161,6 @@ RULES:
     });
   } catch (e) {
     console.error("Itinerary generation error:", e);
-    return Response.json({ error: "Failed to generate itinerary" }, { status: 500 });
+    return Response.json({ error: "Couldn\u2019t generate the plan. Tap to try again." }, { status: 500 });
   }
 }

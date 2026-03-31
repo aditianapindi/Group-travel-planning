@@ -21,12 +21,14 @@ export function ParticipantForm({
   tripId,
   destinations,
   onSubmit,
+  organizerName,
 }: {
   tripId: string;
   destinations: string[];
   onSubmit: (participant: Participant) => void;
+  organizerName?: string;
 }) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(organizerName ?? "");
   const [rsvp, setRsvp] = useState<"yes" | "maybe" | "no">("yes");
   const [votes, setVotes] = useState<string[]>([]);
   const [budgetMin, setBudgetMin] = useState("");
@@ -106,143 +108,54 @@ export function ParticipantForm({
       className="flex flex-col gap-5 mt-6"
       aria-label="Join this trip"
     >
-      {/* Name */}
-      <div>
-        <label htmlFor="participant-name" className="block text-sm font-medium text-ink mb-1.5">
-          Your name
-        </label>
-        <input
-          id="participant-name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
-          autoComplete="given-name"
-          aria-required="true"
-          className={inputClass}
-        />
-      </div>
-
-      {/* RSVP */}
-      <fieldset>
-        <legend className="block text-sm font-medium text-ink mb-2">
-          Are you in?
-        </legend>
-        <div className="flex gap-2" role="radiogroup">
-          {(["yes", "maybe", "no"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              role="radio"
-              aria-checked={rsvp === option}
-              onClick={() => setRsvp(option)}
-              className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-medium min-h-[44px] transition-colors ${
-                rsvp === option
-                  ? "bg-primary text-white border-primary"
-                  : "bg-white text-secondary border-border hover:border-primary"
-              }`}
-            >
-              {option === "yes" ? "Yes" : option === "maybe" ? "Maybe" : "No"}
-            </button>
-          ))}
-        </div>
-      </fieldset>
-
-      {/* Headcount — only if attending */}
-      {showDetails && (
+      {/* Name — hidden for organizer (pre-filled) */}
+      {!organizerName && (
         <div>
-          <label htmlFor="headcount" className="block text-sm font-medium text-ink mb-1.5">
-            How many people are you bringing? <span className="text-muted font-normal">(including yourself)</span>
+          <label htmlFor="participant-name" className="block text-sm font-medium text-ink mb-1.5">
+            Your name
           </label>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setHeadcount(Math.max(1, headcount - 1))}
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border border-border text-ink hover:border-primary transition-colors"
-              aria-label="Decrease headcount"
-            >
-              −
-            </button>
-            <span className="text-lg font-medium text-ink w-8 text-center" aria-live="polite">{headcount}</span>
-            <button
-              type="button"
-              onClick={() => setHeadcount(Math.min(10, headcount + 1))}
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border border-border text-ink hover:border-primary transition-colors"
-              aria-label="Increase headcount"
-            >
-              +
-            </button>
-          </div>
+          <input
+            id="participant-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            autoComplete="given-name"
+            aria-required="true"
+            className={inputClass}
+          />
         </div>
       )}
 
-      {/* Group composition — only if headcount > 1 */}
-      {showDetails && headcount > 1 && (
-        <>
-          <fieldset>
-            <legend className="block text-sm font-medium text-ink mb-2">
-              Your group is
-            </legend>
-            <div className="flex flex-wrap gap-2" role="radiogroup">
-              {([
-                { value: "family", label: "Family" },
-                { value: "couples", label: "Couple" },
-                { value: "all-women", label: "All women" },
-                { value: "all-men", label: "All men" },
-                { value: "mixed", label: "Mixed" },
-              ] as const).map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={groupType === option.value}
-                  onClick={() => setGroupType(option.value)}
-                  className={`rounded-full border px-4 py-2 text-sm min-h-[40px] transition-colors ${
-                    groupType === option.value
-                      ? "bg-primary text-white border-primary"
-                      : "bg-white text-secondary border-border hover:border-primary"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend className="block text-sm font-medium text-ink mb-2">
-              Any kids?
-            </legend>
-            <div className="flex gap-2" role="radiogroup">
+      {/* RSVP — hidden for organizer (always yes) */}
+      {!organizerName ? (
+        <fieldset>
+          <legend className="block text-sm font-medium text-ink mb-2">
+            Are you in?
+          </legend>
+          <div className="flex gap-2" role="radiogroup">
+            {(["yes", "maybe", "no"] as const).map((option) => (
               <button
+                key={option}
                 type="button"
                 role="radio"
-                aria-checked={hasKids}
-                onClick={() => setHasKids(true)}
+                aria-checked={rsvp === option}
+                onClick={() => setRsvp(option)}
                 className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-medium min-h-[44px] transition-colors ${
-                  hasKids
+                  rsvp === option
                     ? "bg-primary text-white border-primary"
                     : "bg-white text-secondary border-border hover:border-primary"
                 }`}
               >
-                Yes, with kids
+                {option === "yes" ? "Yes" : option === "maybe" ? "Maybe" : "No"}
               </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={!hasKids}
-                onClick={() => setHasKids(false)}
-                className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-medium min-h-[44px] transition-colors ${
-                  !hasKids
-                    ? "bg-primary text-white border-primary"
-                    : "bg-white text-secondary border-border hover:border-primary"
-                }`}
-              >
-                Adults only
-              </button>
-            </div>
-          </fieldset>
-        </>
+            ))}
+          </div>
+        </fieldset>
+      ) : (
+        <p className="text-sm text-secondary">
+          You&apos;re the organizer — just vote on your preferences below.
+        </p>
       )}
 
       {/* Destination votes — only if attending */}
@@ -275,9 +188,10 @@ export function ParticipantForm({
       {/* Budget — only if attending */}
       {showDetails && (
         <fieldset>
-          <legend className="block text-sm font-medium text-ink mb-2">
-            Budget range <span className="text-muted font-normal">(anonymous, per person)</span>
+          <legend className="block text-sm font-medium text-ink mb-1.5">
+            Your total trip budget <span className="text-muted font-normal">(per person, anonymous)</span>
           </legend>
+          <p className="text-xs text-muted mb-2">Include travel, stay, food, and activities.</p>
           <div className="flex gap-2 items-center">
             <div className="flex-1">
               <label htmlFor="budget-min" className="sr-only">Minimum budget</label>
@@ -306,6 +220,112 @@ export function ParticipantForm({
             </div>
           </div>
         </fieldset>
+      )}
+
+      {/* More details — collapsible, optional */}
+      {showDetails && (
+        <details className="group">
+          <summary className="text-sm text-secondary cursor-pointer hover:text-ink transition-colors list-none flex items-center gap-1.5">
+            <span className="text-muted group-open:rotate-90 transition-transform">&#9654;</span>
+            More details <span className="text-muted font-normal">(optional)</span>
+          </summary>
+          <div className="flex flex-col gap-5 mt-4 pl-0">
+            {/* Headcount */}
+            <div>
+              <label htmlFor="headcount" className="block text-sm font-medium text-ink mb-1.5">
+                How many people? <span className="text-muted font-normal">(including yourself)</span>
+              </label>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setHeadcount(Math.max(1, headcount - 1))}
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border border-border text-ink hover:border-primary transition-colors"
+                  aria-label="Decrease headcount"
+                >
+                  −
+                </button>
+                <span className="text-lg font-medium text-ink w-8 text-center" aria-live="polite">{headcount}</span>
+                <button
+                  type="button"
+                  onClick={() => setHeadcount(Math.min(10, headcount + 1))}
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border border-border text-ink hover:border-primary transition-colors"
+                  aria-label="Increase headcount"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Group composition — only if headcount > 1 */}
+            {headcount > 1 && (
+              <>
+                <fieldset>
+                  <legend className="block text-sm font-medium text-ink mb-2">
+                    Your group is
+                  </legend>
+                  <div className="flex flex-wrap gap-2" role="radiogroup">
+                    {([
+                      { value: "family", label: "Family" },
+                      { value: "couples", label: "Couple" },
+                      { value: "all-women", label: "All women" },
+                      { value: "all-men", label: "All men" },
+                      { value: "mixed", label: "Mixed" },
+                    ] as const).map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={groupType === option.value}
+                        onClick={() => setGroupType(option.value)}
+                        className={`rounded-full border px-4 py-2 text-sm min-h-[40px] transition-colors ${
+                          groupType === option.value
+                            ? "bg-primary text-white border-primary"
+                            : "bg-white text-secondary border-border hover:border-primary"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend className="block text-sm font-medium text-ink mb-2">
+                    Any kids?
+                  </legend>
+                  <div className="flex gap-2" role="radiogroup">
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={hasKids}
+                      onClick={() => setHasKids(true)}
+                      className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-medium min-h-[44px] transition-colors ${
+                        hasKids
+                          ? "bg-primary text-white border-primary"
+                          : "bg-white text-secondary border-border hover:border-primary"
+                      }`}
+                    >
+                      Yes, with kids
+                    </button>
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={!hasKids}
+                      onClick={() => setHasKids(false)}
+                      className={`flex-1 rounded-md border px-3 py-2.5 text-sm font-medium min-h-[44px] transition-colors ${
+                        !hasKids
+                          ? "bg-primary text-white border-primary"
+                          : "bg-white text-secondary border-border hover:border-primary"
+                      }`}
+                    >
+                      Adults only
+                    </button>
+                  </div>
+                </fieldset>
+              </>
+            )}
+          </div>
+        </details>
       )}
 
       {/* Error */}

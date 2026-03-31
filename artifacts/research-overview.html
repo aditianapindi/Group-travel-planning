@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Travel Planning — Discovery & Research</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1c1c1c;
+      --surface-3: #242424;
+      --border: #2a2a2a;
+      --border-light: #333;
+      --text: #e8e8e8;
+      --text-secondary: #999;
+      --text-muted: #666;
+      --accent: #6c9cff;
+      --accent-dim: #3d5a8a;
+      --green: #4ade80;
+      --green-dim: #1a3a2a;
+      --red: #f87171;
+      --red-dim: #3a1a1a;
+      --amber: #fbbf24;
+      --amber-dim: #2a2a1a;
+      --purple: #a78bfa;
+      --purple-dim: #2a1a3a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .hero-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    .hero .meta {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .hero .meta span {
+      margin-right: 1.5rem;
+    }
+
+    /* ---- SECTIONS ---- */
+    .section {
+      margin-bottom: 4rem;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .section .section-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.75rem;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1.75rem 0 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text);
+    }
+
+    p {
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.925rem;
+    }
+
+    /* ---- STAT GRID ---- */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .stat-card .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .stat-card .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .stat-card .stat-source {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+
+    /* ---- CARDS ---- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .card-header h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .card p {
+      margin-bottom: 0.4rem;
+    }
+    .card ul {
+      padding-left: 1.2rem;
+      margin: 0.4rem 0;
+    }
+    .card li {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+    .card li strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ---- TAGS ---- */
+    .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .tag-green { background: var(--green-dim); color: var(--green); }
+    .tag-red { background: var(--red-dim); color: var(--red); }
+    .tag-amber { background: var(--amber-dim); color: var(--amber); }
+    .tag-purple { background: var(--purple-dim); color: var(--purple); }
+    .tag-blue { background: rgba(108,156,255,0.15); color: var(--accent); }
+
+    /* ---- TABLES ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    td:first-child {
+      color: var(--text);
+      font-weight: 500;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    /* ---- JOURNEY ---- */
+    .journey {
+      position: relative;
+      padding-left: 2rem;
+      margin: 1.25rem 0;
+    }
+    .journey::before {
+      content: '';
+      position: absolute;
+      left: 0.45rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 2px;
+      background: var(--border-light);
+    }
+    .journey-step {
+      position: relative;
+      padding: 0.5rem 0 0.75rem;
+    }
+    .journey-step::before {
+      content: '';
+      position: absolute;
+      left: -1.55rem;
+      top: 0.75rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      border: 2px solid var(--accent);
+    }
+    .journey-step.pain::before {
+      background: var(--red-dim);
+      border-color: var(--red);
+    }
+    .journey-step .step-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .journey-step .step-detail {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- QUOTE ---- */
+    blockquote {
+      border-left: 3px solid var(--accent-dim);
+      padding: 0.75rem 1.25rem;
+      margin: 1rem 0;
+      background: var(--surface);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--text-secondary);
+      font-size: 0.925rem;
+    }
+
+    /* ---- NUMBERED LIST ---- */
+    .numbered {
+      counter-reset: item;
+      list-style: none;
+      padding: 0;
+    }
+    .numbered li {
+      counter-increment: item;
+      position: relative;
+      padding-left: 2.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .numbered li::before {
+      content: counter(item);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.6rem;
+      height: 1.6rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .numbered li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---- CALLOUT ---- */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .callout.callout-red {
+      border-left-color: var(--red);
+    }
+    .callout.callout-green {
+      border-left-color: var(--green);
+    }
+    .callout.callout-amber {
+      border-left-color: var(--amber);
+    }
+    .callout .callout-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+    .callout p {
+      margin-bottom: 0.3rem;
+      font-size: 0.875rem;
+    }
+
+    /* ---- DIVIDER ---- */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* ---- TWO COL ---- */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .two-col { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.75rem; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .container { padding: 2rem 1rem 4rem; }
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 3rem;
+    }
+    nav .nav-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    nav ol {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.25rem 1.5rem;
+    }
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+    nav a:hover { text-decoration: underline; }
+    @media (max-width: 640px) {
+      nav ol { grid-template-columns: 1fr; }
+    }
+
+    .persona-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    @media (max-width: 640px) {
+      .persona-grid { grid-template-columns: 1fr; }
+    }
+    .persona-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .persona-card h4 {
+      margin: 0 0 0.15rem;
+      font-size: 0.95rem;
+    }
+    .persona-card .persona-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+    .persona-card p {
+      font-size: 0.825rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2rem 0 0.75rem;
+    }
+    .tier-header h3 {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ========== HERO ========== -->
+    <div class="hero">
+      <div class="hero-label">Discovery & Research</div>
+      <h1>Group Travel Planning Platform</h1>
+      <div class="subtitle">When 4+ people travel together, it's no longer a booking problem &mdash; it's a coordination problem. No tool solves it end-to-end. ~300 startups have tried and failed. Here's what we've learned about why, and what might be different this time.</div>
+      <div class="meta">
+        <span>Rethink Systems &middot; Cohort 7</span>
+        <span>March 2026</span>
+        <span>Markets: India (primary), US</span>
+      </div>
+    </div>
+
+    <!-- ========== TABLE OF CONTENTS ========== -->
+    <nav>
+      <div class="nav-title">Contents</div>
+      <ol>
+        <li><a href="#opportunity">1. The Opportunity</a></li>
+        <li><a href="#problem">2. The Problem</a></li>
+        <li><a href="#users">3. Who We're Building For</a></li>
+        <li><a href="#organizer">4. The Serial Organizer</a></li>
+        <li><a href="#competition">5. Competitive Landscape</a></li>
+        <li><a href="#graveyard">6. The Startup Graveyard</a></li>
+        <li><a href="#thesis">7. Our Thesis</a></li>
+        <li><a href="#interviews">8. What We've Heard</a></li>
+        <li><a href="#next">9. What's Next</a></li>
+      </ol>
+    </nav>
+
+    <!-- ========== 1. THE OPPORTUNITY ========== -->
+    <div class="section" id="opportunity">
+      <div class="section-label">01</div>
+      <h2>The Opportunity</h2>
+      <p class="section-subtitle">A massive, growing market with no coordination layer.</p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value">$1.3T</div>
+          <div class="stat-label">US travel spending (2024)</div>
+          <div class="stat-source">US Travel Association</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">2.95B</div>
+          <div class="stat-label">India domestic tourist visits (2024)</div>
+          <div class="stat-source">Ministry of Tourism via PIB</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">77%</div>
+          <div class="stat-label">Americans travel with others</div>
+          <div class="stat-source">Talker Research, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">47%</div>
+          <div class="stat-label">Airbnb bookings are groups of 3+</div>
+          <div class="stat-source">Airbnb / STR analysts, 2024</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">141M</div>
+          <div class="stat-label">Monthly domestic travel searches, India</div>
+          <div class="stat-source">Booking.com + Accenture, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">4+ apps</div>
+          <div class="stat-label">Used per group trip, no winner</div>
+          <div class="stat-source">Secondary research consensus</div>
+        </div>
+      </div>
+
+      <h3>Why Now?</h3>
+      <div class="two-col">
+        <div class="card">
+          <h4>India</h4>
+          <ul>
+            <li>Domestic tourism up 45% YoY (2023)</li>
+            <li>Search volume 103M &rarr; 141M monthly (2022-24)</li>
+            <li>Tier II/III cities leading short-stay surges</li>
+            <li>85% prefer online booking, but group coordination is 100% WhatsApp</li>
+            <li>No India-optimized group planning app exists</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>US</h4>
+          <ul>
+            <li>Average traveler: 3 trips/year, $4,600/trip</li>
+            <li>Gen Z spends $11,766/trip &mdash; highest of any generation</li>
+            <li>37% feel pressured to exceed budget on friend trips</li>
+            <li>Average person misses 2 trips/year due to coordination failure</li>
+            <li>16-18 hours spent planning per trip</li>
+          </ul>
+        </div>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Sources: US Travel Association, Talker Research 2025, Empower 2025, Go City 2024, Priceline/Harris Poll 2024, MakeMyTrip/Skift 2023, India Ministry of Tourism</p>
+    </div>
+
+    <hr>
+
+    <!-- ========== 2. THE PROBLEM ========== -->
+    <div class="section" id="problem">
+      <div class="section-label">02</div>
+      <h2>The Problem</h2>
+      <p class="section-subtitle">Six pain points that compound into trip-killing friction.</p>
+
+      <ol class="numbered">
+        <li><strong>Information fragmentation</strong> &mdash; Trip details scattered across WhatsApp, Sheets, Docs, Gmail, Splitwise, Instagram saves. "Flight options get shared but scrolling back requires archaeological excavation."</li>
+        <li><strong>Budget conflict</strong> &mdash; 59% of travelers report tension with travel partners. Budget mismatches hidden due to social pressure &rarr; surprise costs &rarr; last-minute dropouts. The conversation that NEEDS to happen first is the one everyone avoids. <span style="font-size:0.75rem;color:var(--text-muted)">[AAA + Bread Financial, 2026]</span></li>
+        <li><strong>Decision paralysis</strong> &mdash; 50+ messages just to agree on dates. Too many options + too many opinions + no structured framework = nothing gets decided. Multivoting makes groups 50% more likely to reach consensus vs. plurality voting. <span style="font-size:0.75rem;color:var(--text-muted)">[UW, 2022]</span></li>
+        <li><strong>Organizer burnout</strong> &mdash; One person absorbs all cognitive load. 71% of arrangers find it stressful. 10+ hours per trip on admin. The role is fixed, not rotating &mdash; same person every time. <span style="font-size:0.75rem;color:var(--text-muted)">[CivicScience, 2024]</span></li>
+        <li><strong>Passive members / flaking</strong> &mdash; "People don't give any input &mdash; then complain about what was chosen." Average smartphone session is ~1m10s. Any interaction &gt;30 seconds loses passive members.</li>
+        <li><strong>Schedule coordination</strong> &mdash; "Incredibly stressful" across time zones and availabilities. No simple visualization of who can do what dates across the group.</li>
+      </ol>
+
+      <h3>The Typical Group Trip Journey</h3>
+      <div class="journey">
+        <div class="journey-step">
+          <div class="step-label">"Let's go somewhere" in WhatsApp</div>
+          <div class="step-detail">12 destinations suggested across 3 conversations</div>
+        </div>
+        <div class="journey-step pain">
+          <div class="step-label">WhatsApp poll: 3/7 vote, expires unresolved</div>
+          <div class="step-detail">Dates debated, sub-conversations splinter</div>
+        </div>
+        <div class="journey-step pain">
+          <div class="step-label">Budget never discussed</div>
+          <div class="step-detail">One person expects &#x20B9;5K/day, another &#x20B9;15K/day</div>
+        </div>
+        <div class="journey-step pain">
+          <div class="step-label">2-3 week "death zone"</div>
+          <div class="step-detail">Momentum dies. Weeks of silence. Organizer re-ignites or trip dies.</div>
+        </div>
+        <div class="journey-step">
+          <div class="step-label">One person makes a Google Sheet, builds itinerary alone</div>
+          <div class="step-detail">Rush booking: double-booked rooms, sold-out trains, spiked prices</div>
+        </div>
+        <div class="journey-step pain">
+          <div class="step-label">During trip: organizer = GPS + concierge + accountant</div>
+          <div class="step-detail">Post-trip: messy Splitwise, incomplete entries, unpaid debts</div>
+        </div>
+      </div>
+
+      <blockquote>"Took 6 weeks to agree on destination. By then all the good holiday houses were gone." &mdash; Ruchi, Family Coordinator, Australia</blockquote>
+    </div>
+
+    <hr>
+
+    <!-- ========== 3. WHO WE'RE BUILDING FOR ========== -->
+    <div class="section" id="users">
+      <div class="section-label">03</div>
+      <h2>Who We're Building For</h2>
+      <p class="section-subtitle">Six segments, ranked by pain and opportunity.</p>
+
+      <div class="persona-grid">
+        <div class="persona-card">
+          <h4>Friend Groups (Domestic)</h4>
+          <div class="persona-sub">4-8 people &middot; Weekend / short trips &middot; High pain</div>
+          <p>Democratic planning = maximum decision paralysis. Budget gaps hidden until too late.</p>
+          <p><strong>Tools:</strong> WhatsApp + Sheets + Splitwise</p>
+        </div>
+        <div class="persona-card">
+          <h4>Friend Groups (International)</h4>
+          <div class="persona-sub">4-6 people &middot; Multi-city tours &middot; Very high pain</div>
+          <p>More money at stake, longer cycle, visa/flight complexity. 2-3 week death zone kills trips.</p>
+          <p><strong>Tools:</strong> Wanderlog + Splitwise + Docs + WhatsApp</p>
+        </div>
+        <div class="persona-card">
+          <h4>Multigenerational Families</h4>
+          <div class="persona-sub">8-20 people &middot; Reunions, festivals &middot; High pain</div>
+          <p>Budget transparency impossible (elders won't discuss money). Every app treats families as individuals. Biggest underserved segment.</p>
+          <p><strong>Tools:</strong> WhatsApp + one stressed person</p>
+        </div>
+        <div class="persona-card">
+          <h4>Couples with Couples</h4>
+          <div class="persona-sub">4-8 people &middot; Moderate pain</div>
+          <p>Splitwise shows Partner A owes Partner B &mdash; absurd for couples. Room allocation friction.</p>
+          <p><strong>Tools:</strong> Wanderlog or Frienzy + Splitwise</p>
+        </div>
+        <div class="persona-card">
+          <h4>Theme-Based Groups</h4>
+          <div class="persona-sub">6-15 people &middot; Women-only, LGBTQ+, workations &middot; Moderate pain</div>
+          <p>Leader needs participant management + preference collection. Growing fast.</p>
+          <p><strong>Tools:</strong> Google Forms + WhatsApp + Sheets</p>
+        </div>
+        <div class="persona-card" style="border-color: var(--accent-dim);">
+          <h4 style="color: var(--accent);">The Organizer (Cross-Segment)</h4>
+          <div class="persona-sub">Not a trip type &mdash; a role &middot; Extreme pain</div>
+          <p>Absorbs all cognitive load. Has the worst trip experience. Highest WTP. <strong>This is our entry point.</strong></p>
+          <p><strong>See:</strong> Section 4 for deep dive</p>
+        </div>
+      </div>
+
+      <h3>Build Priority</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tier</th><th>Segment</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-green">Build First</span></td><td>Organizer persona + Friend groups (4-8, domestic)</td><td>Highest frequency, validate fast, organizer pulls group in</td></tr>
+            <tr><td><span class="tag tag-amber">Expand To</span></td><td>Multigenerational families + International friend groups</td><td>Largest underserved &amp; highest stakes. Needs couples-as-unit, room coordination</td></tr>
+            <tr><td><span class="tag tag-purple">Watch</span></td><td>Theme-based groups + Tier 3/low-WTP</td><td>Growing but fragmented. May need agent-hybrid model</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ========== 4. THE SERIAL ORGANIZER ========== -->
+    <div class="section" id="organizer">
+      <div class="section-label">04</div>
+      <h2>The Serial Organizer</h2>
+      <p class="section-subtitle">The role is fixed, gendered, stressful, and our primary acquisition target.</p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value">71%</div>
+          <div class="stat-label">of arrangers find planning stressful</div>
+          <div class="stat-source">CivicScience, 2024</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">10+ hrs</div>
+          <div class="stat-label">Admin time per trip</div>
+          <div class="stat-source">SquadTrip (directional)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">69%</div>
+          <div class="stat-label">of US mothers handle booking</div>
+          <div class="stat-source">CivicScience, 2024</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">2-3</div>
+          <div class="stat-label">Distinct groups/year (est.)</div>
+          <div class="stat-source">Inferred &mdash; validate in interviews</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Key Findings</h4>
+        <ul>
+          <li><strong>The role doesn't rotate.</strong> Academic research confirms organizers self-select by capability and convenience, and the role persists across trips. <span style="font-size:0.75rem;color:var(--text-muted)">[Fardous et al., 2019; ScienceDirect, 2021]</span></li>
+          <li><strong>It's gendered.</strong> Women serve as "gatekeepers" in household tourism decisions. <span style="font-size:0.75rem;color:var(--text-muted)">[ResearchGate, 2013]</span></li>
+          <li><strong>Culturally recognized.</strong> KAYAK coined "MVP (Most Valuable Planner)" in 2018. The "Planner Friend vs. Venmo Friend" split is now a TikTok archetype.</li>
+          <li><strong>Counter-intuitive:</strong> Longer planning windows (3-6 months) correlate with <em>more</em> stress, not less. <span style="font-size:0.75rem;color:var(--text-muted)">[CivicScience, 2024]</span></li>
+          <li><strong>Financial burden:</strong> Organizers front costs on personal cards, chase payments for months.</li>
+        </ul>
+      </div>
+
+      <h3>Planning Windows by Trip Type</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trip Type</th><th>Planning Window</th><th>Product Value</th></tr></thead>
+          <tbody>
+            <tr><td>Weekend getaway</td><td>1-7 days</td><td><span class="tag tag-red">Low</span> Too spontaneous</td></tr>
+            <tr><td>Domestic family</td><td>4-8 weeks</td><td><span class="tag tag-amber">Medium</span></td></tr>
+            <tr><td>International group</td><td>3-6 months</td><td><span class="tag tag-green">Highest</span> Most coordination pain</td></tr>
+            <tr><td>Festival (India)</td><td>Should be 2-3mo, actually &lt;1wk</td><td><span class="tag tag-green">Wedge</span> Nudge opportunity</td></tr>
+            <tr><td>Milestone (bach)</td><td>4-6 months</td><td><span class="tag tag-green">High</span> Clear organizer, big group</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-amber">
+        <div class="callout-title">India Festival Travel Gap</div>
+        <p>46% of domestic flights in India are booked &lt;1 week before travel. But festival trains sell out 60-90 days in advance. Massive gap between "should plan" and "actually plans." Cleartrip is validating a nudge approach with their Long Weekend Tracker.</p>
+        <p style="font-size:0.75rem;color:var(--text-muted)">Source: MakeMyTrip via Skift, 2023; Cleartrip via Tourism Quest, 2025</p>
+      </div>
+
+      <blockquote>"We already paid for tickets, no backing off now." &mdash; Interviewee 7, Bangalore (on booking flights early as a commitment device)</blockquote>
+    </div>
+
+    <hr>
+
+    <!-- ========== 5. COMPETITIVE LANDSCAPE ========== -->
+    <div class="section" id="competition">
+      <div class="section-label">05</div>
+      <h2>Competitive Landscape</h2>
+      <p class="section-subtitle">20+ apps analyzed across 6 tiers. No one owns the full lifecycle.</p>
+
+      <div class="tier-header">
+        <span class="tag tag-blue">Tier 1</span>
+        <h3>True Group Planning Apps</h3>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>App</th><th>Funding</th><th>Revenue</th><th>Key Weakness</th></tr></thead>
+          <tbody>
+            <tr><td>Wanderlog</td><td>$1.65M</td><td>$1M ARR</td><td>Premium doesn't extend to group members. Couples as individuals.</td></tr>
+            <tr><td>Pilot</td><td>~$650K</td><td>Not disclosed</td><td>Free model sustainability unclear</td></tr>
+            <tr><td>Tripsy</td><td>Bootstrapped</td><td>Not disclosed</td><td>Complex interface</td></tr>
+            <tr><td>Frienzy</td><td>~$500K</td><td>Pre-revenue</td><td>Leisure-only, Gen Z focus</td></tr>
+            <tr><td>AvoSquado</td><td>Free</td><td>Not disclosed</td><td>Niche (accommodation), small community</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tier-header">
+        <span class="tag tag-blue">Tier 2-3</span>
+        <h3>Decision Tools & Expense Splitters</h3>
+      </div>
+      <p>Troupe (JetBlue): voting only, no itinerary. Howbout: calendar only. Splitwise ($25M+ ARR, 33M downloads): expense splitting only, no planning. Each solves one piece.</p>
+
+      <div class="tier-header">
+        <span class="tag tag-blue">Tier 4-5</span>
+        <h3>Individual Apps & AI Newcomers</h3>
+      </div>
+      <p>TripIt, Google Travel, MakeMyTrip &mdash; no group features. Mindtrip, GroupTripper, FlowTrip &mdash; AI-powered but early and unproven. OTAs optimize for conversion (individual &rarr; booking), not consensus (group &rarr; decision).</p>
+
+      <div class="tier-header">
+        <span class="tag tag-green">Tier 6</span>
+        <h3>Experiences Marketplaces (Integration Partners)</h3>
+      </div>
+      <p>Not competitors &mdash; potential affiliate/monetization partners.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Platform</th><th>Scale</th><th>Affiliate</th><th>Relevance</th></tr></thead>
+          <tbody>
+            <tr><td>Klook</td><td>$417M rev (2024), NYSE IPO filed</td><td>Commission-based</td><td>Asia-Pacific dominant, expanding India</td></tr>
+            <tr><td>Viator</td><td>TripAdvisor-owned, 300K+ experiences</td><td>8% commission, proven API</td><td>Already integrated by AvoSquado</td></tr>
+            <tr><td>GetYourGuide</td><td>$680M+ raised</td><td>Commission-based</td><td>Strong Europe inventory</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-muted)">Klook revenue: SEC IPO filing Nov 2025, Getlatka. GetYourGuide funding: Crunchbase.</p>
+
+      <h3>What Nobody Does Well</h3>
+      <ol class="numbered">
+        <li><strong>Full lifecycle</strong> &mdash; plan &rarr; decide &rarr; book &rarr; travel &rarr; settle (always fragmented)</li>
+        <li><strong>Budget transparency</strong> &mdash; anonymous collection BEFORE planning starts</li>
+        <li><strong>Couples/families as units</strong> &mdash; every app treats groups as collections of individuals</li>
+        <li><strong>Passive member activation</strong> &mdash; nudges that require action, not just notifications</li>
+        <li><strong>Organizer burden distribution</strong> &mdash; no app assigns tasks to distribute workload</li>
+        <li><strong>Planning-phase timing</strong> &mdash; no app intercepts at the right moment in the planning cycle</li>
+      </ol>
+
+      <div class="callout">
+        <div class="callout-title">The Real Competitor Isn't an App</div>
+        <p>The "good enough" stack &mdash; <strong>ChatGPT &rarr; Google Doc &rarr; WhatsApp</strong> &mdash; doesn't appear in any app store analysis but is increasingly how groups actually plan. One person prompts an AI, pastes the output into a shared doc, and coordinates in chat. Zero friction, zero cost.</p>
+        <p>It fails at structure, state management, and organizer burden &mdash; but it's the real baseline to beat. The product must be <strong>faster to start than prompting ChatGPT</strong> and <strong>immediately more useful than a shared doc</strong>.</p>
+      </div>
+
+      <h3>What Users Actually Combine</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trip Type</th><th>Typical Stack</th></tr></thead>
+          <tbody>
+            <tr><td>Road trip with friends</td><td>Wanderlog + Splitwise</td></tr>
+            <tr><td>Family vacation</td><td>Frienzy or AvoSquado + Tripsy</td></tr>
+            <tr><td>Casual group</td><td>Pilot (free all-in-one)</td></tr>
+            <tr><td>Decision phase only</td><td>Troupe or Howbout &rarr; switch apps</td></tr>
+            <tr><td>"Good enough" default</td><td>ChatGPT &rarr; Google Doc &rarr; WhatsApp + Splitwise</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <blockquote>"The best group planning apps lack voting, the best decision-making app doesn't build itineraries, and the most popular expense tool doesn't plan anything at all."</blockquote>
+    </div>
+
+    <hr>
+
+    <!-- ========== 6. STARTUP GRAVEYARD ========== -->
+    <div class="section" id="graveyard">
+      <div class="section-label">06</div>
+      <h2>The Startup Graveyard</h2>
+      <p class="section-subtitle">~700 companies tried. ~300 died. Highest failure rate of any travel vertical.</p>
+
+      <h3>5 Ways They Died</h3>
+      <ol class="numbered">
+        <li><strong>Research-to-booking leakage</strong> &mdash; Users plan on your tool, book on Booking.com. Consumers visit ~38 sites before booking. Your planning tool is one of 38, and you don't get the transaction. <span style="font-size:0.75rem;color:var(--text-muted)">[Expedia research]</span></li>
+        <li><strong>Planning is perceived as free</strong> &mdash; Google Sheets is free. WhatsApp is free. Revenue lives at booking and during-trip, not planning. Planning sits in the value chain's dead zone.</li>
+        <li><strong>Infrequent use = no habit</strong> &mdash; 1-3 group trips/year. Can't build daily engagement or justify a subscription on something used twice a year.</li>
+        <li><strong>WhatsApp gravity</strong> &mdash; Everyone is already there. Asking 6 people to download a new app is harder than dealing with WhatsApp's chaos. "Good enough" beats "better but requires effort."</li>
+        <li><strong>Group adoption is social, not product</strong> &mdash; Organizer loves the app, but 5-7 others didn't choose it. They check once, respond late, go back to WhatsApp. Competing with inertia, not other apps.</li>
+      </ol>
+
+      <h3>What Survivors Did Differently</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Company</th><th>Revenue</th><th>Strategy</th></tr></thead>
+          <tbody>
+            <tr><td>Splitwise</td><td>~$25M ARR</td><td>Solved a <em>financial</em> pain, not planning. Pain recurs during AND after trip. Doesn't require simultaneous group usage.</td></tr>
+            <tr><td>Wanderlog</td><td>$1M ARR, 5 people</td><td>Stayed tiny. Monetized <em>during-trip</em> features. Affiliate commissions. Never tried to be a platform.</td></tr>
+            <tr><td>Holidify</td><td>~$400K</td><td>Content-first SEO, bootstrapped, near-zero burn. Agent marketplace, not a planning tool.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-red">
+        <div class="callout-title">The Honest Assessment</div>
+        <p>None succeeded by being a "group trip planning app." The biggest risk isn't competitors &mdash; it's the category itself. We must explain why this won't be failure #301.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ========== 7. OUR THESIS ========== -->
+    <div class="section" id="thesis">
+      <div class="section-label">07</div>
+      <h2>Our Thesis: C + D</h2>
+      <p class="section-subtitle">WhatsApp-native entry + during-trip monetization. Sidestepping the patterns that killed predecessors.</p>
+
+      <div class="two-col">
+        <div class="card" style="border-color: var(--accent-dim);">
+          <div class="card-header">
+            <span class="tag tag-blue">Thesis C</span>
+            <h4>Work with WhatsApp, not against it</h4>
+          </div>
+          <p>Tool lives inside WhatsApp &mdash; bot, shared link, mini-app. Solves the adoption friction that killed most predecessors. India-native (WhatsApp dominant, Business API exists).</p>
+          <p><strong>Solves:</strong> Adoption wall, WhatsApp gravity</p>
+        </div>
+        <div class="card" style="border-color: var(--green-dim);">
+          <div class="card-header">
+            <span class="tag tag-green">Thesis D</span>
+            <h4>Monetize during/after, not during planning</h4>
+          </div>
+          <p>Planning free. During trip: offline access, live expense splitting, real-time itinerary. After trip: settle expenses. Follows the only proven revenue pattern (Splitwise, Wanderlog).</p>
+          <p><strong>Solves:</strong> "Planning is free" expectation</p>
+        </div>
+      </div>
+
+      <h3>D.1: Experiences Affiliate &mdash; A More Defensible Revenue Path</h3>
+      <div class="card">
+        <p>Rather than building a booking engine for hotels/flights (too hard for V1), integrate with Klook, Viator, GetYourGuide via affiliate APIs.</p>
+        <h4>Why experiences leak less than hotels/flights:</h4>
+        <ul>
+          <li><strong>No comparison-shopping habit</strong> &mdash; Nobody opens 38 tabs for a walking tour. Price is fixed, experience is unique to the marketplace.</li>
+          <li><strong>Lower price sensitivity</strong> &mdash; $40 vs $42 tour doesn't trigger switching. $300/night vs $250/night hotel does.</li>
+          <li><strong>Discovery is the bottleneck</strong> &mdash; For activities, the hard part is finding the right one, not the cheapest. A planning tool that surfaces relevant experiences IS the value.</li>
+        </ul>
+        <h4>Our strategic advantage:</h4>
+        <p>A group planning tool knows what 6 people have <em>already agreed on</em> &mdash; destination, dates, budget range, preferences, group composition. This is <strong>richer intent signal than any individual search on Klook or Viator</strong>. The platform becomes a qualified lead source, not just a referral link.</p>
+      </div>
+
+      <div class="callout callout-amber">
+        <div class="callout-title">Watch: Klook Kreator Shops</div>
+        <p>Klook's Kreator program lets creators build curated "shops" of bookable activities as packaged itineraries. If creators start selling packaged group itineraries with pre-selected, bookable activities, that's a <strong>partial substitute for the organizer curation role</strong> our product relieves. Doesn't kill coordination/voting features, but weakens itinerary curation value prop.</p>
+      </div>
+
+      <h3>Unit Economics Concern</h3>
+      <p>8% commission on a $40 tour = $3.20 per booking. For a group of 6 booking 3-4 activities: ~$40-75 per trip. At 1-2 trips/year per group, this is thin. Must model whether this scales or remains supplementary revenue alongside expense-splitting features.</p>
+    </div>
+
+    <hr>
+
+    <!-- ========== 8. WHAT WE'VE HEARD ========== -->
+    <div class="section" id="interviews">
+      <div class="section-label">08</div>
+      <h2>What We've Heard</h2>
+      <p class="section-subtitle">10+ interviews across India, Australia, and UK. Key patterns and quotes.</p>
+
+      <h3>Validated Patterns</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>Evidence</th></tr></thead>
+          <tbody>
+            <tr><td>Organizer burden is real</td><td>Every interview confirms one person does the work. Mirza (Sydney): "Always the default organiser." Ruchi's husband: built full PPT + Excel for 12 people.</td></tr>
+            <tr><td>Budget opacity causes damage</td><td>Manohar: "I ended up paying more &mdash; just to accommodate my friend. He didn't pay." Priyanka: "We need more open conversations on budget."</td></tr>
+            <tr><td>ChatGPT is already being used</td><td>Mirza uses ChatGPT for itineraries, noted Claude is better for budgets. Sabya: "ChatGPT gave me a wonderful plan." Interviewee 7's group uses AI tools routinely.</td></tr>
+            <tr><td>Commitment devices work</td><td>Interviewee 7's group books flights early to lock people in: "We already paid for tickets, no backing off now."</td></tr>
+            <tr><td>Like-mindedness drives execution</td><td>Interviewee 7: 95% plan match with close friends, 70% with extended group. "Group travel &mdash; I would prefer to travel only with like-minded people."</td></tr>
+            <tr><td>Passive members have unmet needs</td><td>Vinay: didn't participate in planning, then wanted to go somewhere else on the trip. Group said no. His experience suffered.</td></tr>
+            <tr><td>Splitwise has real friction</td><td>Free tier: 3 transactions/day limit. Dietary splits painful (vegetarians, teetotallers). Small amounts never settled.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Quotes</h3>
+      <blockquote>"ChatGPT helped for latest itinerary, it was much relaxation. I would look at it as AID, helper &mdash; but we won't let it take away the fun." &mdash; Interviewee 7, Bangalore</blockquote>
+      <blockquote>"I wish people had talked about budget upfront. I ended up paying more &mdash; just to compensate my friend." &mdash; Manohar, Hyderabad</blockquote>
+      <blockquote>"We set the expectations. We thought they listened and understood the itinerary. Seems they didn't." &mdash; Interviewee 7, on a 12-person trip where execution fell to 70%</blockquote>
+      <blockquote>"In a trip of 8+ people, if everyone is saying everything is perfect &mdash; that's too good to be true." &mdash; Interviewee 3, Hyderabad</blockquote>
+
+      <h3>Surprising Findings</h3>
+      <div class="card">
+        <ul>
+          <li><strong>Peer knowledge &gt; search:</strong> Interviewee 7 wanted to talk to people who've been there, not browse sites. Over-budget on taxis because "that info was nowhere."</li>
+          <li><strong>Food drives destination choice:</strong> Interviewee 3's group picked Lonavala partly for food options. Reviews failed them on arrival.</li>
+          <li><strong>School calendars are a hard constraint:</strong> Ruchi (Australia) plans entirely around state school holidays &mdash; QLD, VIC, NSW don't align.</li>
+          <li><strong>Trips end friendships:</strong> Interviewee 7 no longer travels with the 5 couples from their Austria trip. Still friends. But never again.</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ========== 9. WHAT'S NEXT ========== -->
+    <div class="section" id="next">
+      <div class="section-label">09</div>
+      <h2>What's Next</h2>
+      <p class="section-subtitle">Open questions, timeline, and what we need to validate before PRD.</p>
+
+      <h3>Must Validate in Interviews</h3>
+      <div class="two-col">
+        <div class="card">
+          <h4>Adoption & Habit</h4>
+          <ul>
+            <li>Would friends actually download a separate app?</li>
+            <li>Is WhatsApp-native viable or too constraining?</li>
+            <li>How many group trips/year? Enough for engagement?</li>
+            <li>Do serial organizers plan for 2-3 distinct groups?</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Revenue & Leakage</h4>
+          <ul>
+            <li>Would users book inside a planning tool, or always go to OTAs?</li>
+            <li>Would groups book activities in-context or go to Klook/Viator directly?</li>
+            <li>What would they pay for &mdash; and when in the trip lifecycle?</li>
+            <li>Would curated activity suggestions feel helpful or spammy?</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Product Principles</h3>
+      <ol class="numbered">
+        <li><strong>Organizer relief is the entry point</strong> &mdash; but the product must serve all participants</li>
+        <li><strong>Async-first</strong> &mdash; groups span time zones. Never require real-time coordination</li>
+        <li><strong>Transparency &gt; control</strong> &mdash; everyone sees budget, options, votes</li>
+        <li><strong>Progressive complexity</strong> &mdash; weekend trip and 2-week international use the same tool</li>
+        <li><strong>Mobile-first</strong> &mdash; every flow must work on a phone in under 60 seconds</li>
+        <li><strong>Meet users where they are</strong> &mdash; WhatsApp-native entry before standalone app flows</li>
+        <li><strong>Capture value during/after the trip</strong> &mdash; not before. Planning is perceived as free</li>
+        <li><strong>Avoid booking leakage &mdash; or accept it</strong> &mdash; don't assume users will book inside your tool</li>
+      </ol>
+
+      <h3>Timeline</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th>Dates</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td>Discovery</td><td>March 27-28</td><td style="color:var(--green)">Done &mdash; secondary research, 10+ interviews, competitive analysis</td></tr>
+            <tr><td>Synthesis</td><td>March 29-30</td><td style="color:var(--amber)">In progress &mdash; define MVP scope, select thesis</td></tr>
+            <tr><td>Build MVP</td><td>March 31 - April 2</td><td>Deployed, functional, testable by 3+ people</td></tr>
+            <tr><td>Polish + Submit</td><td>April 3-4</td><td>PRD + working MVP</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-green">
+        <div class="callout-title">The Core Bet</div>
+        <p>The risk of building a logistics tool when people actually need an <strong>emotional momentum tool</strong> &mdash; something that keeps excitement alive through the 2-3 week death zone. The product's job: keep pain below the breaking point where trips die.</p>
+        <p style="margin-top: 0.5rem; margin-bottom: 0;">WhatsApp-native entry (Thesis C) + during-trip monetization via experiences affiliate (Thesis D + D.1) = a path that sidesteps the 5 patterns that killed ~300 predecessors.</p>
+      </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <div style="text-align: center; padding: 3rem 0 1rem; border-top: 1px solid var(--border); margin-top: 2rem;">
+      <p style="font-size: 0.75rem; color: var(--text-muted);">
+        Research compiled March 27-29, 2026 &middot; All sourced claims verified against original reports &middot; UNVERIFIED stats flagged per project source verification rule
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

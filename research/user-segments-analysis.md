@@ -41,9 +41,17 @@
 ### 5. Organizer Persona (Cross-Segment)
 - **Not a trip type — a role** that exists in every segment
 - **Pain intensity**: EXTREME — absorbs all cognitive load, has the worst trip experience
+- **Role is fixed, not rotating**: Academic research confirms organizers are self-selected by capability and convenience, and the role persists across trips. [Source: Fardous et al., *Information Research*, 2019; ScienceDirect collaborative info behavior study, 2021]
+- **Gendered**: 69% of US mothers handle majority of booking. [Source: CivicScience, 2024]. Women serve as "gatekeepers" in household tourism decisions. [Source: ResearchGate, 2013]
+- **Time burden**: 10+ hours/trip on admin, ~30 min/week on spreadsheet updates. [Source: SquadTrip — directional, not independently verified]
+- **Stress**: 71% of US adults who arrange travel find it stressful. 78% of parents. Counter-intuitively, 3-6 month planning windows correlate with *highest* stress. [Source: CivicScience, 2024]
+- **Financial risk**: Organizers frequently front costs on personal credit cards and chase payments for months. [Source: SquadTrip — directional]
+- **Cultural recognition**: KAYAK coined "MVP (Most Valuable Planner)" in 2018. The "Planner Friend vs. Venmo Friend" split is now a recognized archetype. [Source: KAYAK, 2018; Bustle, 2024]
+- **Frequency (UNVERIFIED inference)**: Likely plans for 2-3 distinct groups/year (family + friends + possibly work/milestone). No published survey confirms this — validate in interviews.
 - **Key friction**: Invisible labor, no tools distribute the work, burnout
 - **WTP**: Highest of all segments. Would pay to not be the only one doing the work.
 - **Insight**: This is the entry point (per product principles). Relieve the organizer, and they'll pull the group onto the platform.
+- **See also**: `research/planning-lead-times-and-organizer-patterns.md` for full sourced data.
 
 ### 6. Theme-Based Groups
 - **Group size**: 6-15
@@ -143,3 +151,6 @@
 - [ ] Would US users pay $3-5/month for group coordination? What feature would tip them?
 - [ ] Do group travelers book through OTAs anyway after planning elsewhere? (leakage risk)
 - [ ] How much time do organizers actually spend coordinating? Does 16-18 hours ring true?
+- [ ] Do serial organizers plan for 2-3 distinct groups/year? (no published data exists)
+- [ ] What triggers planning? Is it a date, a conversation, a festival, or a deal?
+- [ ] Does the organizer role rotate or stay fixed? (academic research says fixed — validate)

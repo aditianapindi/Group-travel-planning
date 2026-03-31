@@ -94,9 +94,20 @@ export function VoteResults({
         </div>
       </section>
 
-      {/* Lock button — organizer only, collecting phase only */}
-      {isOrganizer && tripStatus === "collecting" && yesParticipants.length >= 2 && (
-        <LockButton tripId={tripId} manageKey={manageKey!} onLocked={onLocked} />
+      {/* Organizer next step — collecting phase only */}
+      {isOrganizer && tripStatus === "collecting" && (
+        yesParticipants.length >= 2 ? (
+          <LockButton tripId={tripId} manageKey={manageKey!} onLocked={onLocked} />
+        ) : (
+          <div className="rounded-xl bg-surface px-4 py-3">
+            <p className="text-sm text-secondary">
+              <strong className="text-ink">{yesParticipants.length} of 2</strong> confirmations needed to lock the trip.
+              {yesParticipants.length === 0
+                ? " Share the link and wait for responses."
+                : " Need 1 more person to say yes."}
+            </p>
+          </div>
+        )
       )}
     </div>
   );
@@ -113,6 +124,7 @@ function LockButton({
 }) {
   const [locking, setLocking] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [error, setError] = useState(false);
 
   async function handleLock() {
     if (!confirm("Lock this trip? Voting will close and you can generate a plan.")) {
@@ -120,18 +132,19 @@ function LockButton({
     }
 
     setLocking(true);
+    setError(false);
 
     const { getSupabase } = await import("@/lib/supabase");
     const db = getSupabase();
 
-    const { error } = await db
+    const { error: dbError } = await db
       .from("trips")
       .update({ status: "locked" })
       .eq("id", tripId)
       .eq("manage_key", manageKey);
 
-    if (error) {
-      alert("Failed to lock. Try again.");
+    if (dbError) {
+      setError(true);
       setLocking(false);
       return;
     }
@@ -150,13 +163,20 @@ function LockButton({
   }
 
   return (
-    <button
-      onClick={handleLock}
-      disabled={locking}
-      aria-busy={locking}
-      className="w-full rounded-lg border-2 border-primary text-primary font-medium py-3 min-h-[48px] hover:bg-primary hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-    >
-      {locking ? "Locking..." : "Lock trip — close voting"}
-    </button>
+    <div className="flex flex-col gap-2">
+      <button
+        onClick={handleLock}
+        disabled={locking}
+        aria-busy={locking}
+        className="w-full rounded-lg border-2 border-primary text-primary font-medium py-3 min-h-[48px] hover:bg-primary hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {locking ? "Locking..." : "Lock trip — close voting"}
+      </button>
+      {error && (
+        <p role="alert" className="text-sm text-error">
+          Failed to lock. Check your connection and try again.
+        </p>
+      )}
+    </div>
   );
 }

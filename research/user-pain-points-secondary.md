@@ -33,6 +33,11 @@ Sources: Reddit, Quora, travel forums (Fodor's, TripAdvisor, Rick Steves), app r
 - Labor is invisible and unrewarded
 - Organizer often has the worst trip experience
 - "Point person" workaround just concentrates stress instead of distributing it
+- 71% of US adults who arrange travel find it stressful; 78% of parents [Source: CivicScience, 2024]
+- 10+ hours/trip on admin tasks [Source: SquadTrip — directional, self-reported]
+- Role is sticky: academic research confirms organizers self-select by capability and don't rotate [Source: Fardous et al., 2019; ScienceDirect, 2021]
+- Organizers front costs on personal cards, chase payments for months — financial burden on top of cognitive
+- Counter-intuitive: longer planning windows (3-6 months) = *more* stress, not less [Source: CivicScience, 2024]
 
 ### 5. Passive Members / Flaking
 - "People don't give any input" — then complain about what was chosen

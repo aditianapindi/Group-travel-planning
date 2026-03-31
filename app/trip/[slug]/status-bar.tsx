@@ -39,16 +39,19 @@ export function StatusBar({
 
   // Deadline
   let deadlineText: string | null = null;
+  let deadlineUrgent = false;
   if (deadline) {
     const diff = new Date(deadline).getTime() - Date.now();
     if (diff <= 0) {
       deadlineText = "Voting closed";
     } else if (diff < 86400000) {
       const hours = Math.ceil(diff / 3600000);
-      deadlineText = `${hours}h left`;
+      deadlineText = `${hours}h left to vote`;
+      deadlineUrgent = true;
     } else {
-      const days = Math.ceil(diff / 86400000);
-      deadlineText = `${days}d left`;
+      const deadlineDate = new Date(deadline);
+      const dayName = deadlineDate.toLocaleDateString("en-IN", { weekday: "long" });
+      deadlineText = `Votes close ${dayName}`;
     }
   }
 
@@ -83,7 +86,7 @@ export function StatusBar({
         <span className="text-error">No budget overlap</span>
       )}
 
-      {deadlineText && <span>{deadlineText}</span>}
+      {deadlineText && <span className={deadlineUrgent ? "text-primary font-medium" : ""}>{deadlineText}</span>}
 
       {status === "locked" && (
         <span className="font-medium text-ink">Locked</span>

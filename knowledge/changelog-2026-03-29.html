@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog — March 29, 2026 | Group Travel Planning</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface-2: #242424;
+      --border: #2e2e2e;
+      --text: #e0e0e0;
+      --text-muted: #888;
+      --accent: #6c9cff;
+      --accent-dim: #3d5a8a;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --tag-new-bg: #1a3a2a;
+      --tag-new-text: #4ade80;
+      --tag-updated-bg: #2a2a1a;
+      --tag-updated-text: #fbbf24;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    header .date {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    header .summary {
+      margin-top: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 2rem 0 1rem;
+      color: var(--text);
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .tag-new {
+      background: var(--tag-new-bg);
+      color: var(--tag-new-text);
+    }
+
+    .tag-updated {
+      background: var(--tag-updated-bg);
+      color: var(--tag-updated-text);
+    }
+
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .file-card .file-path {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .file-card .description {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .file-card ul {
+      margin-top: 0.5rem;
+      padding-left: 1.25rem;
+    }
+
+    .file-card li {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .file-card li strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .change-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .change-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .change-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .change-table td:first-child {
+      color: var(--text);
+      font-weight: 500;
+      white-space: nowrap;
+      width: 40%;
+    }
+
+    .change-table td:last-child {
+      color: var(--text-muted);
+    }
+
+    .themes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .themes h2 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+    }
+
+    .theme-item {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    .theme-num {
+      color: var(--accent-dim);
+      font-weight: 600;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .theme-text {
+      color: var(--text-muted);
+    }
+
+    .theme-text strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 1rem 0.75rem; }
+      header h1 { font-size: 1.4rem; }
+      .change-table td:first-child { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Changelog</h1>
+      <div class="date">March 29, 2026 &middot; Group Travel Planning</div>
+      <div class="summary">Research deepening: competitive landscape updates, planning lead times &amp; organizer patterns research, experiences marketplace integration thesis, Google Form-ready survey.</div>
+    </header>
+
+    <!-- NEW FILES -->
+    <h2>New Files</h2>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-new">New</span>artifacts/survey-google-form-ready.md</div>
+      <div class="description">Reformatted trimmed 9-question survey for direct copy-paste into Google Forms.</div>
+      <ul>
+        <li>Each question has: question text, type label, answer options as bullets</li>
+        <li>4 sections matching Google Form section structure</li>
+      </ul>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-new">New</span>research/planning-lead-times-and-organizer-patterns.md</div>
+      <div class="description">Full sourced research on planning windows by trip type and the serial organizer persona.</div>
+      <ul>
+        <li><strong>Planning windows:</strong> weekend 1-7 days, domestic family 4-8 weeks, international group 3-6 months, India festival gap (ideal 2-3mo, actual &lt;1wk), milestone 4-6 months</li>
+        <li><strong>Serial organizer:</strong> role is fixed/not rotating (academic sources), gendered (69% US mothers), 71% find it stressful, 10+ hrs/trip admin</li>
+        <li><strong>Sources:</strong> Hopper 2023, Club Wyndham 2024, Expedia Q4 2024, MakeMyTrip/Skift 2023, CivicScience 2024, KAYAK 2018, Fardous et al. 2019, ScienceDirect 2021</li>
+      </ul>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-new">New</span>insights/organizer-persona-and-planning-windows.md</div>
+      <div class="description">Synthesized insight connecting organizer persona + planning windows + product implications.</div>
+      <ul>
+        <li>Retention problem is not seasonal &mdash; it's low-frequency, high-intent</li>
+        <li>The organizer is the link between trips and between groups</li>
+      </ul>
+    </div>
+
+    <hr class="divider">
+
+    <!-- UPDATED FILES -->
+    <h2>Updated Files</h2>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-updated">Updated</span>research/competitive-landscape.md</div>
+      <table class="change-table">
+        <thead><tr><th>Change</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>New section: "Good Enough Stack"</td><td>ChatGPT + Google Docs as informal competitor &mdash; what it is, why it matters, what it gets wrong, strategic implication</td></tr>
+          <tr><td>New section: Tier 6 Experiences Marketplaces</td><td>Klook ($417M rev, NYSE IPO), Viator (8% commission), GetYourGuide. Framed as affiliate partners. Key insight: experiences leak less than hotels/flights</td></tr>
+          <tr><td>Updated combo table</td><td>Added "good enough default" row: ChatGPT &rarr; Google Doc &rarr; WhatsApp + Splitwise</td></tr>
+          <tr><td>Updated "What NOBODY does well"</td><td>Added #7: Planning-phase timing &mdash; no app intercepts at the right moment</td></tr>
+          <tr><td>New note under Key Competitive Insights</td><td>"The real competitor isn't an app" cross-reference</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-updated">Updated</span>research/competitor-viability-and-business-models.md</div>
+      <table class="change-table">
+        <thead><tr><th>Change</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>Added Klook to funding table</td><td>$1B+ funding, $417M revenue (2024), 1,900 employees, NYSE IPO (KLK). Sources: SEC filing Nov 2025, Getlatka, Crunchbase</td></tr>
+          <tr><td>New point #6 under Product Strategy</td><td>Experiences marketplaces as monetization integration layer &mdash; captures Thesis D revenue without hotel/flight partnerships</td></tr>
+          <tr><td>Added 4 sources</td><td>SEC filing, Getlatka, Crunchbase (Klook), Bloomberg/Reuters</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-updated">Updated</span>research/user-segments-analysis.md</div>
+      <table class="change-table">
+        <thead><tr><th>Change</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>Enriched Organizer Persona (#5)</td><td>Role fixedness (academic), gender data, time/stress burden, cultural recognition (KAYAK MVP Planner), frequency inference (2-3 groups/yr, UNVERIFIED)</td></tr>
+          <tr><td>Added 3 validation assumptions</td><td>Serial organizer frequency, planning triggers, role rotation</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-updated">Updated</span>research/user-pain-points-secondary.md</div>
+      <table class="change-table">
+        <thead><tr><th>Change</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>Expanded Organizer Burnout (#4)</td><td>5 sourced data points: 71% stress, 10+ hrs/trip, role stickiness, financial burden, longer planning = more stress</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-updated">Updated</span>artifacts/interview-guide-trimmed.md</div>
+      <table class="change-table">
+        <thead><tr><th>Change</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>Expanded Q11</td><td>Now probes cross-group organizing: "How many different groups have you planned for in the past 2 years?"</td></tr>
+          <tr><td>Added Q13</td><td>Planning triggers and timing &mdash; tests lead times and death zone</td></tr>
+          <tr><td>Updated count</td><td>13 &rarr; 14 questions</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-card">
+      <div class="file-path"><span class="tag tag-updated">Updated</span>knowledge/decision-category-risk.md</div>
+      <table class="change-table">
+        <thead><tr><th>Change</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>New subsection D.1</td><td>Activity/experience affiliate commissions &mdash; why experiences leak less, three affiliate programs, group intent data as competitive advantage</td></tr>
+          <tr><td>D.1 Risks</td><td>Commission unit economics, marketplace disintermediation, Klook Kreator Shops as watch item</td></tr>
+          <tr><td>Updated "Initial lean"</td><td>Now references D.1 as thesis strengthener</td></tr>
+          <tr><td>Added 3 interview questions</td><td>Experience leakage test, discovery channel test, affiliate UX test</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <!-- KEY THEMES -->
+    <div class="themes">
+      <h2>Key Themes This Session</h2>
+      <div class="theme-item">
+        <span class="theme-num">01</span>
+        <span class="theme-text"><strong>The real competitor is behavior, not apps</strong> &mdash; ChatGPT + Google Docs + WhatsApp is the baseline to beat</span>
+      </div>
+      <div class="theme-item">
+        <span class="theme-num">02</span>
+        <span class="theme-text"><strong>The serial organizer is real and targetable</strong> &mdash; fixed role, gendered, stressed, likely 2-3 groups/year</span>
+      </div>
+      <div class="theme-item">
+        <span class="theme-num">03</span>
+        <span class="theme-text"><strong>Planning windows vary 100x</strong> &mdash; 1 day (weekend) to 6 months (international). Product value concentrates in 3-6 month window</span>
+      </div>
+      <div class="theme-item">
+        <span class="theme-num">04</span>
+        <span class="theme-text"><strong>Experiences &gt; hotels/flights for monetization</strong> &mdash; lower leakage, no comparison-shopping, group intent data is a competitive advantage</span>
+      </div>
+      <div class="theme-item">
+        <span class="theme-num">05</span>
+        <span class="theme-text"><strong>India festival travel gap</strong> &mdash; should plan 2-3 months ahead, actually plans &lt;1 week. Nudge feature opportunity.</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

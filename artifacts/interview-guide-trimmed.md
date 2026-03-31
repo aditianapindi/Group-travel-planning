@@ -1,6 +1,6 @@
 # Group Travel Planning — Interview Guide (Trimmed)
 **Duration:** 15-20 minutes | **Format:** Casual conversation (phone/video)
-**13 questions — focused on what 10+ interviews haven't yet answered**
+**14 questions — focused on what 10+ interviews haven't yet answered**
 
 ---
 
@@ -46,17 +46,24 @@
 10. When you're ready to book, do you book where you planned, or go to a site you already trust like Booking.com or MakeMyTrip?
    *(Tests booking leakage — can you monetize through bookings?)*
 
-11. How many group trips do you take in a year?
-   *(Tests frequency — if it's 1/year, the product can't build a habit)*
+11. How many group trips do you take in a year? How many different groups have you planned for in the past 2 years?
+   *(Tests frequency AND cross-group organizing. If the same person plans for family + friends + milestone trips, they're a serial organizer with 2-3x the frequency. No published data exists on this — we need to validate.)*
 
 12. Would your group pay $3-5 total per trip for a tool that saved the organizer 10+ hours of work? Or does it need to be free?
    *(Direct WTP test)*
 
 ---
 
+## Planning Trigger & Timing (2 min)
+
+13. When you decide to plan a trip, what triggers it? How far ahead do you start? Has a trip ever died because planning started too late — or dragged on too long?
+   *(Tests planning lead time and the "death zone." Secondary research shows 3-6 month windows = highest stress. Also tests whether there's a festival/holiday trigger pattern — especially relevant for India.)*
+
+---
+
 ## Close (1 min)
 
-13. What's the one thing that would make group trip planning 10x easier for you?
+14. What's the one thing that would make group trip planning 10x easier for you?
 
 ---
 

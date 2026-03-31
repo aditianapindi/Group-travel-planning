@@ -16,6 +16,7 @@ Research conducted March 2026. Sources: Crunchbase, TechCrunch, Tracxn, Failory,
 | **TripIt** | Acquired by SAP Concur (2011) for ~$120M | Enterprise revenue via SAP Concur | Legacy user base | Enterprise travel management tool. Consumer product stagnated. Not a group travel competitor. |
 | **Holidify** (India) | $153K total (essentially bootstrapped) | ~$400K (March 2025). Target: ~$1.2M ARR after TripCrafters merger. | 5M monthly at peak | Alive, India-focused. Content + agent marketplace. Near-zero marketing spend. |
 | **Splitwise** | $30.5M (5 rounds, latest $20M Series A from Insight Partners, 2021) | ~$25M+ ARR, ~$400K/month App Store alone | 33M+ downloads, ~2.3M downloads/month | The winner in group expense splitting. Proved group financial coordination is monetizable. |
+| **Klook** | $1B+ total across 11 rounds [Source: Crunchbase — lists $720M+ through Series E; total including debt/later rounds reported as $1B+] | $417M revenue (2024) [Source: Klook SEC IPO filing, Nov 2025; Getlatka] | 1,900 employees | ✅ Alive, profitable, Asia-dominant. NYSE IPO filed (ticker: KLK). Strategy: experiences marketplace + creator economy (Kreator Shops) + affiliate commissions. Not a planning tool — a potential integration/monetization partner. |
 
 ### Key Insight
 No standalone **group travel planning** app has achieved venture-scale success. Wanderlog is the closest at $1M ARR on $1.65M raised with 5 people. The only company that successfully monetized group coordination at scale is Splitwise ($25M+ ARR) — and they solve expense splitting, not trip planning.
@@ -107,6 +108,7 @@ PhocusWire published: **"Why you should never consider a travel planning startup
 3. **Freemium is mandatory** — travel is too infrequent for upfront paid
 4. **The organizer is the wedge** — one person pulls the group in (Splitwise proved this pattern)
 5. **Stay lean** — Wanderlog's $1M ARR on 5 people is the model, not "raise $30M and grow"
+6. **Experiences marketplaces as a monetization integration layer** — Rather than building a booking engine for hotels/flights (Thesis B, already marked too hard for V1), integrate with experiences marketplaces (Klook, Viator, GetYourGuide) via their affiliate APIs. This captures during-trip revenue (Thesis D) without requiring hotel/flight inventory partnerships, price parity with OTAs, or consumer credit card trust. Why this works better than hotel/flight affiliate: experiences are less price-sensitive and less comparison-shopped — nobody opens 38 tabs for a walking tour the way they do for flights. The research-to-booking leakage pattern that killed ~300 planning startups may not apply with the same force to activity bookings. AvoSquado already proves the integration is viable (400K+ Viator activities in-app). See also `knowledge/decision-category-risk.md` Thesis D.1 for full analysis.
 
 ### Questions for Interviews
 - [ ] Would you pay $3-5/month for a tool that handles group trip coordination? What would it need to do?
@@ -161,3 +163,7 @@ The US has a mature P2P payment layer that group travel tools must integrate wit
 - [Venmo Statistics: Business of Apps](https://www.businessofapps.com/data/venmo-statistics/)
 - [CNBC: Zelle $1T in 2024](https://www.cnbc.com/2025/02/12/zelle-payments-top-1-trillion-in-2024.html)
 - [WTTC: Global Travel & Tourism $10.9T GDP](https://wttc.org/news/global-travel-and-tourism-surges-as-wttc-global-summit-opens-in-rome)
+- [Klook SEC IPO Filing, Nov 2025 — $417M revenue (2024)](https://www.sec.gov/) ✅ User-cited, verify against prospectus when public
+- [Getlatka: Klook revenue data](https://getlatka.com/companies/klook)
+- [Crunchbase: Klook funding history](https://www.crunchbase.com/organization/klook)
+- [Bloomberg/Reuters: Klook NYSE IPO filing (ticker KLK), 2024-2025]

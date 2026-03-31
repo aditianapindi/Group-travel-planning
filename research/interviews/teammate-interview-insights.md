@@ -378,6 +378,169 @@ Post:
 
 ---
 
+## Akanksha's Interviews (Batch 2 — March 30, 2026)
+
+**Total interviewees:** 12 (+ 2 pending: Ravi non-cohort 60+, Muddasar)
+**Geographies:** Primarily India (Bangalore, Hyderabad, various)
+
+---
+
+### Shardul's Interviewee
+**Profile:** Family + friend traveler, 2 recent weekend trips
+- Family trip (Goa): sister handled budgeting/hotels, hired travel agent
+- Friends trek (Uttarakhand): used trek advisor for stays
+- **Pain:** Agent's rigid scheduling left no breathing room. Restaurants in Goa weren't authentic. Advance payments not refunded when someone dropped out.
+- **Key wish:** Splitwise-like replacement system — if someone drops, another takes their slot and refund is handled smoothly.
+- **Quote insight:** Dropout = financial loss, not just inconvenience
+
+---
+
+### "General Questions (2)" Interviewee
+**Profile:** Very avid international traveler, groups of 5-10
+- Domestic trips: duration-driven. International: destination + visa driven.
+- Used collaborative Notes to share top 3 choices. Planning distributed among friends.
+- **Pain:** Google Translate fails in non-English countries. Visa process causes budget overruns if someone doesn't get approved. Managing data packs, currency, cards is complex. Weather forced complete itinerary change during Bali trip.
+
+---
+
+### Yash
+**Profile:** Yearly traveler, college friends (7) + family (15-18)
+**Recent trip:** Meghalaya with friends
+- Used Instagram for research → handed itinerary to local agency
+- Uses ChatGPT and Google for expense splitting
+- **Pain:** Dates and budget clashes — different objectives (10-day exploration vs budget/quick). Only 2 of 7 went due to high budget (~₹70k). 3 back-to-back treks were exhausting. Agent optimized for their costs, not traveler's experience.
+- **Key signal:** ₹70k budget eliminated most of the group — budget IS the filter for who actually goes
+
+---
+
+### Ashik
+**Profile:** Post-COVID groups shrank from 5-12 to 3-4. Last major: Kerala, 13 people, 3 years ago
+- Planning triggered by Instagram/YouTube content
+- Led planning because he'd visited Kerala before (local knowledge = organizer role)
+- **Pain:** Passive members commit but don't show up. Activities fell through due to time mismanagement. No refunds for cancelled activities. Language barriers with locals.
+- **Key insight:** Place and budget are interlinked — can't pick destination without knowing budget
+- **Key wish:** "Skyscanner-like" tool combining cheapest commute + local transport + restaurant cost-balancing
+
+---
+
+### Rahul (Akanksha's batch)
+**Profile:** Family, friends, extended family traveler
+**Pain points (extensive):**
+- No agreement on destination
+- No communication on itinerary
+- Flight timings not working out
+- Berth-size constraints on trains
+- Budget disagreements
+- One person derailing conversations
+- Passive members joining late
+- Trip completely fell apart — "go-live weekend" at work coincided with planned dates
+
+**Key insight:** Trips either happen fully planned or completely on a whim — no middle ground.
+
+---
+
+### Ravi Kaka
+**Profile:** Older/experienced, mostly drives domestically. Budget no longer a major issue.
+- Uses Google Search, YouTube, TripAdvisor, TeamBHP forums, Facebook groups
+- **Pain:** Travel agent gave false promises (wrong season for activities, optimized for agent's convenience). Wants real-time route info, roadblock updates, restaurant/stay recommendations along the way.
+- **Key wish:** Modernized MapMyIndia — navigation device with route-based recommendations
+- **Key signal:** For driving travelers, during-trip navigation > pre-trip planning
+
+---
+
+### Chaitanya
+**Profile:** Travels every few months, groups of 4-13, South India + Kashmir
+- Self-explored Kashmir with no guide, influenced by social media
+- Does personal finance tracking as a habit — handles all expense recording with bills + trust system
+- **Pain:** Reviews didn't match reality. Hired driver smoked constantly. Weather affected plans.
+
+---
+
+### Akshay (Non-cohort)
+**Profile:** Very early planner, extensive research for best experience at cheapest price
+- Keeps buffer days for unexpected events (landslides). Prefers off-peak travel.
+- **Pain:** Airfares unpredictable, layovers eat into the day. One unprepared participant ruins it for everyone. Fake/AI-generated reviews.
+- **Key wish:** Single platform aggregating verified reviews from multiple sources (Google, TripAdvisor). Suggested loyalty coins/rewards for reviews.
+- **Key signal:** Group experience bounded by least prepared member
+
+---
+
+### Ameet
+**Profile:** Family traveler, Bangalore, twice in 6 months. Event management background (1400+ people). "Silent traveler" who enjoys driving. Plans during 1-hour commute.
+- Breaks trips into 4 cost buckets: accommodation, commute, meals, miscellaneous
+- Has Sterling membership for stays
+- **Pain:** Family date coordination hard — too many events/festivals. Navratri in Kodaikanal: overcrowded, plans improvised.
+- **Key wish:** Tool that helps choose place type (hill/water/forest), finds common dates, plans stage-by-stage, suggests meal stops without rerouting, includes shopping markets.
+- **Key signal:** Stage-by-stage planning model — journey is a sequence of decisions, not a single plan
+
+---
+
+### Varun
+**Profile:** 15+ years experience, domestic + international, groups of 2-6
+- Goa: destination decided when one person found a good property — everyone agreed
+- Coorg workation: distributed tasks (he handled meals, others handled logistics)
+- Distrusts AI-generated content
+- **Pain:** Date alignment — everyone has different priorities. Airbnb properties not matching reviews (damp furniture in rainy season).
+- **Key wish:** Single container for all trip communication — currently scattered across WhatsApp groups, DMs, phone calls.
+- **Key insight:** Property discovery triggered destination choice — not the other way around
+
+---
+
+### Omkar
+**Profile:** Family (5) and friends (10-15). Thailand with family (sister decided destination).
+- Uses Skyscanner, TripAdvisor, MakeMyTrip, ChatGPT
+- Prefers human interaction over AI for planning
+- **Pain:** Finalizing dates/destination with friends: ~1 week of back-and-forth. Family trips: chaotic execution. Specific demands (niece wanted a bathtub).
+- **Key insight:** "Once dates and location are locked, the rest of the planning becomes straightforward."
+
+---
+
+### Eswar
+**Profile:** BTech, travels every 3-4 months, 5-7 friends, South India. Always the planner.
+- Budget-constrained (under ₹10k) — distance determines transport mode (car <150km, train beyond)
+- **Pain:** No visibility on public transport schedules (wasted a day in Coorg waiting for buses). Incomplete YouTube info. Government websites hard for temple darshan tickets. Fake hotel reviews. Language barriers.
+- **Key signal:** Budget constrains everything — distance, transport, destination all follow from budget
+
+---
+
+### Sabya
+**Profile:** Mid 40s, management consulting, married 12 years. Organizes large group trips (15-16 to Goa).
+**Travel evolution:** Family (dad initiated) → couple (dating) → boys trips (Europe, easy) → mixed groups (harder) → large group organizer
+
+**Key insight on group dynamics:**
+- Boys trips easy — fewer preferences, less friction
+- Mixed groups harder — preferences multiply with women involved
+- Always a **core knit group** with one or two **initiator nodes** who generate interest
+- Initiator knows the place + logistics, takes it up
+
+**Pain:** Cab management for 15-16 people. Convincing family to join (always requires push). Leave alignment. Splitwise cumbersome at scale.
+
+**Key quote:** "There is always a push — you need a core knit group with a couple of nodes who can generate interest."
+
+---
+
+### Pending
+- **Ravi (non-cohort):** Experienced traveler, 60+, details coming
+- **Muddasar:** Basic notes pending
+- **Prateek:** Sheet blank — no interview data
+
+---
+
+## Cross-Cutting Themes (Akanksha's Batch)
+
+1. **Date & destination alignment is #1 friction** — confirmed across nearly all interviews. Different budgets, objectives, leave schedules.
+2. **Passive participants cause financial loss** — not just frustration. Advance payments, no refunds, cost redistribution.
+3. **Scattered communication** — WhatsApp groups + DMs + calls = decisions get lost. Varun explicitly wants "single container."
+4. **Agents and reviews are untrustworthy** — agents optimize for themselves (3 separate interviews confirm). Reviews are fake/AI-generated. Reality doesn't match.
+5. **Budget management** — splitting, tracking, dropout refunds. Splitwise breaks at scale (15+ people).
+6. **Local logistics gaps** — public transport visibility, language barriers, real-time route/weather.
+7. **Tool fragmentation** — Google Maps, Skyscanner, MakeMyTrip, TripAdvisor, Instagram, YouTube, ChatGPT, Splitwise, WhatsApp. No unified platform.
+8. **"Nodes" drive trips** — Sabya's insight: core knit group with 1-2 initiators who activate interest. This IS the organizer acquisition model.
+9. **Budget = destination filter** — Yash: ₹70k eliminated 5 of 7. Ashik: place and budget are interlinked. Eswar: budget constrains everything.
+10. **Once dates + destination lock, rest is easy** — Omkar's insight confirmed by multiple interviews.
+
+---
+
 ## Cohort Interview Assignment List
 | Cohort | Interviewer |
 |---|---|

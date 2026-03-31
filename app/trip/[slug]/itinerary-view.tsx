@@ -87,9 +87,11 @@ export function GenerateButton({
 export function ItineraryView({
   itinerary,
   isOrganizer,
+  organizerName,
 }: {
   itinerary: Itinerary;
   isOrganizer: boolean;
+  organizerName?: string;
 }) {
   // Track selected option per slot: { "1-0": 0, "1-1": 2 } = day 1 slot 0 → option 0
   const [selections, setSelections] = useState<Record<string, number>>({});
@@ -187,6 +189,89 @@ export function ItineraryView({
           </div>
         ))}
       </div>
+
+      {/* Trip cost summary */}
+      <TripSummary
+        itinerary={itinerary}
+        selections={selections}
+        isOrganizer={isOrganizer}
+        organizerName={organizerName}
+      />
     </section>
+  );
+}
+
+function parseCost(costStr: string): number | null {
+  // Handles: "₹500/person", "₹2,500/person", "₹0/person", "Free"
+  if (!costStr) return null;
+  if (costStr.toLowerCase().includes("free")) return 0;
+  const match = costStr.replace(/,/g, "").match(/(\d+)/);
+  return match ? parseInt(match[1]) : null;
+}
+
+function TripSummary({
+  itinerary,
+  selections,
+  isOrganizer,
+  organizerName,
+}: {
+  itinerary: Itinerary;
+  selections: Record<string, number>;
+  isOrganizer: boolean;
+  organizerName?: string;
+}) {
+  // Compute total from selected options
+  let total = 0;
+  let parseable = true;
+
+  itinerary.days.forEach((day, dayIdx) => {
+    day.slots.forEach((slot, slotIdx) => {
+      const selectedIdx = selections[`${dayIdx}-${slotIdx}`] ?? 0;
+      const option = slot.options[selectedIdx] ?? slot.options[0];
+      const cost = parseCost(option.estimatedCost);
+      if (cost !== null) {
+        total += cost;
+      } else {
+        parseable = false;
+      }
+    });
+  });
+
+  const budgetMin = itinerary.budgetRange?.min;
+  const budgetMax = itinerary.budgetRange?.max;
+  const withinBudget = budgetMax ? total <= budgetMax : null;
+
+  return (
+    <div className="mt-8 flex flex-col gap-4">
+      {/* Cost estimate */}
+      {parseable && (
+        <div className="rounded-xl bg-surface px-4 py-4">
+          <p className="text-sm font-medium text-ink">
+            Estimated total: ~₹{total.toLocaleString("en-IN")}/person
+          </p>
+          {budgetMin != null && budgetMax != null && (
+            <p className={`text-sm mt-1 ${withinBudget ? "text-secondary" : "text-error"}`}>
+              {withinBudget
+                ? `Within your group\u2019s ₹${budgetMin.toLocaleString("en-IN")}\u2013${budgetMax.toLocaleString("en-IN")} budget.`
+                : `Above your group\u2019s ₹${budgetMax.toLocaleString("en-IN")} budget \u2014 consider swapping some options.`}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* What's next */}
+      <div className="rounded-xl bg-primary/5 border border-primary/20 px-4 py-4">
+        <p className="text-sm font-medium text-primary">What&apos;s next?</p>
+        {isOrganizer ? (
+          <p className="text-sm text-ink mt-1.5">
+            Share this plan with your group. Toggle between options above to customize, then start booking.
+          </p>
+        ) : (
+          <p className="text-sm text-ink mt-1.5">
+            The plan is ready! Reach out to {organizerName ?? "the organizer"} to finalize details and start booking.
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
