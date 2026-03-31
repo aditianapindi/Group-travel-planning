@@ -122,15 +122,12 @@ function LockButton({
   manageKey: string;
   onLocked?: () => void;
 }) {
+  const [confirming, setConfirming] = useState(false);
   const [locking, setLocking] = useState(false);
   const [locked, setLocked] = useState(false);
   const [error, setError] = useState(false);
 
   async function handleLock() {
-    if (!confirm("Lock this trip? Voting will close and you can generate a plan.")) {
-      return;
-    }
-
     setLocking(true);
     setError(false);
 
@@ -151,6 +148,7 @@ function LockButton({
 
     setLocked(true);
     setLocking(false);
+    setConfirming(false);
     onLocked?.();
   }
 
@@ -162,21 +160,43 @@ function LockButton({
     );
   }
 
+  if (confirming) {
+    return (
+      <div className="rounded-xl border border-border bg-white px-4 py-4 flex flex-col gap-3">
+        <p className="text-sm text-ink font-medium">Lock this trip?</p>
+        <p className="text-sm text-secondary">Voting will close and you can generate a plan. This can&apos;t be undone.</p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setConfirming(false)}
+            disabled={locking}
+            className="flex-1 rounded-lg border border-border text-secondary font-medium py-2.5 min-h-[44px] hover:border-ink hover:text-ink transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleLock}
+            disabled={locking}
+            aria-busy={locking}
+            className="flex-1 rounded-lg bg-primary text-white font-medium py-2.5 min-h-[44px] hover:bg-primary-hover transition-colors disabled:opacity-40"
+          >
+            {locking ? "Locking..." : "Yes, lock it"}
+          </button>
+        </div>
+        {error && (
+          <p role="alert" className="text-sm text-error">
+            Failed to lock. Check your connection and try again.
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-2">
-      <button
-        onClick={handleLock}
-        disabled={locking}
-        aria-busy={locking}
-        className="w-full rounded-lg border-2 border-primary text-primary font-medium py-3 min-h-[48px] hover:bg-primary hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        {locking ? "Locking..." : "Lock trip — close voting"}
-      </button>
-      {error && (
-        <p role="alert" className="text-sm text-error">
-          Failed to lock. Check your connection and try again.
-        </p>
-      )}
-    </div>
+    <button
+      onClick={() => setConfirming(true)}
+      className="w-full rounded-lg border-2 border-primary text-primary font-medium py-3 min-h-[48px] hover:bg-primary hover:text-white transition-colors"
+    >
+      Lock trip — close voting
+    </button>
   );
 }
