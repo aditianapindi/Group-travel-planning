@@ -36,35 +36,3 @@ input, select, textarea {
 *:focus:not(:focus-visible) {
   outline: none;
 }
-
-/* Dark mode — runtime CSS variable overrides */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-ink: #F0F0F0;
-    --color-secondary: #A0A0A0;
-    --color-muted: #707070;
-    --color-border: #333333;
-    --color-surface: #1E1E1E;
-    --color-primary: #6B9B5E;
-    --color-primary-hover: #7DB06E;
-    --color-success: #4CAF70;
-    --color-error: #EF6B6B;
-  }
-
-  body {
-    background: #141413;
-  }
-
-  input, select, textarea {
-    background: #1E1E1E;
-    color: var(--color-ink);
-  }
-
-  .bg-white {
-    background-color: #1E1E1E;
-  }
-
-  .bg-red-50 {
-    background-color: rgba(239, 107, 107, 0.1);
-  }
-}
