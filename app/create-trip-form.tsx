@@ -94,6 +94,7 @@ export function CreateTripForm() {
           required
           autoComplete="off"
           placeholder="Goa October Trip"
+          maxLength={80}
           aria-required="true"
           className={inputClass}
         />
