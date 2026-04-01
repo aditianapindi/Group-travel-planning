@@ -68,19 +68,25 @@ export function TripView({
   const [tripStatus, setTripStatus] = useState(trip.status);
 
   // Check if this user already responded (token + id persisted in localStorage)
+  // Use useEffect to avoid hydration mismatch — server always renders null
   const tokenKey = `nod-token-${trip.id}`;
   const idKey = `nod-pid-${trip.id}`;
-  const [responseToken, setResponseToken] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem(tokenKey);
-  });
-  const [myParticipant, setMyParticipant] = useState<Participant | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [responseToken, setResponseToken] = useState<string | null>(null);
+  const [myParticipant, setMyParticipant] = useState<Participant | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem(tokenKey);
+    setResponseToken(token);
     const pid = localStorage.getItem(idKey);
-    if (!pid) return null;
-    return participants.find((p) => p.id === pid) ?? null;
-  });
-  const hasResponded = responseToken !== null;
+    if (pid) {
+      const found = participants.find((p) => p.id === pid) ?? null;
+      setMyParticipant(found);
+    }
+    setHydrated(true);
+  }, [tokenKey, idKey, participants]);
+
+  const hasResponded = hydrated && responseToken !== null;
   const [isEditing, setIsEditing] = useState(false);
 
   // Realtime subscriptions — participants + trip status changes
@@ -186,7 +192,7 @@ export function TripView({
     <main className="flex-1 px-4 py-8 max-w-lg mx-auto w-full">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-3xl text-ink break-words">{trip.name}</h1>
+        <h1 className="font-heading text-3xl text-ink" style={{ overflowWrap: "break-word" }}>{trip.name}</h1>
         <p className="mt-1 text-secondary text-sm">
           by {trip.created_by}
         </p>

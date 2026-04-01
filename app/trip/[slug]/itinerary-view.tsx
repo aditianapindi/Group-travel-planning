@@ -101,6 +101,14 @@ export function ItineraryView({
 }) {
   // Track selected option per slot: { "1-0": 0, "1-1": 2 } = day 1 slot 0 → option 0
   const [selections, setSelections] = useState<Record<string, number>>({});
+  // Day 1 expanded by default, rest collapsed
+  const [expandedDays, setExpandedDays] = useState<Record<number, boolean>>(
+    () => ({ 0: true })
+  );
+
+  function toggleDay(dayIdx: number) {
+    setExpandedDays((prev) => ({ ...prev, [dayIdx]: !prev[dayIdx] }));
+  }
 
   function selectOption(dayIdx: number, slotIdx: number, optionIdx: number) {
     if (!isOrganizer) return;
@@ -114,83 +122,133 @@ export function ItineraryView({
     return selections[`${dayIdx}-${slotIdx}`] ?? 0;
   }
 
+  // Compute per-day summary (activity count + cost)
+  function getDaySummary(day: Day, dayIdx: number) {
+    let total = 0;
+    let parseable = true;
+    day.slots.forEach((slot, slotIdx) => {
+      const selectedIdx = selections[`${dayIdx}-${slotIdx}`] ?? 0;
+      const option = slot.options[selectedIdx] ?? slot.options[0];
+      const cost = parseCost(option.estimatedCost);
+      if (cost !== null) total += cost;
+      else parseable = false;
+    });
+    const count = day.slots.length;
+    const costStr = parseable ? `~₹${total.toLocaleString("en-IN")}` : "";
+    return { count, costStr };
+  }
+
   return (
     <section className="mt-6" aria-labelledby="itinerary-heading">
-      <div className="mb-5">
+      <div className="mb-4">
         <h2 id="itinerary-heading" className="font-heading text-2xl text-ink">
           {itinerary.destination}
         </h2>
         <p className="text-sm text-secondary mt-0.5">
           {itinerary.groupSize} people
           {itinerary.budgetRange && (
-            <> · ₹{itinerary.budgetRange.min.toLocaleString("en-IN")}–{itinerary.budgetRange.max.toLocaleString("en-IN")}/person</>
+            <> · ₹{itinerary.budgetRange.min.toLocaleString("en-IN")}-{itinerary.budgetRange.max.toLocaleString("en-IN")}/person</>
           )}
+          {" · "}{itinerary.days.length} days
         </p>
       </div>
 
-      <div className="flex flex-col gap-6">
-        {itinerary.days.map((day, dayIdx) => (
-          <div key={day.day}>
-            <h3 className="text-sm font-medium text-ink mb-3">
-              Day {day.day} — {day.title}
-            </h3>
-            <div className="flex flex-col gap-3">
-              {day.slots.map((slot, slotIdx) => {
-                const selectedIdx = getSelected(dayIdx, slotIdx);
-                const selectedOption = slot.options[selectedIdx] ?? slot.options[0];
+      <div className="flex flex-col gap-2">
+        {itinerary.days.map((day, dayIdx) => {
+          const isExpanded = expandedDays[dayIdx] ?? false;
+          const summary = getDaySummary(day, dayIdx);
 
-                return (
-                  <div key={slotIdx}>
-                    {/* Time + label */}
-                    <div className="flex items-baseline gap-2 mb-2">
-                      <span className="text-xs text-muted">{slot.time}</span>
-                      <span className="text-sm text-secondary">{slot.label}</span>
-                    </div>
+          return (
+            <div key={day.day} className="rounded-xl border border-border bg-white overflow-hidden">
+              {/* Day header - always visible, tappable */}
+              <button
+                type="button"
+                onClick={() => toggleDay(dayIdx)}
+                className="w-full flex items-center justify-between px-4 py-3 min-h-[48px] text-left hover:bg-surface/50 transition-colors"
+                aria-expanded={isExpanded}
+                aria-controls={`day-${dayIdx}-content`}
+              >
+                <div>
+                  <span className="text-sm font-medium text-ink">
+                    Day {day.day}
+                  </span>
+                  <span className="text-sm text-secondary ml-1.5">
+                    {day.title}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted">
+                    {summary.count} activities{summary.costStr ? ` · ${summary.costStr}` : ""}
+                  </span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    className={`text-muted transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  >
+                    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              </button>
 
-                    {/* Option pills */}
-                    {slot.options.length > 1 && (
-                      <div className="flex flex-wrap gap-1.5 mb-2" role="radiogroup" aria-label={`Options for ${slot.label}`}>
-                        {slot.options.map((option, optIdx) => (
-                          <button
-                            key={optIdx}
-                            role="radio"
-                            aria-checked={optIdx === selectedIdx}
-                            onClick={() => selectOption(dayIdx, slotIdx, optIdx)}
-                            disabled={!isOrganizer}
-                            className={`rounded-full border px-4 py-2 text-sm min-h-[40px] transition-all ${
-                              optIdx === selectedIdx
-                                ? "bg-primary text-white border-primary"
-                                : isOrganizer
-                                  ? "bg-white text-ink border-border hover:border-ink cursor-pointer"
-                                  : "bg-white text-secondary border-border"
-                            }`}
-                          >
-                            {option.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+              {/* Day content - collapsible */}
+              {isExpanded && (
+                <div id={`day-${dayIdx}-content`} className="px-4 pb-4 flex flex-col gap-2.5 border-t border-border/50">
+                  {day.slots.map((slot, slotIdx) => {
+                    const selectedIdx = getSelected(dayIdx, slotIdx);
+                    const selectedOption = slot.options[selectedIdx] ?? slot.options[0];
 
-                    {/* Selected option detail card */}
-                    <div className="rounded-xl bg-white px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.04)]">
-                      <div className="flex justify-between items-start gap-2">
-                        <p className="text-sm font-medium text-ink">
-                          {selectedOption.name}
+                    return (
+                      <div key={slotIdx} className="pt-2.5">
+                        {/* Time + activity name + cost on one line */}
+                        <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex items-baseline gap-1.5 min-w-0">
+                            <span className="text-xs text-muted shrink-0">{slot.time}</span>
+                            <span className="text-sm font-medium text-ink truncate">{selectedOption.name}</span>
+                          </div>
+                          <span className="text-xs font-medium text-primary whitespace-nowrap">
+                            {selectedOption.estimatedCost}
+                          </span>
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-xs text-secondary mt-0.5 ml-0">
+                          {selectedOption.description}
                         </p>
-                        <span className="text-xs font-medium text-primary whitespace-nowrap">
-                          {selectedOption.estimatedCost}
-                        </span>
+
+                        {/* Option pills - only if multiple options */}
+                        {slot.options.length > 1 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5" role="radiogroup" aria-label={`Options for ${slot.label}`}>
+                            {slot.options.map((option, optIdx) => (
+                              <button
+                                key={optIdx}
+                                role="radio"
+                                aria-checked={optIdx === selectedIdx}
+                                onClick={() => selectOption(dayIdx, slotIdx, optIdx)}
+                                disabled={!isOrganizer}
+                                className={`rounded-full border px-3 py-1 text-xs min-h-[32px] transition-all ${
+                                  optIdx === selectedIdx
+                                    ? "bg-primary text-white border-primary"
+                                    : isOrganizer
+                                      ? "bg-surface text-ink border-border hover:border-ink cursor-pointer"
+                                      : "bg-surface text-secondary border-border"
+                                }`}
+                              >
+                                {option.name}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <p className="text-xs text-secondary mt-1">
-                        {selectedOption.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Trip cost summary */}
