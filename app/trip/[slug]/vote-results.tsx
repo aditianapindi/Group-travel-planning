@@ -51,85 +51,110 @@ export function VoteResults({
   }));
 
   return (
-    <div className="mt-6 flex flex-col gap-6">
-      {/* Vote tally */}
-      <section aria-labelledby="votes-heading">
-        <h2 id="votes-heading" className="text-sm font-medium text-ink mb-3">
-          Votes
-        </h2>
-        <div className="flex flex-col gap-2">
-          {voteCounts.map(({ destination, count }) => (
-            <div key={destination} className="flex items-center gap-3">
-              <span className="text-sm text-ink w-24 truncate">{destination}</span>
-              <div className="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full transition-all"
-                  style={{ width: `${maxVotes > 0 ? (count / maxVotes) * 100 : 0}%` }}
-                />
-              </div>
-              <span className="text-sm text-secondary w-6 text-right">{count}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Date vote tally */}
-      {dateOptions && dateOptions.length > 0 && (
-        <section aria-labelledby="dates-heading">
-          <h2 id="dates-heading" className="text-sm font-medium text-ink mb-3">
-            Dates
-          </h2>
+    <div className="mt-6 flex flex-col gap-3">
+      {/* Votes + Dates in a grid */}
+      <div className={`grid gap-3 ${dateOptions && dateOptions.length > 0 ? "grid-cols-2" : "grid-cols-1"}`}>
+        {/* Destination votes */}
+        <section className="rounded-xl border border-border bg-white px-4 py-3" aria-labelledby="votes-heading">
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <h2 id="votes-heading" className="text-xs font-medium text-ink">Where</h2>
+          </div>
           <div className="flex flex-col gap-2">
-            {dateOptions.map((option) => {
-              const count = yesParticipants.filter((p) =>
-                p.date_votes?.some((dv) => dv.start === option.start)
-              ).length;
-              const maxDateVotes = Math.max(
-                ...dateOptions.map((o) =>
-                  yesParticipants.filter((p) => p.date_votes?.some((dv) => dv.start === o.start)).length
-                ),
-                1
-              );
-              return (
-                <div key={option.start} className="flex items-center gap-3">
-                  <span className="text-sm text-ink w-28 truncate">{formatDateRange(option.start, option.end)}</span>
-                  <div className="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${maxDateVotes > 0 ? (count / maxDateVotes) * 100 : 0}%` }}
-                    />
-                  </div>
-                  <span className="text-sm text-secondary w-6 text-right">{count}</span>
+            {voteCounts.map(({ destination, count }, i) => (
+              <div key={destination}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-sm ${i === 0 && count > 0 ? "font-medium text-ink" : "text-secondary"}`}>{destination}</span>
+                  <span className={`text-xs ${i === 0 && count > 0 ? "font-medium text-primary" : "text-muted"}`}>{count}</span>
                 </div>
-              );
-            })}
+                <div className="h-1.5 bg-surface rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${i === 0 && count > 0 ? "bg-primary" : "bg-border"}`}
+                    style={{ width: `${maxVotes > 0 ? (count / maxVotes) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </section>
-      )}
 
-      {/* Who's responded */}
-      <section aria-labelledby="responses-heading">
-        <h2 id="responses-heading" className="text-sm font-medium text-ink mb-3">
-          Responses
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {responded.map((p) => (
-            <span
-              key={p.id}
-              className={`inline-flex items-center rounded-full border px-3 py-1.5 text-sm ${
-                p.rsvp === "yes"
-                  ? "border-primary/30 bg-primary/5 text-primary"
-                  : p.rsvp === "maybe"
-                    ? "border-border text-secondary"
-                    : "border-border text-muted line-through"
-              }`}
-            >
-              {p.name}
-              {p.rsvp === "maybe" && (
-                <span className="ml-1 text-muted" aria-label="maybe">?</span>
-              )}
-            </span>
-          ))}
+        {/* Date votes */}
+        {dateOptions && dateOptions.length > 0 && (
+          <section className="rounded-xl border border-border bg-white px-4 py-3" aria-labelledby="dates-heading">
+            <div className="flex items-center gap-1.5 mb-2.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-primary" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M3 10h18M8 2v4M16 2v4" />
+              </svg>
+              <h2 id="dates-heading" className="text-xs font-medium text-ink">When</h2>
+            </div>
+            <div className="flex flex-col gap-2">
+              {dateOptions.map((option, i) => {
+                const count = yesParticipants.filter((p) =>
+                  p.date_votes?.some((dv) => dv.start === option.start)
+                ).length;
+                const maxDateVotes = Math.max(
+                  ...dateOptions.map((o) =>
+                    yesParticipants.filter((p) => p.date_votes?.some((dv) => dv.start === o.start)).length
+                  ),
+                  1
+                );
+                const isLeading = i === 0 || count === maxDateVotes;
+                return (
+                  <div key={option.start}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={`text-sm ${isLeading && count > 0 ? "font-medium text-ink" : "text-secondary"}`}>
+                        {formatDateRange(option.start, option.end)}
+                      </span>
+                      <span className={`text-xs ${isLeading && count > 0 ? "font-medium text-primary" : "text-muted"}`}>{count}</span>
+                    </div>
+                    <div className="h-1.5 bg-surface rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${isLeading && count > 0 ? "bg-primary" : "bg-border"}`}
+                        style={{ width: `${maxDateVotes > 0 ? (count / maxDateVotes) * 100 : 0}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+      </div>
+
+      {/* Who's responded - compact */}
+      <section className="rounded-xl border border-border bg-white px-4 py-3" aria-labelledby="responses-heading">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+            </svg>
+            <h2 id="responses-heading" className="text-xs font-medium text-ink">{responded.length} responded</h2>
+          </div>
+          <div className="flex flex-wrap gap-1.5 justify-end">
+            {responded.map((p) => (
+              <span
+                key={p.id}
+                className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs ${
+                  p.rsvp === "yes"
+                    ? "border-primary/30 bg-primary/5 text-primary"
+                    : p.rsvp === "maybe"
+                      ? "border-border text-secondary"
+                      : "border-border text-muted line-through"
+                }`}
+              >
+                {p.name}
+                {p.rsvp === "maybe" && (
+                  <span className="ml-0.5 text-muted" aria-label="maybe">?</span>
+                )}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 

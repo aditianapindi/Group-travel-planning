@@ -87,10 +87,16 @@ export function StatusBar({
         <span className="text-error">Budgets don&apos;t overlap</span>
       )}
 
-      {deadlineText && <span className={deadlineUrgent ? "text-primary font-medium" : ""}>{deadlineText}</span>}
+      {status === "collecting" && deadlineText && (
+        <span className={deadlineUrgent ? "text-primary font-medium" : ""}>{deadlineText}</span>
+      )}
 
       {status === "locked" && (
-        <span className="font-medium text-ink">Locked</span>
+        <span className="font-medium text-primary">Trip locked</span>
+      )}
+
+      {status === "planned" && (
+        <span className="font-medium text-primary">Plan ready</span>
       )}
     </div>
   );

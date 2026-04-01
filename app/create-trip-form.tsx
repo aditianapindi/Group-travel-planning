@@ -236,7 +236,7 @@ export function CreateTripForm() {
 
       {/* Custom date input — compact inline */}
       <div>
-        <p className="text-sm text-muted mb-1.5">
+        <p className="text-sm text-secondary mb-1.5">
           {longWeekends.length > 0 ? "Or add your own dates" : "Add dates"}
         </p>
         <div className="flex gap-2 items-center">

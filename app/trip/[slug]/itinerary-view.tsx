@@ -193,54 +193,51 @@ export function ItineraryView({
                 </div>
               </button>
 
-              {/* Day content - collapsible */}
+              {/* Day content - clean timeline */}
               {isExpanded && (
-                <div id={`day-${dayIdx}-content`} className="px-4 pb-4 flex flex-col gap-2.5 border-t border-border/50">
+                <div id={`day-${dayIdx}-content`} className="pb-3 border-t border-border/50">
                   {day.slots.map((slot, slotIdx) => {
                     const selectedIdx = getSelected(dayIdx, slotIdx);
                     const selectedOption = slot.options[selectedIdx] ?? slot.options[0];
+                    const hasAlts = slot.options.length > 1;
 
                     return (
-                      <div key={slotIdx} className="pt-2.5">
-                        {/* Time + activity name + cost on one line */}
-                        <div className="flex items-baseline justify-between gap-2">
-                          <div className="flex items-baseline gap-1.5 min-w-0">
-                            <span className="text-xs text-muted shrink-0">{slot.time}</span>
+                      <div key={slotIdx} className="flex gap-3 px-4 py-2.5 border-b border-border/30 last:border-b-0">
+                        {/* Time column */}
+                        <span className="text-xs text-muted w-14 shrink-0 pt-0.5">{slot.time}</span>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-baseline justify-between gap-2">
                             <span className="text-sm font-medium text-ink truncate">{selectedOption.name}</span>
+                            <span className="text-xs text-primary whitespace-nowrap">{selectedOption.estimatedCost}</span>
                           </div>
-                          <span className="text-xs font-medium text-primary whitespace-nowrap">
-                            {selectedOption.estimatedCost}
-                          </span>
+
+                          {/* Alternatives - compact inline */}
+                          {hasAlts && (
+                            <div className="flex gap-1 mt-1" role="radiogroup" aria-label={`Options for ${slot.label}`}>
+                              {slot.options.filter((_, i) => i !== selectedIdx).map((option, i) => (
+                                <button
+                                  key={i}
+                                  role="radio"
+                                  aria-checked={false}
+                                  onClick={() => {
+                                    const realIdx = slot.options.indexOf(option);
+                                    selectOption(dayIdx, slotIdx, realIdx);
+                                  }}
+                                  disabled={!isOrganizer}
+                                  className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
+                                    isOrganizer
+                                      ? "text-secondary hover:text-primary hover:bg-primary/5 cursor-pointer"
+                                      : "text-muted"
+                                  }`}
+                                >
+                                  or {option.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
-
-                        {/* Description */}
-                        <p className="text-xs text-secondary mt-0.5 ml-0">
-                          {selectedOption.description}
-                        </p>
-
-                        {/* Option pills - only if multiple options */}
-                        {slot.options.length > 1 && (
-                          <div className="flex flex-wrap gap-1 mt-1.5" role="radiogroup" aria-label={`Options for ${slot.label}`}>
-                            {slot.options.map((option, optIdx) => (
-                              <button
-                                key={optIdx}
-                                role="radio"
-                                aria-checked={optIdx === selectedIdx}
-                                onClick={() => selectOption(dayIdx, slotIdx, optIdx)}
-                                disabled={!isOrganizer}
-                                className={`rounded-full border px-3 py-1 text-xs min-h-[32px] transition-all ${
-                                  optIdx === selectedIdx
-                                    ? "bg-primary text-white border-primary"
-                                    : isOrganizer
-                                      ? "bg-surface text-ink border-border hover:border-ink cursor-pointer"
-                                      : "bg-surface text-secondary border-border"
-                                }`}
-                              >
-                                {option.name}
-                              </button>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     );
                   })}
@@ -264,12 +261,13 @@ export function ItineraryView({
   );
 }
 
-function parseCost(costStr: string): number | null {
-  // Handles: "₹500/person", "₹2,500/person", "₹0/person", "Free"
-  if (!costStr) return null;
-  if (costStr.toLowerCase().includes("free")) return 0;
+function parseCost(costStr: string): number {
+  // Handles: "₹500/person", "₹2,500/person", "₹0/person", "Free", "Included", "Varies"
+  if (!costStr) return 0;
+  const lower = costStr.toLowerCase();
+  if (lower.includes("free") || lower.includes("included") || lower.includes("covered")) return 0;
   const match = costStr.replace(/,/g, "").match(/(\d+)/);
-  return match ? parseInt(match[1]) : null;
+  return match ? parseInt(match[1]) : 0;
 }
 
 function TripSummary({
@@ -289,18 +287,12 @@ function TripSummary({
 }) {
   // Compute total from selected options
   let total = 0;
-  let parseable = true;
 
   itinerary.days.forEach((day, dayIdx) => {
     day.slots.forEach((slot, slotIdx) => {
       const selectedIdx = selections[`${dayIdx}-${slotIdx}`] ?? 0;
       const option = slot.options[selectedIdx] ?? slot.options[0];
-      const cost = parseCost(option.estimatedCost);
-      if (cost !== null) {
-        total += cost;
-      } else {
-        parseable = false;
-      }
+      total += parseCost(option.estimatedCost);
     });
   });
 
@@ -311,8 +303,7 @@ function TripSummary({
   return (
     <div className="mt-8 flex flex-col gap-4">
       {/* Cost estimate */}
-      {parseable && (
-        <div className="rounded-xl bg-surface px-4 py-4">
+      <div className="rounded-xl bg-surface px-4 py-4">
           <p className="text-sm font-medium text-ink">
             Estimated total: ~₹{total.toLocaleString("en-IN")}/person
           </p>
@@ -323,24 +314,9 @@ function TripSummary({
                 : `Above your group\u2019s ₹${budgetMax.toLocaleString("en-IN")} budget \u2014 consider swapping some options.`}
             </p>
           )}
-        </div>
-      )}
-
-      {/* What's next */}
-      <div className="rounded-xl bg-primary/5 border border-primary/20 px-4 py-4">
-        <p className="text-sm font-medium text-primary">What&apos;s next?</p>
-        {isOrganizer ? (
-          <p className="text-sm text-ink mt-1.5">
-            Share this plan with your group. Toggle between options above to customize, then start booking.
-          </p>
-        ) : (
-          <p className="text-sm text-ink mt-1.5">
-            The plan is ready! Reach out to {organizerName ?? "the organizer"} to finalize details and start booking.
-          </p>
-        )}
-
-        {/* Calendar links moved to trip-view (shown after lock, before itinerary) */}
       </div>
+
+      {/* Share bar + booking links are in trip-view.tsx below the itinerary */}
     </div>
   );
 }
@@ -406,24 +382,45 @@ export function CalendarLinks({
   }
 
   return (
-    <div className="mt-3 pt-3 border-t border-primary/10">
-      <p className="text-xs text-secondary mb-2">
-        {formatDateRange(startDate, endDate)} · {destination}
-      </p>
-      <div className="flex gap-2">
+    <div className="mt-4 flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+      <div className="flex items-center gap-2">
+        {/* Calendar icon */}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-primary shrink-0" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M3 10h18M8 2v4M16 2v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <div>
+          <p className="text-sm font-medium text-ink">{formatDateRange(startDate, endDate)}</p>
+          <p className="text-xs text-muted">{destination}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5">
         <a
           href={googleUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 rounded-lg border border-border bg-white text-ink text-sm font-medium py-2.5 min-h-[44px] inline-flex items-center justify-center hover:border-primary transition-colors"
+          className="rounded-lg border border-border px-3 py-1.5 text-xs text-ink hover:border-primary hover:text-primary transition-colors min-h-[36px] inline-flex items-center"
+          title="Add to Google Calendar"
         >
-          Add to Google Calendar
+          {/* Google icon */}
+          <svg width="14" height="14" viewBox="0 0 24 24" className="mr-1.5" aria-hidden="true">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Google
         </a>
         <button
           onClick={downloadIcs}
-          className="flex-1 rounded-lg border border-border bg-white text-ink text-sm font-medium py-2.5 min-h-[44px] inline-flex items-center justify-center hover:border-primary transition-colors"
+          className="rounded-lg border border-border px-3 py-1.5 text-xs text-ink hover:border-primary hover:text-primary transition-colors min-h-[36px] inline-flex items-center"
+          title="Download .ics file"
         >
-          Download .ics
+          {/* Download icon */}
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mr-1.5" aria-hidden="true">
+            <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          .ics
         </button>
       </div>
     </div>

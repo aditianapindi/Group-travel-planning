@@ -86,8 +86,24 @@ export function ParticipantForm({
       return;
     }
 
-    if (budgetMin && budgetMax && parseInt(budgetMin) > parseInt(budgetMax)) {
+    // Budget validation (M5)
+    const minVal = budgetMin ? parseInt(budgetMin) : null;
+    const maxVal = budgetMax ? parseInt(budgetMax) : null;
+    if (minVal !== null && minVal < 0) {
+      setError("Budget can\u2019t be negative.");
+      return;
+    }
+    if (maxVal !== null && maxVal < 0) {
+      setError("Budget can\u2019t be negative.");
+      return;
+    }
+    if (minVal !== null && maxVal !== null && minVal > maxVal) {
       setError("Budget minimum can\u2019t be more than maximum.");
+      return;
+    }
+    // Name length limit (M3)
+    if (name.trim().length > 50) {
+      setError("Name must be 50 characters or less.");
       return;
     }
 
@@ -332,7 +348,7 @@ export function ParticipantForm({
                 >
                   −
                 </button>
-                <span className="text-lg font-medium text-ink w-8 text-center" aria-live="polite">{headcount}</span>
+                <span className="text-sm font-medium text-ink w-8 text-center" aria-live="polite">{headcount}</span>
                 <button
                   type="button"
                   onClick={() => setHeadcount(Math.min(10, headcount + 1))}

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial, sans-serif; max-width: 720px; margin: 40px auto; line-height: 1.6; color: #1a1a1a; font-size: 11pt; }
+  h1 { font-size: 28pt; margin-bottom: 4px; }
+  h2 { font-size: 16pt; margin-top: 32px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  h3 { font-size: 13pt; margin-top: 24px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f5; font-weight: bold; }
+  blockquote { border-left: 3px solid #ddd; margin: 8px 0; padding: 4px 12px; color: #555; font-size: 10pt; }
+  .subtitle { font-size: 13pt; color: #555; margin-bottom: 2px; }
+  .meta { font-size: 10pt; color: #777; margin-bottom: 24px; }
+  .toc { margin: 16px 0; }
+  .toc p { margin: 2px 0; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 24px 0; }
+  .screen-title { font-weight: bold; font-size: 11pt; margin-top: 20px; }
+  .insight-box { background: #f8f7f5; border-left: 3px solid #333; padding: 10px 14px; margin: 12px 0; font-size: 10.5pt; }
+</style>
+</head>
+<body>
+
+<h1>NOD</h1>
+<p class="subtitle">Group Trip Decision Engine</p>
+<p><b>Product Requirements Document</b></p>
+<p class="meta">Aditi Anapindi &nbsp;|&nbsp; April 2026 &nbsp;|&nbsp; Status: Prototype Live<br>
+<a href="https://nod.sunforged.work">nod.sunforged.work</a></p>
+
+<hr>
+
+<div class="toc">
+<p><b>Table of Contents</b></p>
+<p>01 &nbsp;Discovery Insights</p>
+<p>02 &nbsp;Problem Prioritisation</p>
+<p>03 &nbsp;Proposed Solution</p>
+<p>04 &nbsp;Implementation Plan</p>
+<p>05 &nbsp;Instruction Design</p>
+</div>
+
+<hr>
+
+<h2>01 &nbsp;DISCOVERY INSIGHTS</h2>
+
+<h3>The Problem Nobody Has Solved</h3>
+
+<p>Trip planning is the highest-failure vertical in travel. ~300 startups have tried and died. ~700 have attempted it. PhocusWire published "Why you should never consider a travel planning startup." No standalone group travel planning app has achieved venture-scale success.</p>
+
+<p>The problem is real. <b>77%</b> of Americans travel with others [<a href="https://talkerresearch.com/study-finds-americas-2025-travel-snapshot/">Talker Research, 2025, n=2,000</a>]. <b>47%</b> of Airbnb bookings are groups of 3+ [Airbnb/STR analysts, 2024-2025]. India recorded <b>2.95 billion</b> domestic tourist visits in 2024 [<a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2087824">Ministry of Tourism</a>]. Yet the average person <b>misses 2 trips per year</b> because they can't coordinate [<a href="https://talkerresearch.com/82-of-americans-have-traveled-solo-or-want-to-but-many-are-hesitant/">Talker Research, Feb 2026, n=2,000</a>].</p>
+
+<p>Discovery drew from <b>22+ user interviews</b> across two batches, a <b>9-person survey</b>, and <b>65+ secondary sources</b> including competitor analyses, academic research, and industry reports. Every quantitative claim in this document cites its source - we caught 4 fabricated stats during research and adopted a zero-tolerance verification policy.</p>
+
+<h3>Why Startups Die Here</h3>
+
+<table>
+<tr><th>#</th><th>Failure Mode</th><th>Evidence</th></tr>
+<tr><td>1</td><td><b>Research-to-booking leakage</b> - users plan on your tool, book on OTAs</td><td>Consumers visit ~38 sites before booking [Expedia]. Planning tool is one of 38.</td></tr>
+<tr><td>2</td><td><b>Planning is perceived as free</b> - Google Sheets and WhatsApp cost nothing</td><td>Revenue lives at booking (commissions) and during-trip. Planning sits in the value chain's dead zone.</td></tr>
+<tr><td>3</td><td><b>Infrequent use</b> - 1-2 group trips per year</td><td>Can't build daily habit or justify subscription on something used twice a year.</td></tr>
+<tr><td>4</td><td><b>WhatsApp gravity</b> - terrible for planning, but everyone is already there</td><td><b>55%</b> of our survey respondents won't download a new app. <b>33%</b> say "WhatsApp is fine."</td></tr>
+<tr><td>5</td><td><b>Group adoption is social, not product</b> - organiser loves it, 5 others didn't choose it</td><td>Competing with human inertia, not other apps.</td></tr>
+</table>
+
+<p>The three companies that survived this graveyard did so by <b>not</b> being group trip planning apps:</p>
+
+<table>
+<tr><th>Company</th><th>Revenue</th><th>Strategy</th></tr>
+<tr><td><b>Splitwise</b></td><td>~$25M ARR</td><td>Solved expense splitting - a <i>financial</i> pain, not a planning pain. Recurs during AND after trip.</td></tr>
+<tr><td><b>Wanderlog</b></td><td>~$1M ARR, 5 people</td><td>Stayed tiny. Monetised during-trip features (offline maps, route optimisation). Affiliate commissions.</td></tr>
+<tr><td><b>Holidify</b></td><td>~$400K</td><td>Content-first SEO. Agent marketplace. Near-zero burn.</td></tr>
+</table>
+
+<h3>What 22+ Interviews Revealed</h3>
+
+<p><b>Batch 1 (10 interviews)</b> confirmed the surface-level pain points. <b>Batch 2 (12 interviews, Akanksha's cohort)</b> broke our assumptions.</p>
+
+<p><b>Finding 1: Scheduling is #1, but budget is the hidden root cause.</b><br>
+56% of survey respondents ranked scheduling as their top frustration. Budget? 0% stated frustration. But three Batch 2 interviews (Yash, Ashik, Eswar) revealed budget is the <i>reason</i> destinations never get agreed on. Yash: <i>"&#8377;70k budget eliminated 5 of 7 people."</i> Ashik: <i>"Place and budget are interlinked."</i> Survey measured stated frustration; interviews revealed root cause. They're different layers of the same problem.</p>
+
+<p><b>Finding 2: Alignment is the product. Everything after is easy.</b><br>
+Omkar: <i>"Once dates and location are locked, the rest of the planning becomes straightforward."</i> This reframed our entire scope. We don't need to solve itinerary planning, expense splitting, or booking. We need to collapse the 50-message, 2-week alignment ordeal into 5 minutes.</p>
+
+<p><b>Finding 3: The organiser is a network node, not a user persona.</b><br>
+Sabya: <i>"There is always a push - you need a core knit group with a couple of nodes who can generate interest."</i> Every dead startup built for the organiser alone. The organiser is the <i>acquisition channel</i>. The product must serve the GROUP - the participant experience is what makes or breaks adoption.</p>
+
+<p><b>Finding 4: Budgets cause real financial harm when hidden.</b><br>
+Manohar: <i>"I wish people had talked about budget upfront. I ended up paying more - just to compensate. He didn't pay."</i> 59% of travellers report tension or arguments over budget [AAA + Bread Financial, Jan 2026, n=1,714]. 37% feel pressured to exceed their budget on friend trips; 52% of millennials [<a href="https://www.empower.com/the-currency/play/travel-spending-trends-research">Empower, May 2025, n=1,031</a>]. The data explains why: people are <b>3.5x more likely to share honest budget limitations</b> in anonymous surveys than in group discussions [<a href="https://www.novatrek.app/en/blog/why-group-travel-planning-is-broken">NovaTrek</a>]. Anonymous input isn't a nice-to-have. It's the only way to get truthful numbers.</p>
+
+<p><b>Finding 5: People don't respond to group messages - for structural reasons.</b><br>
+WhatsApp polls fail not because people are lazy, but because: no consequence for ignoring, no feedback when you respond, and no visible accountability. The fix isn't gamification - it's behavioural design: named accountability ("Waiting on Yash, Priya"), deadline with consequence ("majority decides without you"), tiny ask (30 seconds), and instant visible feedback.</p>
+
+<h3>The Group Trip Journey: Where Behaviour Breaks Down</h3>
+
+<p>Every group trip follows the same arc. The problem isn't any single stage - it's that each stage has a behavioural failure mode that compounds into the next. <b>60% of trips die in stages 2-5</b> before a single booking is made.</p>
+
+<table>
+<tr><th>Stage</th><th>What Happens Today</th><th>Behavioural Failure</th><th>Nod's Response</th></tr>
+<tr><td>1. "Let's go!"</td><td>Excitement spike in WhatsApp</td><td>None - momentum is high</td><td>We don't own this stage. We enter at Stage 2.</td></tr>
+<tr><td>2. Who's in?</td><td>Organiser asks, 3 reply, 2 ghost</td><td><b>Social loafing</b> - diffusion of responsibility. "Someone else will answer." [<a href="https://journals.sagepub.com/doi/10.1177/1469787412467123">Hall &amp; Buzwell, 2013</a>]</td><td>Named accountability: "Priya and Rahul are in. Waiting on you."</td></tr>
+<tr><td>3. When?</td><td>WhatsApp poll, 3/7 vote, poll expires</td><td><b>Effort threshold</b> - 40% are overwhelmed by group chats [<a href="https://theconversation.com/overwhelmed-by-group-chat-messages-youre-not-alone-215879">Mannell, Deakin Univ.</a>]. Scrolling 200 messages to find a poll kills participation.</td><td>Holiday long weekend picker: curated dates as tappable pills. One tap, done.</td></tr>
+<tr><td>4. Where?</td><td>12 destinations suggested, no resolution for 6 weeks</td><td><b>Paradox of choice</b> - 24 options yield 3% action vs. 30% with 6 options [<a href="https://thedecisionlab.com/reference-guide/economics/the-paradox-of-choice">Schwartz/Iyengar</a>]. Each person adds options, nobody removes them.</td><td>Organiser proposes 2-3 options. Structured multivote with deadline. Constraint, not chaos.</td></tr>
+<tr><td>5. How much?</td><td>Never discussed. Tension surfaces mid-trip.</td><td><b>Financial taboo</b> - people are 3.5x more honest anonymously than in groups [<a href="https://www.novatrek.app/en/blog/why-group-travel-planning-is-broken">NovaTrek</a>]. Nobody asks "what can you afford?" because it feels invasive.</td><td>Anonymous budget range. System shows overlap zone, not individual numbers.</td></tr>
+<tr><td>6. Lock it</td><td>Nobody commits. "Let's figure it out later."</td><td><b>Status quo bias</b> - doing nothing feels safer than deciding wrong. No commitment device exists.</td><td>Deadline with consequence: "Votes close Thursday. After that, majority decides without you." Loss aversion &gt; any reward.</td></tr>
+<tr><td>7. Plan it</td><td>One person makes a Google Sheet alone. 16-20 hrs.</td><td><b>Organiser burnout</b> - invisible emotional labour [<a href="https://press.priceline.com/new-priceline-research-finds-average-traveler-spends-two-full-work-days-to-plan-and-book-trips/">Priceline</a>]. The planner has the worst trip experience.</td><td>AI generates itinerary from group context. Organiser reviews, doesn't build from scratch.</td></tr>
+<tr><td>8. Book it</td><td>Everyone books separately on OTAs</td><td><b>Research-to-booking leakage</b> - consumers visit ~38 sites before booking [Expedia]</td><td>Don't fight this. Monetise experiences (affiliate), not hotels.</td></tr>
+</table>
+
+<div class="insight-box">
+<b>The insight:</b> Every failure mode above is behavioural, not informational. The internet solved "where should we go?" - nobody has solved "how do we all agree and actually go?" That is why this is a decision engine, not a planning tool. Information tools (Wanderlog, TripIt, Google Travel) add more data. Nod adds structure, deadlines, and accountability - the behavioural scaffolding that turns group chat into group action.
+</div>
+
+<h3>Survey Snapshot (n=9)</h3>
+
+<table>
+<tr><th>Finding</th><th>Data</th></tr>
+<tr><td>#1 frustration</td><td>Scheduling conflicts (56%)</td></tr>
+<tr><td>#1 desired feature</td><td>Expense splitting (56%), then voting (44%)</td></tr>
+<tr><td>Adoption wall</td><td>55% won't download an app; 33% say "WhatsApp is fine"</td></tr>
+<tr><td>Willingness to pay</td><td>78% free only</td></tr>
+<tr><td>Budget sharing</td><td>44% yes, 33% depends, 22% no</td></tr>
+</table>
+
+<h3>India-First Thesis</h3>
+
+<p>India is the right market for three reasons. First, <b>WhatsApp dominance</b> - WhatsApp is the default coordination channel, and our thesis (shareable link, not downloadable app) plays directly into this behaviour. Second, <b>no competitor</b> - Wanderlog, TripIt, and Google Travel serve Western solo travellers. No product serves Indian group trips. Third, <b>long weekend culture</b> - Indian holidays create natural planning triggers (Diwali week, Independence Day weekends) that a curated calendar can exploit.</p>
+
+<p><b>Why now:</b> Booking Holdings acquired Planapple in February 2025 to add group planning capabilities to Kayak and Booking.com [<a href="https://www.wiseguyreports.com/reports/travel-planner-app-market">WiseGuy Reports</a>] - signalling that major players now recognise the group coordination gap. The group travel planning app market is only $245M [<a href="https://www.marketreportanalytics.com/reports/group-travel-planning-apps-75342">Market Report Analytics, 2025</a>] - nascent and fragmented, with no dominant player.</p>
+
+<hr>
+
+<h2>02 &nbsp;PROBLEM PRIORITISATION</h2>
+
+<h3>Validated Problem Statement</h3>
+
+<p><b>60% of group trips never happen</b> because planning becomes too overwhelming [<a href="https://www.novatrek.app/en/blog/why-group-travel-planning-is-broken">NovaTrek</a>]. Groups of friends and families fail to convert trip excitement into trip action because <b>no tool resolves the multi-person alignment problem</b> - where, when, and how much - in a format that works asynchronously on mobile. The result: exhausted organisers, suboptimal trips, and an average of 2 missed trips per year per person.</p>
+
+<h3>Priority Matrix</h3>
+
+<table>
+<tr><th>Priority</th><th>Pain Point</th><th>Survey Signal</th><th>Interview Signal</th><th>MVP Feature</th></tr>
+<tr><td><b>P0</b></td><td>Date + destination alignment</td><td>56% #1 frustration</td><td>Ruchi: 6 weeks to agree. Omkar: "once locked, rest is easy."</td><td>Destination voting + holiday long weekend picker + deadline</td></tr>
+<tr><td><b>P0</b></td><td>Budget as hidden filter</td><td>0% stated, but 59% tension (secondary)</td><td>Yash: &#8377;70k eliminated 5/7. Ashik: "place and budget interlinked."</td><td>Anonymous budget range input, visible overlap</td></tr>
+<tr><td><b>P0</b></td><td>Passive members / no response</td><td>0% stated</td><td>Universal across both batches. Vinay problem.</td><td>Motivation block: named accountability + deadline consequence + 30-second form</td></tr>
+<tr><td><b>P1</b></td><td>Expense splitting</td><td>56% most wanted feature</td><td>Splitwise friction in 5+ interviews</td><td><b>Deferred</b> - Splitwise exists, our wedge is alignment not settlement</td></tr>
+<tr><td><b>P1</b></td><td>Scattered communication</td><td>Not surveyed</td><td>Varun: "single container"</td><td>Trip page IS the single source of truth</td></tr>
+<tr><td><b>P1</b></td><td>Organiser burnout</td><td>11% frustration</td><td>71% find arranging stressful [CivicScience, 2024]</td><td>Distributed input via trip page reduces organiser's cognitive load</td></tr>
+<tr><td><b>P2</b></td><td>Agent/review distrust</td><td>Not surveyed</td><td>3+ interviews (Shardul, Yash, Ravi Kaka)</td><td>AI itinerary optimised for group, not commissions (V2: Anti-Agent)</td></tr>
+</table>
+
+<h3>Why Expense Splitting Is P1, Not P0</h3>
+
+<p>Expense splitting ranked #1 desired feature (56%). We deliberately did not build it. Splitwise owns this space ($25M ARR, 33M+ downloads) and does it well. Building a worse version of Splitwise is how startups die. Our wedge is the problem <i>before</i> Splitwise - getting 6 people to agree on where, when, and how much. Solve alignment, hand off to Splitwise for settlement. Fight one battle at a time.</p>
+
+<hr>
+
+<h2>03 &nbsp;PROPOSED SOLUTION</h2>
+
+<h3>"Get everyone's nod."</h3>
+
+<p>Nod is a <b>group decision engine</b>, not a planning tool. It collapses the 50-message, 2-week trip alignment ordeal into 5 minutes via a shareable link. Organiser creates a trip in 60 seconds. Shares a link in WhatsApp. Each participant clicks and responds in 30 seconds: when are you free, how much can you spend, where do you want to go. Engine computes overlap. Organiser locks. AI generates a fitted itinerary. Done.</p>
+
+<h3>Three Concepts, One Lifecycle</h3>
+
+<table>
+<tr><th>Concept</th><th>Phase</th><th>What It Does</th><th>Status</th></tr>
+<tr><td><b>A: The 5-Minute Lock</b></td><td>MVP (built)</td><td>Group constraint resolution - dates, budget, destination - in one async flow</td><td>Live at nod.sunforged.work</td></tr>
+<tr><td><b>B: The Trip Trigger</b></td><td>V2</td><td>Proactively nudges the organiser when group constraints align with a deal or holiday window</td><td>Designed, not built</td></tr>
+<tr><td><b>C: The Anti-Agent</b></td><td>V2</td><td>AI recommendations optimised for group context, not commissions. Experience affiliate revenue.</td><td>Designed, not built</td></tr>
+</table>
+
+<p><b>A is the wedge. B is retention. C is monetisation.</b> Each builds on the data the previous concept collects.</p>
+
+<h3>Why This Won't Be Failure #301</h3>
+
+<p>The 300 dead startups were <b>planning tools</b>. Nod is a <b>decision tool</b>. The difference:</p>
+
+<ul>
+<li><b>No app download</b> - a shareable link works inside WhatsApp, not against it. Solves adoption friction.</li>
+<li><b>Participant experience is the product</b> - 30-second form, not a feature-rich dashboard. Every dead startup built for the organiser alone.</li>
+<li><b>Group context is the moat</b> - ChatGPT gets one person's prompt. Nod gets: 6 confirmed, Oct 15-18, budget &#8377;8K-15K, 4 voted beach, 1 vegetarian. Richer input, better output, higher affiliate conversion.</li>
+<li><b>Monetise experiences, not hotels</b> - Hotels leak to OTAs. Experiences don't - no comparison-shopping habit, lower price sensitivity, discovery is the bottleneck. 8% Viator commission on activities the group already agreed on.</li>
+<li><b>Deadline and commitment devices</b> - We analysed 14 competing tools across group coordination, planning, and financial features. Not one offers deadline-driven convergence or commitment mechanisms [Competitive analysis, March 2026]. Nod's vote-lock-calendar chain is structurally unique.</li>
+<li><b>Free planning, always</b> - 78% of survey respondents pay nothing. Revenue comes from during-trip activity bookings, not planning-phase subscriptions.</li>
+</ul>
+
+<h3>Business Model</h3>
+
+<p><b>Free + Affiliate.</b> Planning is free forever. Revenue via experience affiliate commissions (Viator 8%, Klook, GetYourGuide) surfaced contextually after itinerary generation. Group intent data (6 people's combined constraints) is a richer lead than individual search on any marketplace.</p>
+
+<p>Modelled revenue per trip: group of 6, 3-4 activities booked, ~$40-75 per trip. Thin - but the tool needs volume, not margins. This follows the Wanderlog pattern, not the "charge for planning" pattern that killed 300 startups.</p>
+
+<hr>
+
+<h2>04 &nbsp;IMPLEMENTATION PLAN</h2>
+
+<h3>What's Built (Live)</h3>
+
+<p>A fully functional MVP deployed at <b>nod.sunforged.work</b> covering the complete group decision flow:</p>
+
+<table>
+<tr><th>Feature</th><th>What It Does</th></tr>
+<tr><td><b>Trip creation</b></td><td>Name, destinations, deadline, holiday long weekend picker (2026 Indian holidays), budget guidance</td></tr>
+<tr><td><b>Shareable link</b></td><td>Unique slug per trip. Copy, WhatsApp, iMessage share buttons.</td></tr>
+<tr><td><b>Participant form</b></td><td>Name, RSVP (yes/maybe/no), destination vote, date vote, budget range. 30 seconds.</td></tr>
+<tr><td><b>Motivation block</b></td><td>Named accountability ("Priya and Rahul are in"), deadline with consequence, "takes 30 seconds" nudge</td></tr>
+<tr><td><b>Vote results</b></td><td>Destination tally + date tally + budget range overlap. Real-time via Supabase Realtime.</td></tr>
+<tr><td><b>Trip lock</b></td><td>Organiser locks when ready. Inline confirmation (not browser alert).</td></tr>
+<tr><td><b>AI itinerary</b></td><td>Gemini 2.5 Flash generates day-by-day plan fitted to group's destination, budget, dates, and size</td></tr>
+<tr><td><b>Calendar links</b></td><td>Google Calendar URL + .ics download after lock. Trip name, dates, destination, group size, URL included.</td></tr>
+<tr><td><b>Response tokens</b></td><td>UUID per submission, stored in localStorage. Enables edit without organiser mediation.</td></tr>
+<tr><td><b>Organiser/participant split</b></td><td>manage_key URL param = organiser. No key = participant. Different UX for each.</td></tr>
+</table>
+
+<h3>Technology Stack</h3>
+
+<table>
+<tr><th>Layer</th><th>Choice</th><th>Rationale</th></tr>
+<tr><td>Framework</td><td>Next.js 16 (App Router)</td><td>Server components by default. No client JS where unnecessary.</td></tr>
+<tr><td>Database</td><td>Supabase (PostgreSQL + Realtime)</td><td>Free tier, real-time subscriptions, RLS-ready.</td></tr>
+<tr><td>AI</td><td>Gemini 2.5 Flash</td><td>1-3s responses, structured JSON, low cost. 30s timeout via AbortController.</td></tr>
+<tr><td>Styling</td><td>Tailwind v4</td><td>Utility-first, mobile-first. Warm off-white (#FAF9F7) base.</td></tr>
+<tr><td>Deploy</td><td>Vercel</td><td>Auto-deploy on push. Custom domain via Cloudflare CNAME.</td></tr>
+</table>
+
+<h3>Phased Roadmap</h3>
+
+<table>
+<tr><th>Phase</th><th>Key Steps</th></tr>
+<tr><td><b>Now (Validation)</b></td><td>Share MVP with cohort + real friend groups. Collect: do participants actually respond? Does the organiser share the link?</td></tr>
+<tr><td><b>Next (V1.1)</b></td><td>Itinerary share flow (organiser to participants). Destination price estimates via Gemini at creation. Experience recommendations with affiliate links (Viator/Klook API). Expense splitting (simple, group-fitted).</td></tr>
+<tr><td><b>Later (V2)</b></td><td>Trip Trigger (proactive nudges when constraints align). Multi-trip dashboard. Dark mode. WhatsApp Business API integration for native entry. Anti-Agent recommendations.</td></tr>
+</table>
+
+<h3>Described But Not Built</h3>
+
+<table>
+<tr><th>Feature</th><th>Why Deferred</th><th>PRD Status</th></tr>
+<tr><td>Itinerary share flow</td><td>Organiser reviews first - share is a deliberate action, not auto-visible</td><td>Designed</td></tr>
+<tr><td>Destination price estimates</td><td>Needs Gemini API call at trip creation + schema change</td><td>Designed</td></tr>
+<tr><td>Experience affiliate links</td><td>Needs Viator/Klook API integration</td><td>Thesis validated</td></tr>
+<tr><td>Multi-trip dashboard</td><td>No need until repeat usage proven</td><td>Conceptual</td></tr>
+<tr><td>Dark mode</td><td>Tailwind v4 @theme incompatible with @media nesting - needs dark: variants per component</td><td>Attempted, reverted</td></tr>
+<tr><td>AI nudge messages</td><td>WhatsApp-ready messages for organiser to paste - "Waiting on Yash, Priya"</td><td>Designed</td></tr>
+</table>
+
+<hr>
+
+<h2>05 &nbsp;INSTRUCTION DESIGN</h2>
+
+<h3>Prototype Walkthrough</h3>
+
+<p>Open <b>nod.sunforged.work</b> on mobile (primary) or desktop. The full walkthrough takes ~5 minutes. The AI itinerary is live - generated in real time by Gemini 2.5 Flash, not mocked.</p>
+
+<p>The flow has two personas navigating the same link. The <b>organiser</b> (has <code>?key=manage_key</code> in URL) sees creation controls, vote results, lock button, and AI itinerary. The <b>participant</b> (no key) sees the motivation block, voting form, and confirmation.</p>
+
+<hr>
+
+<p class="screen-title">Screen 1: Landing Page - ~10s</p>
+
+<p>The hero explains the product in one line: <i>"Group trips, decided."</i> Below it, a 3-step visual flow: Create &gt; Share &gt; Lock. A single CTA: "Plan a Trip." No sign-up required - the organiser starts immediately.</p>
+
+<blockquote>Look for: No login wall. The value proposition is action-oriented ("decided"), not feature-oriented ("plan").</blockquote>
+
+<hr>
+
+<p class="screen-title">Screen 2: Trip Creation - ~60s</p>
+
+<p>The organiser fills in: trip name (max 80 characters), 2-3 destination options (typed), a response deadline, and optionally selects holiday long weekends from a curated 2026 Indian calendar. Budget guidance label clarifies "total trip budget - include travel, stay, food, and activities."</p>
+
+<p>On submit, Supabase creates the trip record and returns a unique slug. The organiser is redirected to the trip page with their manage_key in the URL.</p>
+
+<blockquote>Look for: The holiday long weekend picker. Tappable date pills showing upcoming Indian holidays with day counts (e.g., "Apr 10-13, 4 days, Mahavir Jayanti + Good Friday"). This is genuinely differentiated - no competitor surfaces curated long weekends as votable date options.</blockquote>
+
+<hr>
+
+<p class="screen-title">Screen 3: Organiser's Trip Page - ~30s</p>
+
+<p>The organiser sees: a share bar (copy link, WhatsApp, iMessage), their own pre-filled voting form (name auto-filled, RSVP hidden - always "yes", message: "You're the organiser - just vote on your preferences below"), and an empty response section ("No responses yet. Share the link above.").</p>
+
+<p>After submitting their own vote, the organiser sees real-time updates as participants respond - names appear without page refresh via Supabase Realtime.</p>
+
+<blockquote>Look for: The share bar uses muted outline icons (not filled brand colours) to feel native, not promotional. WhatsApp and iMessage buttons pre-fill the message with trip name + link.</blockquote>
+
+<hr>
+
+<p class="screen-title">Screen 4: Participant View - ~30s</p>
+
+<p>A participant opens the shared link (no <code>?key=</code> parameter). They see the <b>motivation block</b> before the form:</p>
+
+<ul>
+<li>Names of people who already responded: <i>"Priya and Rahul are in"</i></li>
+<li>Friction reducer: <i>"Takes 30 seconds"</i></li>
+<li>Deadline with consequence: <i>"Votes close Thursday - after that, the majority decides without you"</i></li>
+</ul>
+
+<p>Below: a streamlined form. <b>Core fields</b> (name, RSVP, destination vote pills, date vote pills, budget range) take ~30 seconds. <b>Optional fields</b> (headcount, group type, kids) are behind a "More details" toggle.</p>
+
+<blockquote>Look for: The behavioural design - named accountability creates social pressure (nobody wants to be the blocker), the deadline uses loss aversion ("without you"), and the 30-second claim lowers perceived effort. These are the 4 levers from our participant motivation research: named accountability &gt; deadline consequence &gt; tiny ask &gt; instant feedback.</blockquote>
+
+<hr>
+
+<p class="screen-title">Screen 5: Confirmation + Edit - ~10s</p>
+
+<p>After submitting, the participant sees: how many people have responded, their names, and guidance: <i>"[Organiser] can lock the plan once everyone's in."</i> A response token (UUID) is stored in localStorage - if the participant reloads, they see an "Edit" link to update their response. Edits require the token (server-enforced), preventing impersonation.</p>
+
+<blockquote>Look for: The edit flow solves multiple edge cases (wrong budget, changed mind on destination) without requiring organiser intervention. This is a deliberate design decision - reduce organiser burden at every interaction.</blockquote>
+
+<hr>
+
+<p class="screen-title">Screen 6: Vote Results + Lock - ~30s (organiser only)</p>
+
+<p>The organiser sees: destination vote tallies (bar chart), date vote tallies (bar chart), budget range overlap, and participant names with their RSVP status. When ready, a "Lock Trip" button with an <b>inline confirmation</b> (not a browser confirm() dialog) freezes voting.</p>
+
+<p>Guidance adapts: if fewer than 2 confirmations, the organiser sees <i>"1 of 2 confirmations needed to lock."</i> If a tie exists: <i>"Goa and Manali are tied - you pick."</i></p>
+
+<blockquote>Look for: Real-time updates. Open the organiser view and a participant view side-by-side - submit a vote in one tab and watch it appear in the other without refresh.</blockquote>
+
+<hr>
+
+<p class="screen-title">Screen 7: AI Itinerary - ~5-10s generation (organiser only)</p>
+
+<p>After locking, the organiser taps "Generate Itinerary." Gemini 2.5 Flash receives the full group context: winning destination, locked dates, budget range, group size. It returns a structured day-by-day plan with activities, meals, and estimated costs per slot.</p>
+
+<p>A <b>TripSummary</b> at the bottom parses costs from the generated plan and shows estimated total per person, flagging whether it falls within or exceeds the group's budget range.</p>
+
+<p>The itinerary is <b>organiser-only</b> until explicitly shared. Participants see: <i>"The plan is ready! [Organiser] will share it soon."</i> This is deliberate - the organiser reviews and customises before the group sees it.</p>
+
+<blockquote>Look for: The itinerary cards are compact (removed "why" explanations to cut ~40% scroll). Calendar links (Google Calendar + .ics download) appear after lock - the commitment ratchet (vote &gt; lock &gt; calendar) moves the group from "maybe" to "booked."</blockquote>
+
+<hr>
+
+<h3>How We Built Nod</h3>
+
+<p><b>From research to working prototype in 4 sessions.</b></p>
+
+<p><b>Session 1-2: Research.</b> 22+ interviews, 9-person survey, 65+ secondary sources. Three weeks of discovery before any code. The core insight: this is a decision problem, not a planning problem. The category risk analysis (300 dead startups, 5 failure modes, 3 survivors) shaped every product decision that followed.</p>
+
+<p><b>Session 3: Build + verify.</b> Built the core flow: create &gt; share &gt; respond &gt; lock &gt; generate. Added participant motivation design (named accountability, deadline consequence, 30-second form). Switched from polling to Supabase Realtime. Stress-tested every persona's view. Caught rendering bugs by mentally walking through each screen as organiser AND participant before handoff.</p>
+
+<p><b>Session 4: Harden.</b> Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads - <code>select(*)</code> leaks secrets via Next.js serialisation). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 <code>@theme</code> is build-time only). Deployed to Vercel with custom domain.</p>
+
+<h3>Key Technical Decisions</h3>
+
+<p><b>Two personas, one link.</b> The organiser's URL contains <code>?key=manage_key</code>. No key = participant. This eliminates authentication entirely - no login, no sign-up, no friction. The manage_key is stripped from all client-facing payloads to prevent participants from accessing organiser controls.</p>
+
+<p><b>Response tokens for dedup + edit.</b> Each submission generates a UUID stored in localStorage. On reload, the token identifies the user - enabling edits without login. The token is server-enforced (participant ID + token must match) and stripped from client payloads.</p>
+
+<p><b>Holiday long weekend picker.</b> 2026 Indian national holidays are hardcoded in <code>lib/holidays.ts</code>. Long weekends are computed (holiday plus adjacent weekend). The organiser taps 2-3 options, and they become votable date pills for participants. Curated list beats calendar grid - faster on mobile, surfaces the scheduling insight that no competitor offers.</p>
+
+<p><b>Supabase Realtime, not polling.</b> Realtime subscriptions on <code>participants</code> (INSERT + UPDATE) and <code>trips</code> (UPDATE for lock/plan status). Publication must include ALL columns - after schema migrations, both tables are dropped and re-added to the publication. Learned this the hard way.</p>
+
+<p><b>AI itinerary with group context.</b> The Gemini prompt receives: destination, dates, budget range (validated: min must not exceed max, no negatives), group size, and activity preferences. 30-second timeout via AbortController. Unified error message: <i>"Couldn't generate the plan. Tap to try again."</i> The group context - not available to any individual ChatGPT prompt - is the quality differentiator.</p>
+
+<h3>Security and Edge Cases</h3>
+
+<table>
+<tr><th>Issue</th><th>Resolution</th></tr>
+<tr><td><code>select(*)</code> leaks manage_key + response_token</td><td>Explicit column selection; secrets stripped before client serialisation</td></tr>
+<tr><td>Duplicate submissions</td><td>localStorage response_token prevents re-submission; edit flow for updates</td></tr>
+<tr><td>Budget min &gt; max</td><td>Validation on submit; full range sent to Gemini if overlap invalid</td></tr>
+<tr><td>React key collisions</td><td><code>p.id</code> instead of <code>p.name</code> (names aren't unique)</td></tr>
+<tr><td><code>redirect()</code> in try-catch</td><td>Next.js throws NEXT_REDIRECT internally; check before treating as error</td></tr>
+<tr><td>Long trip names overflow</td><td><code>maxLength=80</code> + <code>break-words</code> CSS</td></tr>
+<tr><td>Deadline not enforced server-side</td><td>Acceptable for MVP - client hides form after deadline. Server enforcement is V1.1.</td></tr>
+</table>
+
+<h3>What We'd Do Differently</h3>
+
+<ol>
+<li><b>Start with the holiday calendar.</b> It's the most differentiated feature and should have been P0 from day one. We almost deferred it entirely - building it late in Session 3 was the right call but a close miss.</li>
+<li><b>Test with a real group earlier.</b> The prototype was stress-tested by walking through personas, not by sharing with an actual friend group during build. Real group behaviour would have surfaced motivation issues sooner.</li>
+<li><b>Dark mode needs a Tailwind v4 strategy.</b> The <code>@theme</code> to <code>@media</code> incompatibility wasted 45 minutes. For any Tailwind v4 project: plan dark mode with <code>dark:</code> variants from the start, not as a CSS override.</li>
+</ol>
+
+<hr>
+
+<h2>06 &nbsp;APPENDIX</h2>
+
+<h3>Diagrams</h3>
+
+<p>Mermaid diagram source available at <code>PRD-diagrams.md</code>. Rendered versions below. Includes: Organiser Flow, Participant Flow, System Architecture, Trip Lifecycle, Commitment Ratchet, and Data Flow diagrams.</p>
+
+<p><i>[Insert rendered Mermaid diagrams here - paste code from PRD-diagrams.md into <a href="https://mermaid.live">mermaid.live</a> to export as PNG]</i></p>
+
+<h3>First-Time User Flows</h3>
+
+<p><b>Organiser (creates a trip):</b></p>
+
+<ol>
+<li>Opens nod.sunforged.work. Sees "Group trips, decided." and taps "Plan a Trip."</li>
+<li>Fills creation form: trip name, 2-3 destination options, response deadline, optional holiday long weekends. Budget label clarifies "total trip budget."</li>
+<li>Submits. Supabase creates trip record with unique slug and manage_key. Organiser redirected to <code>/trip/[slug]?key=manage_key</code>.</li>
+<li>Votes on own preferences (name pre-filled, RSVP hidden - always "yes").</li>
+<li>Shares link via copy, WhatsApp, or iMessage. Message pre-fills: "[Trip name] - vote on where and when! [link]"</li>
+<li>Watches responses arrive in real time (Supabase Realtime, no refresh needed).</li>
+<li>Reviews vote tallies: destination bars, date bars, budget overlap. Sees guidance: "2 of 4 confirmations needed to lock."</li>
+<li>Taps "Lock Trip" when ready. Inline confirmation (not browser alert). Voting freezes.</li>
+<li>Taps "Generate Itinerary." Gemini 2.5 Flash receives group context (destination, dates, budget, group size). Returns day-by-day plan in 5-10 seconds.</li>
+<li>Reviews TripSummary (estimated total per person vs. group budget range). Adds winning dates to Google Calendar or downloads .ics file.</li>
+</ol>
+
+<p><b>Participant (responds to a shared link):</b></p>
+
+<ol>
+<li>Receives link in WhatsApp or iMessage. Taps it. No app download, no login, no sign-up.</li>
+<li>Sees motivation block: "Priya and Rahul are in. Takes 30 seconds. Votes close Thursday - after that, the majority decides without you."</li>
+<li>Fills form (~30 seconds): name, RSVP (yes/maybe/no), taps destination pills, taps date pills, drags budget range.</li>
+<li>Optionally expands "More details" for headcount, group type, kids.</li>
+<li>Submits. Response token (UUID) saved to localStorage.</li>
+<li>Sees confirmation: "3 people have responded. [Organiser] can lock the plan once everyone's in."</li>
+<li>If they return later, the token identifies them. "Edit" link pre-fills their existing data. Edits require token match (server-enforced).</li>
+<li>When organiser locks: realtime status update. Participant sees "The plan is ready! [Organiser] will share it soon."</li>
+</ol>
+
+<h3>System Architecture</h3>
+
+<table>
+<tr><th>Layer</th><th>Component</th><th>Role</th></tr>
+<tr><td rowspan="7"><b>Client</b><br>(Browser, mobile-first)</td><td>page.tsx</td><td>Landing page</td></tr>
+<tr><td>create-trip-form.tsx</td><td>Trip creation (client component)</td></tr>
+<tr><td>trip-view.tsx</td><td>Main trip view (organiser/participant split)</td></tr>
+<tr><td>participant-form.tsx</td><td>Voting form (30-second interaction)</td></tr>
+<tr><td>vote-results.tsx</td><td>Tallies + lock button (organiser only)</td></tr>
+<tr><td>itinerary-view.tsx</td><td>AI plan + TripSummary (organiser only)</td></tr>
+<tr><td>share-bar.tsx / status-bar.tsx</td><td>Copy/WhatsApp/iMessage + deadline display</td></tr>
+<tr><td><b>Server</b><br>(Next.js 16, Vercel)</td><td>actions.ts</td><td>Server actions: createTrip, submitParticipant, updateParticipant, lockTrip</td></tr>
+<tr><td><b>API</b></td><td>/api/generate-itinerary/route.ts</td><td>Gemini 2.5 Flash endpoint. Group context prompt. 30s timeout via AbortController.</td></tr>
+<tr><td rowspan="2"><b>Database</b><br>(Supabase)</td><td>PostgreSQL</td><td>trips + participants tables. Secrets (manage_key, response_token) stripped from client payloads.</td></tr>
+<tr><td>Realtime</td><td>INSERT/UPDATE subscriptions on both tables. Publication includes ALL columns.</td></tr>
+<tr><td rowspan="4"><b>Libraries</b></td><td>holidays.ts</td><td>2026 Indian national holidays (hardcoded) + long weekend computation</td></tr>
+<tr><td>calendar.ts</td><td>Google Calendar URL generation + .ics file download</td></tr>
+<tr><td>slug.ts</td><td>Unique trip slug generation</td></tr>
+<tr><td>supabase.ts</td><td>Supabase client initialisation</td></tr>
+</table>
+
+<h3>Trip Lifecycle States</h3>
+
+<table>
+<tr><th>State</th><th>Trigger</th><th>What's Visible</th><th>What's Possible</th></tr>
+<tr><td><b>CREATED</b></td><td>Organiser submits form</td><td>Trip page with share bar + empty response section</td><td>Share link, vote as organiser</td></tr>
+<tr><td><b>OPEN</b></td><td>Trip page is live</td><td>Motivation block, form, real-time response count</td><td>Participants vote, organiser watches tallies</td></tr>
+<tr><td><b>LOCKED</b></td><td>Organiser taps Lock</td><td>Final tallies, calendar links, "Generate Itinerary" button</td><td>No more votes or edits. Organiser generates plan.</td></tr>
+<tr><td><b>PLANNED</b></td><td>Itinerary generated</td><td>Organiser: day-by-day plan + TripSummary. Participant: "The plan is ready!"</td><td>Organiser reviews. Calendar download. Share flow (V1.1).</td></tr>
+</table>
+
+<h3>How We Built Nod</h3>
+
+<p><b>Week 1-2: Discovery (no code)</b></p>
+
+<p>Started with 10 user interviews across friend groups, families, and trip organisers. Mapped the group trip journey end-to-end. Ran a 9-person survey to quantify pain points. Conducted competitive analysis of 14 tools (Wanderlog, TripIt, Splitwise, Lambus, Tripsy, Layla AI, Mindtrip, and others). Analysed 65+ secondary sources including academic research on social loafing, paradox of choice, and commitment devices.</p>
+
+<p>The critical finding: this is the highest-failure vertical in travel (~300 dead startups). We spent two full days on category risk analysis before writing a single line of product spec. The output: 5 failure modes, 3 survivor strategies, and a clear thesis (C+D: WhatsApp-compatible link + monetise during trip via experience affiliate).</p>
+
+<p><b>Week 2: Batch 2 interviews + synthesis</b></p>
+
+<p>12 additional interviews (Akanksha's cohort) broke three assumptions: budget IS the root cause (not scheduling), the organiser is a network node (not the persona), and alignment is the entire product (not planning). These findings restructured the MVP scope from 12 features to 7.</p>
+
+<p><b>Week 3: Build + deploy</b></p>
+
+<p>Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server components by default. Key build decisions:</p>
+
+<ul>
+<li><b>No auth</b>: manage_key in URL = organiser. No key = participant. Zero friction.</li>
+<li><b>Response tokens</b>: UUID per submission in localStorage. Enables edit without login.</li>
+<li><b>Supabase Realtime</b>: Replaced polling with INSERT/UPDATE subscriptions. Publication must include ALL columns (learned the hard way after schema migration broke realtime).</li>
+<li><b>Holiday picker</b>: Hardcoded 2026 Indian holidays in <code>lib/holidays.ts</code>. Computed long weekends. Curated list, not calendar grid.</li>
+<li><b>AI itinerary</b>: Single Gemini endpoint. Group context (destination, dates, budget, size) in prompt. 30-second timeout. Structured JSON response.</li>
+</ul>
+
+<p>Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).</p>
+
+<p><b>Week 3-4: Harden + verify</b></p>
+
+<p>Comprehensive E2E testing found and fixed: manage_key leaked via <code>select(*)</code>, duplicate submissions, budget min &gt; max sent to Gemini, React key collisions, <code>redirect()</code> error handling, and a space-concatenation bug ("Aditiwill" instead of "Aditi will"). Added date voting chain, response token edit flow, inline lock confirmation, calendar links (Google Cal + .ics).</p>
+
+<p>Attempted dark mode, reverted (Tailwind v4 <code>@theme</code> is build-time only, can't nest in <code>@media</code> query). Documented as post-MVP.</p>
+
+<h3>Key Iterations That Shaped the Product</h3>
+
+<ol>
+<li><b>Motivation block.</b> Originally the form was just a form. Testing showed no reason for a participant to fill it out. Added: named accountability ("Priya and Rahul are in"), deadline consequence ("majority decides without you"), tiny ask framing ("takes 30 seconds"). Behavioural levers ranked: named accountability &gt; deadline &gt; tiny ask &gt; instant feedback.</li>
+
+<li><b>Organiser as participant.</b> Initially the organiser had a separate admin view. Changed to: organiser votes through the same form (name pre-filled, RSVP hidden). This reduced code complexity and made the organiser a participant, not just a manager.</li>
+
+<li><b>Calendar as commitment device.</b> Calendar links were originally at the bottom of the itinerary. Moved them to appear after lock, before itinerary. The commitment ratchet: vote (low commitment) &gt; lock (frozen) &gt; calendar (date blocked) &gt; itinerary (concrete plan). Each step makes backing out harder.</li>
+
+<li><b>Budget label clarity.</b> "Budget" was ambiguous. Some users entered per-day, others per-person, others total trip. Fixed with explicit label: "Total trip budget (include travel, stay, food, and activities)." One label change, zero confusion.</li>
+
+<li><b>Itinerary visibility.</b> Originally visible to everyone after generation. Changed to organiser-only until shared. Rationale: the organiser curates before the group sees it. Participants see "The plan is ready! [Organiser] will share it soon." Share flow is V1.1.</li>
+</ol>
+
+</body>
+</html>
