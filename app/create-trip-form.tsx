@@ -9,6 +9,9 @@ const longWeekends = getUpcomingLongWeekends();
 export function CreateTripForm() {
   const [destinations, setDestinations] = useState<string[]>([""]);
   const [selectedDates, setSelectedDates] = useState<DateOption[]>([]);
+  const [customStart, setCustomStart] = useState("");
+  const [customEnd, setCustomEnd] = useState("");
+  const [dateError, setDateError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const destinationRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -19,6 +22,39 @@ export function CreateTripForm() {
         ? prev.filter((d) => d.start !== option.start)
         : prev.length < 3 ? [...prev, option] : prev
     );
+  }
+
+  function addCustomDate() {
+    setDateError(null);
+    if (!customStart || !customEnd) {
+      setDateError("Pick both a start and end date.");
+      return;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    if (customStart < today) {
+      setDateError("Start date can't be in the past.");
+      return;
+    }
+    if (customEnd <= customStart) {
+      setDateError("End date must be after start date.");
+      return;
+    }
+    if (selectedDates.length >= 3) {
+      setDateError("Maximum 3 date options.");
+      return;
+    }
+    // Check for duplicate
+    if (selectedDates.some((d) => d.start === customStart && d.end === customEnd)) {
+      setDateError("These dates are already added.");
+      return;
+    }
+    const startD = new Date(customStart + "T00:00:00");
+    const endD = new Date(customEnd + "T00:00:00");
+    const days = Math.round((endD.getTime() - startD.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const label = formatDateRange(customStart, customEnd);
+    setSelectedDates((prev) => [...prev, { start: customStart, end: customEnd, label, days }]);
+    setCustomStart("");
+    setCustomEnd("");
   }
 
   function addDestination() {
@@ -196,6 +232,69 @@ export function CreateTripForm() {
             })}
           </div>
         </fieldset>
+      )}
+
+      {/* Custom date input — compact inline */}
+      <div>
+        <p className="text-sm text-muted mb-1.5">
+          {longWeekends.length > 0 ? "Or add your own dates" : "Add dates"}
+        </p>
+        <div className="flex gap-2 items-center">
+          <input
+            id="customStart"
+            type="date"
+            value={customStart}
+            onChange={(e) => { setCustomStart(e.target.value); setDateError(null); }}
+            min={new Date().toISOString().slice(0, 10)}
+            aria-label="Start date"
+            className={`flex-1 min-w-0 ${inputClass.replace("w-full ", "")}`}
+          />
+          <span className="text-sm text-muted">to</span>
+          <input
+            id="customEnd"
+            type="date"
+            value={customEnd}
+            onChange={(e) => { setCustomEnd(e.target.value); setDateError(null); }}
+            min={customStart || new Date().toISOString().slice(0, 10)}
+            aria-label="End date"
+            className={`flex-1 min-w-0 ${inputClass.replace("w-full ", "")}`}
+          />
+          <button
+            type="button"
+            onClick={addCustomDate}
+            disabled={selectedDates.length >= 3}
+            className="rounded-lg bg-primary text-white text-sm font-medium px-4 py-2.5 min-h-[44px] hover:bg-primary-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Add
+          </button>
+        </div>
+        {dateError && (
+          <p role="alert" className="text-xs text-error mt-1">{dateError}</p>
+        )}
+      </div>
+
+      {/* Selected dates — removable pills */}
+      {selectedDates.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 -mt-3">
+          {selectedDates.map((d) => (
+            <span
+              key={d.start}
+              className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary text-xs px-2.5 py-1"
+            >
+              {formatDateRange(d.start, d.end)} · {d.days}d
+              <button
+                type="button"
+                onClick={() => setSelectedDates((prev) => prev.filter((s) => s.start !== d.start))}
+                className="ml-0.5 hover:text-error transition-colors"
+                aria-label={`Remove ${d.label}`}
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </span>
+          ))}
+        </div>
       )}
 
       {/* Voting deadline */}
