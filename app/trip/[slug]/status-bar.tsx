@@ -49,9 +49,10 @@ export function StatusBar({
       deadlineText = `${hours}h left to vote`;
       deadlineUrgent = true;
     } else {
+      const days = Math.ceil(diff / 86400000);
       const deadlineDate = new Date(deadline);
       const dayName = deadlineDate.toLocaleDateString("en-IN", { weekday: "long" });
-      deadlineText = `Votes close ${dayName}`;
+      deadlineText = `Votes close ${dayName} (${days}d left)`;
     }
   }
 
