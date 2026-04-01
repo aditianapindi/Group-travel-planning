@@ -266,11 +266,11 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <p class="screen-title">Screen 2: Trip Creation - ~60s</p>
 
-<p>The organiser fills in: trip name (max 80 characters), 2-3 destination options (typed), a response deadline, and optionally selects holiday long weekends from a curated 2026 Indian calendar. Budget guidance label clarifies "total trip budget - include travel, stay, food, and activities."</p>
+<p>The organiser fills in: trip name (max 80 characters), 2-3 destination options (typed), a response deadline, and optionally selects holiday long weekends from a curated 2026 Indian calendar. Below the holidays, a custom date input (start + end) lets the organiser add any date range. Both share a 3-max limit. Budget guidance label clarifies "total trip budget - include travel, stay, food, and activities."</p>
 
-<p>On submit, Supabase creates the trip record and returns a unique slug. The organiser is redirected to the trip page with their manage_key in the URL.</p>
+<p>On submit, Supabase creates the trip record with a unique slug and manage_key. The organiser is redirected to the trip page. The manage_key is immediately saved to localStorage and stripped from the URL via <code>replaceState</code> - the address bar always shows the clean participant-safe URL.</p>
 
-<blockquote>Look for: The holiday long weekend picker. Tappable date pills showing upcoming Indian holidays with day counts (e.g., "Apr 10-13, 4 days, Mahavir Jayanti + Good Friday"). This is genuinely differentiated - no competitor surfaces curated long weekends as votable date options.</blockquote>
+<blockquote>Look for: The holiday long weekend picker AND the custom date input below it. Selected dates appear as removable pills. The address bar should show no <code>?key=</code> parameter - the manage_key is never visible in the URL.</blockquote>
 
 <hr>
 
@@ -310,23 +310,25 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <p class="screen-title">Screen 6: Vote Results + Lock - ~30s (organiser only)</p>
 
-<p>The organiser sees: destination vote tallies (bar chart), date vote tallies (bar chart), budget range overlap, and participant names with their RSVP status. When ready, a "Lock Trip" button with an <b>inline confirmation</b> (not a browser confirm() dialog) freezes voting.</p>
+<p>Vote results are shown in a 2-column card grid: <b>Where</b> (destination tallies with map pin icon) and <b>When</b> (date tallies with calendar icon). The leading option is highlighted with bold text and a green bar; others are muted. Below, a compact <b>Responded</b> card shows participant name pills with a people icon. Status bar switches from "24h left to vote" to "Trip locked" or "Plan ready" based on trip state.</p>
 
-<p>Guidance adapts: if fewer than 2 confirmations, the organiser sees <i>"1 of 2 confirmations needed to lock."</i> If a tie exists: <i>"Goa and Manali are tied - you pick."</i></p>
+<p>When ready, a "Lock Trip" button with an <b>inline confirmation</b> (not a browser confirm() dialog) freezes voting.</p>
 
-<blockquote>Look for: Real-time updates. Open the organiser view and a participant view side-by-side - submit a vote in one tab and watch it appear in the other without refresh.</blockquote>
+<blockquote>Look for: Real-time updates. Open the organiser view and a participant view side-by-side - submit a vote in one tab and watch it appear in the other without refresh. The leading destination/date is visually distinct from others.</blockquote>
 
 <hr>
 
-<p class="screen-title">Screen 7: AI Itinerary - ~5-10s generation (organiser only)</p>
+<p class="screen-title">Screen 7: AI Itinerary + Share + Next Steps - ~5-10s generation</p>
 
-<p>After locking, the organiser taps "Generate Itinerary." Gemini 2.5 Flash receives the full group context: winning destination, locked dates, budget range, group size. It returns a structured day-by-day plan with activities, meals, and estimated costs per slot.</p>
+<p>After locking, the organiser taps "Generate Itinerary." Gemini 2.5 Flash receives the full group context: winning destination, locked dates, budget range, group size. It returns a structured day-by-day plan.</p>
 
-<p>A <b>TripSummary</b> at the bottom parses costs from the generated plan and shows estimated total per person, flagging whether it falls within or exceeds the group's budget range.</p>
+<p>The itinerary renders as a <b>collapsible timeline</b>: Day 1 expanded by default, Day 2+ collapsed. Each day header shows activity count and estimated cost ("4 activities, ~&#8377;2,500"). Expanded days show a clean timeline: time | activity name | cost on one line, with compact "or [alternative]" text for options the organiser can swap. No descriptions - activity names are sufficient for scanning.</p>
 
-<p>The itinerary is <b>organiser-only</b> until explicitly shared. Participants see: <i>"The plan is ready! [Organiser] will share it soon."</i> This is deliberate - the organiser reviews and customises before the group sees it.</p>
+<p>A <b>cost summary</b> below shows estimated total per person and whether it falls within the group's budget range. Below that, a <b>Share Plan</b> bar (copy link + WhatsApp + iMessage, matching the original share bar's icon pattern) lets the organiser send the plan to the group. The itinerary is visible to everyone once generated.</p>
 
-<blockquote>Look for: The itinerary cards are compact (removed "why" explanations to cut ~40% scroll). Calendar links (Google Calendar + .ics download) appear after lock - the commitment ratchet (vote &gt; lock &gt; calendar) moves the group from "maybe" to "booked."</blockquote>
+<p>Finally, a <b>Next Steps</b> section provides outbound booking links in a 2x2 grid: Stay (Booking.com, Airbnb), Flights &amp; Trains (MakeMyTrip, ixigo), Car Rental (Zoomcar), Activities (Klook, Viator). Each category has an icon. Stay links are pre-filled with destination, dates, and group size. These demonstrate the affiliate revenue model described in our business thesis.</p>
+
+<blockquote>Look for: The collapsible days - tap Day 2/3 headers to expand. The timeline layout is ~60% less scroll than a card-per-activity design. Calendar links (Google Calendar + .ics) appear after lock with compact Google logo + download icon. The commitment ratchet: vote &gt; lock &gt; calendar &gt; itinerary &gt; booking links.</blockquote>
 
 <hr>
 

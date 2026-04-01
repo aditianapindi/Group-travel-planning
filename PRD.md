@@ -231,11 +231,11 @@ The hero explains the product in one line: *"Group trips, decided."* Below it, a
 
 **Screen 2: Trip Creation** - ~60s
 
-The organiser fills in: trip name (max 80 characters), 2-3 destination options (typed), a response deadline, and optionally selects holiday long weekends from a curated 2026 Indian calendar. Budget guidance label clarifies "total trip budget - include travel, stay, food, and activities."
+The organiser fills in: trip name (max 80 characters), 2-3 destination options (typed), a response deadline, and optionally selects holiday long weekends from a curated 2026 Indian calendar. Below the holidays, a custom date input (start + end) lets the organiser add any date range. Both share a 3-max limit. Budget guidance label clarifies "total trip budget - include travel, stay, food, and activities."
 
-On submit, Supabase creates the trip record and returns a unique slug. The organiser is redirected to the trip page with their manage_key in the URL.
+On submit, Supabase creates the trip record with a unique slug and manage_key. The organiser is redirected to the trip page. The manage_key is immediately saved to localStorage and stripped from the URL via `replaceState` - the address bar always shows the clean participant-safe URL.
 
-> Look for: The holiday long weekend picker. Tappable date pills showing upcoming Indian holidays with day counts (e.g., "Apr 10-13 · 4 days · Mahavir Jayanti + Good Friday"). This is genuinely differentiated - no competitor surfaces curated long weekends as votable date options.
+> Look for: The holiday long weekend picker AND the custom date input below it. Selected dates appear as removable pills. The address bar should show no `?key=` parameter - the manage_key is never visible in the URL.
 
 ---
 
@@ -273,23 +273,25 @@ After submitting, the participant sees: how many people have responded, their na
 
 **Screen 6: Vote Results + Lock** - ~30s (organiser only)
 
-The organiser sees: destination vote tallies (bar chart), date vote tallies (bar chart), budget range overlap, and participant names with their RSVP status. When ready, a "Lock Trip" button with an **inline confirmation** (not a browser `confirm()` dialog) freezes voting.
+Vote results are shown in a 2-column card grid: **Where** (destination tallies with map pin icon) and **When** (date tallies with calendar icon). The leading option is highlighted with bold text and a green bar; others are muted. Below, a compact **Responded** card shows participant name pills with a people icon. Status bar switches from "24h left to vote" to "Trip locked" or "Plan ready" based on trip state.
 
-Guidance adapts: if <2 confirmations, the organiser sees *"1 of 2 confirmations needed to lock."* If a tie exists: *"Goa and Manali are tied - you pick."*
+When ready, a "Lock Trip" button with an **inline confirmation** (not a browser `confirm()` dialog) freezes voting.
 
-> Look for: Real-time updates. Open the organiser view and a participant view side-by-side - submit a vote in one tab and watch it appear in the other without refresh.
+> Look for: Real-time updates. Open the organiser view and a participant view side-by-side - submit a vote in one tab and watch it appear in the other without refresh. The leading destination/date is visually distinct from others.
 
 ---
 
-**Screen 7: AI Itinerary** - ~5-10s generation (organiser only)
+**Screen 7: AI Itinerary + Share + Next Steps** - ~5-10s generation
 
-After locking, the organiser taps "Generate Itinerary." Gemini 2.5 Flash receives the full group context: winning destination, locked dates, budget range, group size. It returns a structured day-by-day plan with activities, meals, and estimated costs per slot.
+After locking, the organiser taps "Generate Itinerary." Gemini 2.5 Flash receives the full group context: winning destination, locked dates, budget range, group size. It returns a structured day-by-day plan.
 
-A **TripSummary** at the bottom parses costs from the generated plan and shows estimated total per person, flagging whether it falls within or exceeds the group's budget range.
+The itinerary renders as a **collapsible timeline**: Day 1 expanded by default, Day 2+ collapsed. Each day header shows activity count and estimated cost ("4 activities, ~₹2,500"). Expanded days show a clean timeline: time | activity name | cost on one line, with compact "or [alternative]" text for options the organiser can swap. No descriptions - activity names are sufficient for scanning.
 
-The itinerary is **organiser-only** until explicitly shared. Participants see: *"The plan is ready! [Organiser] will share it soon."* This is deliberate - the organiser reviews and customises before the group sees it.
+A **cost summary** below shows estimated total per person and whether it falls within the group's budget range. Below that, a **Share Plan** bar (copy link + WhatsApp + iMessage, matching the original share bar's icon pattern) lets the organiser send the plan to the group. The itinerary is visible to everyone once generated.
 
-> Look for: The itinerary cards are compact (removed "why" explanations to cut ~40% scroll). Calendar links (Google Calendar + .ics download) appear after lock - the commitment ratchet (vote > lock > calendar) moves the group from "maybe" to "booked."
+Finally, a **Next Steps** section provides outbound booking links in a 2x2 grid: Stay (Booking.com, Airbnb), Flights & Trains (MakeMyTrip, ixigo), Car Rental (Zoomcar), Activities (Klook, Viator). Each category has an icon. Stay links are pre-filled with destination, dates, and group size. These demonstrate the affiliate revenue model described in our business thesis.
+
+> Look for: The collapsible days - tap Day 2/3 headers to expand. The timeline layout is ~60% less scroll than a card-per-activity design. Calendar links (Google Calendar + .ics) appear after lock with compact Google logo + download icon. The commitment ratchet: vote > lock > calendar > itinerary > booking links.
 
 ---
 
