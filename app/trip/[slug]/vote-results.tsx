@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatDateRange, type DateOption } from "@/lib/holidays";
 
 type Participant = {
   id: string;
@@ -9,11 +10,13 @@ type Participant = {
   budget_min: number | null;
   budget_max: number | null;
   destination_votes: string[];
+  date_votes: DateOption[];
 };
 
 export function VoteResults({
   participants,
   destinations,
+  dateOptions,
   isOrganizer,
   tripId,
   tripStatus,
@@ -22,6 +25,7 @@ export function VoteResults({
 }: {
   participants: Participant[];
   destinations: string[];
+  dateOptions?: DateOption[];
   isOrganizer: boolean;
   tripId: string;
   tripStatus: string;
@@ -30,7 +34,7 @@ export function VoteResults({
 }) {
   const yesParticipants = participants.filter((p) => p.rsvp === "yes");
 
-  // Tally votes
+  // Tally destination votes
   const voteCounts = destinations.map((dest) => ({
     destination: dest,
     count: yesParticipants.filter((p) => p.destination_votes.includes(dest)).length,
@@ -68,6 +72,40 @@ export function VoteResults({
           ))}
         </div>
       </section>
+
+      {/* Date vote tally */}
+      {dateOptions && dateOptions.length > 0 && (
+        <section aria-labelledby="dates-heading">
+          <h2 id="dates-heading" className="text-sm font-medium text-ink mb-3">
+            Dates
+          </h2>
+          <div className="flex flex-col gap-2">
+            {dateOptions.map((option) => {
+              const count = yesParticipants.filter((p) =>
+                p.date_votes?.some((dv) => dv.start === option.start)
+              ).length;
+              const maxDateVotes = Math.max(
+                ...dateOptions.map((o) =>
+                  yesParticipants.filter((p) => p.date_votes?.some((dv) => dv.start === o.start)).length
+                ),
+                1
+              );
+              return (
+                <div key={option.start} className="flex items-center gap-3">
+                  <span className="text-sm text-ink w-28 truncate">{formatDateRange(option.start, option.end)}</span>
+                  <div className="flex-1 h-2 bg-surface rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full transition-all"
+                      style={{ width: `${maxDateVotes > 0 ? (count / maxDateVotes) * 100 : 0}%` }}
+                    />
+                  </div>
+                  <span className="text-sm text-secondary w-6 text-right">{count}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Who's responded */}
       <section aria-labelledby="responses-heading">

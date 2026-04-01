@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { getSupabase } from "@/lib/supabase";
+import { formatDateRange, type DateOption } from "@/lib/holidays";
 
 type Participant = {
   id: string;
@@ -11,6 +12,7 @@ type Participant = {
   budget_min: number | null;
   budget_max: number | null;
   destination_votes: string[];
+  date_votes: DateOption[];
   headcount: number;
   has_kids: boolean;
   group_type: string;
@@ -20,17 +22,20 @@ type Participant = {
 export function ParticipantForm({
   tripId,
   destinations,
+  dateOptions,
   onSubmit,
   organizerName,
 }: {
   tripId: string;
   destinations: string[];
+  dateOptions?: DateOption[];
   onSubmit: (participant: Participant) => void;
   organizerName?: string;
 }) {
   const [name, setName] = useState(organizerName ?? "");
   const [rsvp, setRsvp] = useState<"yes" | "maybe" | "no">("yes");
   const [votes, setVotes] = useState<string[]>([]);
+  const [dateVotes, setDateVotes] = useState<string[]>([]); // stores start dates as IDs
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
   const [headcount, setHeadcount] = useState(1);
@@ -39,6 +44,14 @@ export function ParticipantForm({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  function toggleDateVote(startDate: string) {
+    setDateVotes((prev) =>
+      prev.includes(startDate)
+        ? prev.filter((d) => d !== startDate)
+        : [...prev, startDate]
+    );
+  }
 
   function toggleVote(dest: string) {
     setVotes((prev) =>
@@ -85,6 +98,7 @@ export function ParticipantForm({
         budget_min: budgetMin ? parseInt(budgetMin) : null,
         budget_max: budgetMax ? parseInt(budgetMax) : null,
         destination_votes: votes,
+        date_votes: dateOptions?.filter((d) => dateVotes.includes(d.start)) ?? [],
         headcount,
         has_kids: hasKids,
         group_type: groupType,
@@ -186,6 +200,40 @@ export function ParticipantForm({
                 {dest}
               </button>
             ))}
+          </div>
+        </fieldset>
+      )}
+
+      {/* Date votes — only if attending and dates exist */}
+      {showDetails && dateOptions && dateOptions.length > 0 && (
+        <fieldset>
+          <legend className="block text-sm font-medium text-ink mb-2">
+            When works for you? <span className="text-muted font-normal">(pick any)</span>
+          </legend>
+          <div className="flex flex-col gap-1.5">
+            {dateOptions.map((option) => {
+              const selected = dateVotes.includes(option.start);
+              return (
+                <button
+                  key={option.start}
+                  type="button"
+                  role="checkbox"
+                  aria-checked={selected}
+                  onClick={() => toggleDateVote(option.start)}
+                  className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left min-h-[44px] transition-colors ${
+                    selected
+                      ? "bg-primary text-white border-primary"
+                      : "bg-white text-secondary border-border hover:border-primary"
+                  }`}
+                >
+                  <span className="text-sm font-medium">
+                    {formatDateRange(option.start, option.end)}
+                    <span className={`ml-1.5 font-normal ${selected ? "text-white/70" : "text-muted"}`}>{option.days}d</span>
+                  </span>
+                  <span className={`text-xs ml-2 text-right ${selected ? "text-white/70" : "text-muted"}`}>{option.label}</span>
+                </button>
+              );
+            })}
           </div>
         </fieldset>
       )}

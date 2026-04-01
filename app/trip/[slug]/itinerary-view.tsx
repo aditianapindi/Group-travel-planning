@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { generateGoogleCalendarUrl, generateIcsContent } from "@/lib/calendar";
+import { formatDateRange, type DateOption } from "@/lib/holidays";
 
 type Option = {
   name: string;
@@ -88,10 +90,14 @@ export function ItineraryView({
   itinerary,
   isOrganizer,
   organizerName,
+  winningDate,
+  tripSlug,
 }: {
   itinerary: Itinerary;
   isOrganizer: boolean;
   organizerName?: string;
+  winningDate?: DateOption | null;
+  tripSlug?: string;
 }) {
   // Track selected option per slot: { "1-0": 0, "1-1": 2 } = day 1 slot 0 → option 0
   const [selections, setSelections] = useState<Record<string, number>>({});
@@ -196,6 +202,8 @@ export function ItineraryView({
         selections={selections}
         isOrganizer={isOrganizer}
         organizerName={organizerName}
+        winningDate={winningDate}
+        tripSlug={tripSlug}
       />
     </section>
   );
@@ -214,11 +222,15 @@ function TripSummary({
   selections,
   isOrganizer,
   organizerName,
+  winningDate,
+  tripSlug,
 }: {
   itinerary: Itinerary;
   selections: Record<string, number>;
   isOrganizer: boolean;
   organizerName?: string;
+  winningDate?: DateOption | null;
+  tripSlug?: string;
 }) {
   // Compute total from selected options
   let total = 0;
@@ -271,6 +283,102 @@ function TripSummary({
             The plan is ready! Reach out to {organizerName ?? "the organizer"} to finalize details and start booking.
           </p>
         )}
+
+        {/* Calendar links — shown when dates are decided */}
+        {winningDate && (
+          <CalendarLinks
+            tripName={`${itinerary.destination} trip`}
+            destination={itinerary.destination}
+            startDate={winningDate.start}
+            endDate={winningDate.end}
+            groupSize={itinerary.groupSize}
+            budgetRange={itinerary.budgetRange}
+            tripSlug={tripSlug}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CalendarLinks({
+  tripName,
+  destination,
+  startDate,
+  endDate,
+  groupSize,
+  budgetRange,
+  tripSlug,
+}: {
+  tripName: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  groupSize: number;
+  budgetRange: { min: number; max: number } | null;
+  tripSlug?: string;
+}) {
+  const tripUrl = tripSlug
+    ? typeof window !== "undefined"
+      ? `${window.location.origin}/trip/${tripSlug}`
+      : `/trip/${tripSlug}`
+    : "";
+
+  const description = [
+    `${groupSize} people`,
+    budgetRange
+      ? `Budget: ₹${budgetRange.min.toLocaleString("en-IN")}–${budgetRange.max.toLocaleString("en-IN")}/person`
+      : null,
+    tripUrl ? `Plan: ${tripUrl}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const googleUrl = generateGoogleCalendarUrl({
+    title: tripName,
+    startDate,
+    endDate,
+    description,
+    location: destination,
+  });
+
+  function downloadIcs() {
+    const ics = generateIcsContent({
+      title: tripName,
+      startDate,
+      endDate,
+      description,
+      location: destination,
+    });
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${tripName.replace(/\s+/g, "-").toLowerCase()}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="mt-3 pt-3 border-t border-primary/10">
+      <p className="text-xs text-secondary mb-2">
+        {formatDateRange(startDate, endDate)} · {destination}
+      </p>
+      <div className="flex gap-2">
+        <a
+          href={googleUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 rounded-lg border border-border bg-white text-ink text-sm font-medium py-2.5 min-h-[44px] inline-flex items-center justify-center hover:border-primary transition-colors"
+        >
+          Add to Google Calendar
+        </a>
+        <button
+          onClick={downloadIcs}
+          className="flex-1 rounded-lg border border-border bg-white text-ink text-sm font-medium py-2.5 min-h-[44px] inline-flex items-center justify-center hover:border-primary transition-colors"
+        >
+          Download .ics
+        </button>
       </div>
     </div>
   );

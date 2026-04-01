@@ -10,6 +10,7 @@ export async function createTrip(formData: FormData) {
   const createdBy = formData.get("createdBy") as string;
   const destinationsRaw = formData.get("destinations") as string;
   const deadlineDays = formData.get("deadlineDays") as string;
+  const dateOptionsRaw = formData.get("dateOptions") as string;
 
   if (!name?.trim() || !createdBy?.trim() || !destinationsRaw?.trim()) {
     throw new Error("Please fill in all required fields.");
@@ -31,12 +32,15 @@ export async function createTrip(formData: FormData) {
     ? new Date(Date.now() + parseInt(deadlineDays) * 24 * 60 * 60 * 1000).toISOString()
     : null;
 
+  const dateOptions = dateOptionsRaw ? JSON.parse(dateOptionsRaw) : [];
+
   const db = getSupabase();
   const { error } = await db.from("trips").insert({
     name: name.trim(),
     slug,
     created_by: createdBy.trim(),
     destinations,
+    date_options: dateOptions,
     deadline,
     manage_key: manageKey,
   });

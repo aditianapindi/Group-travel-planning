@@ -2,12 +2,24 @@
 
 import { useRef, useState } from "react";
 import { createTrip } from "./actions";
+import { getUpcomingLongWeekends, formatDateRange, type DateOption } from "@/lib/holidays";
+
+const longWeekends = getUpcomingLongWeekends();
 
 export function CreateTripForm() {
   const [destinations, setDestinations] = useState<string[]>([""]);
+  const [selectedDates, setSelectedDates] = useState<DateOption[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const destinationRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  function toggleDate(option: DateOption) {
+    setSelectedDates((prev) =>
+      prev.some((d) => d.start === option.start)
+        ? prev.filter((d) => d.start !== option.start)
+        : prev.length < 3 ? [...prev, option] : prev
+    );
+  }
 
   function addDestination() {
     if (destinations.length < 6) {
@@ -50,6 +62,7 @@ export function CreateTripForm() {
     }
 
     formData.set("destinations", filled.join(","));
+    formData.set("dateOptions", JSON.stringify(selectedDates));
 
     try {
       await createTrip(formData);
@@ -145,6 +158,42 @@ export function CreateTripForm() {
           </button>
         )}
       </fieldset>
+
+      {/* Date options — long weekends */}
+      {longWeekends.length > 0 && (
+        <fieldset>
+          <legend className="block text-sm font-medium text-ink mb-1.5">
+            When? <span className="text-muted font-normal">(pick up to 3 for the group to vote on)</span>
+          </legend>
+          <div className="flex flex-col gap-2">
+            {longWeekends.map((option) => {
+              const selected = selectedDates.some((d) => d.start === option.start);
+              return (
+                <button
+                  key={option.start}
+                  type="button"
+                  role="checkbox"
+                  aria-checked={selected}
+                  onClick={() => toggleDate(option)}
+                  className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left min-h-[44px] transition-colors ${
+                    selected
+                      ? "bg-primary/5 border-primary text-ink"
+                      : "bg-white border-border text-secondary hover:border-primary"
+                  }`}
+                >
+                  <span className="text-sm">
+                    <strong className={selected ? "text-primary" : "text-ink"}>
+                      {formatDateRange(option.start, option.end)}
+                    </strong>
+                    <span className="ml-2 text-muted">{option.days}d</span>
+                  </span>
+                  <span className="text-xs text-muted ml-2 text-right">{option.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+      )}
 
       {/* Voting deadline */}
       <div>

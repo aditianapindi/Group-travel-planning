@@ -2,11 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { getSupabase } from "@/lib/supabase";
+import { getWinningDate } from "@/lib/calendar";
 import { ShareBar } from "./share-bar";
 import { ParticipantForm } from "./participant-form";
 import { StatusBar } from "./status-bar";
 import { VoteResults } from "./vote-results";
 import { GenerateButton, ItineraryView } from "./itinerary-view";
+
+type DateOption = {
+  start: string;
+  end: string;
+  label: string;
+  days: number;
+};
 
 type Trip = {
   id: string;
@@ -14,6 +22,7 @@ type Trip = {
   slug: string;
   created_by: string;
   destinations: string[];
+  date_options: DateOption[];
   status: string;
   deadline: string | null;
 };
@@ -26,6 +35,7 @@ type Participant = {
   budget_min: number | null;
   budget_max: number | null;
   destination_votes: string[];
+  date_votes: DateOption[];
   created_at: string;
 };
 
@@ -166,6 +176,7 @@ export function TripView({
         <ParticipantForm
           tripId={trip.id}
           destinations={trip.destinations}
+          dateOptions={trip.date_options}
           onSubmit={handleNewParticipant}
           organizerName={isOrganizer ? trip.created_by : undefined}
         />
@@ -195,6 +206,7 @@ export function TripView({
         <VoteResults
           participants={localParticipants}
           destinations={trip.destinations}
+          dateOptions={trip.date_options}
           isOrganizer={isOrganizer}
           tripId={trip.id}
           tripStatus={tripStatus}
@@ -223,7 +235,15 @@ export function TripView({
       )}
 
       {/* Itinerary — visible to everyone once generated */}
-      {itinerary && <ItineraryView itinerary={itinerary} isOrganizer={isOrganizer} organizerName={trip.created_by} />}
+      {itinerary && (
+        <ItineraryView
+          itinerary={itinerary}
+          isOrganizer={isOrganizer}
+          organizerName={trip.created_by}
+          winningDate={getWinningDate(localParticipants, trip.date_options)}
+          tripSlug={trip.slug}
+        />
+      )}
     </main>
   );
 }
