@@ -46,11 +46,16 @@ export async function POST(request: NextRequest) {
     .filter((p) => p.budget_min != null && p.budget_max != null)
     .map((p) => ({ min: p.budget_min!, max: p.budget_max! }));
 
-  const budgetOverlap = budgets.length >= 2
+  const rawOverlap = budgets.length >= 2
     ? { min: Math.max(...budgets.map((b) => b.min)), max: Math.min(...budgets.map((b) => b.max)) }
     : budgets.length === 1
       ? budgets[0]
       : null;
+
+  // If budgets don't overlap (min > max), use the full range instead
+  const budgetOverlap = rawOverlap && rawOverlap.min > rawOverlap.max
+    ? { min: Math.min(...budgets.map((b) => b.min)), max: Math.max(...budgets.map((b) => b.max)) }
+    : rawOverlap;
 
   const totalHeadcount = yesParticipants.reduce((sum, p) => sum + (p.headcount || 1), 0);
   const names = yesParticipants.map((p) => {

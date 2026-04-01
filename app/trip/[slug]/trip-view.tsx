@@ -16,7 +16,6 @@ type Trip = {
   destinations: string[];
   status: string;
   deadline: string | null;
-  manage_key: string;
 };
 
 type Participant = {
@@ -51,9 +50,15 @@ export function TripView({
   existingItinerary?: Itinerary | null;
 }) {
   const [localParticipants, setLocalParticipants] = useState(participants);
-  const [hasResponded, setHasResponded] = useState(false);
   const [itinerary, setItinerary] = useState<Itinerary | null>(existingItinerary ?? null);
   const [tripStatus, setTripStatus] = useState(trip.status);
+
+  // Check if this user already responded (persisted in localStorage)
+  const storageKey = `nod-responded-${trip.id}`;
+  const [hasResponded, setHasResponded] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(storageKey) === "true";
+  });
 
   // Realtime subscription for new participants
   useEffect(() => {
@@ -92,8 +97,12 @@ export function TripView({
   }, [trip.id, tripStatus]);
 
   function handleNewParticipant(participant: Participant) {
-    setLocalParticipants((prev) => [...prev, participant]);
+    setLocalParticipants((prev) => {
+      if (prev.some((p) => p.id === participant.id)) return prev;
+      return [...prev, participant];
+    });
     setHasResponded(true);
+    localStorage.setItem(storageKey, "true");
   }
 
   function handleItineraryGenerated(newItinerary: Itinerary) {

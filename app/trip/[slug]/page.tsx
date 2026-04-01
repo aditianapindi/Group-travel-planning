@@ -40,23 +40,26 @@ export default async function TripPage({ params, searchParams }: Props) {
 
   const db = getSupabase();
 
-  const { data: trip } = await db
+  const { data: tripRow } = await db
     .from("trips")
     .select("*")
     .eq("slug", slug)
     .single();
 
-  if (!trip) {
+  if (!tripRow) {
     notFound();
   }
+
+  const isOrganizer = key === tripRow.manage_key;
+
+  // Strip manage_key before sending to client — it's a secret
+  const { manage_key: _, ...trip } = tripRow;
 
   const { data: participants } = await db
     .from("participants")
     .select("*")
     .eq("trip_id", trip.id)
     .order("created_at", { ascending: true });
-
-  const isOrganizer = key === trip.manage_key;
 
   // Load existing itinerary if trip is planned
   let existingItinerary = null;

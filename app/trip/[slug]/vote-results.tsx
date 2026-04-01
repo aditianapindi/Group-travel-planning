@@ -41,6 +41,7 @@ export function VoteResults({
 
   // Who's responded
   const responded = participants.map((p) => ({
+    id: p.id,
     name: p.name,
     rsvp: p.rsvp,
   }));
@@ -76,7 +77,7 @@ export function VoteResults({
         <div className="flex flex-wrap gap-2">
           {responded.map((p) => (
             <span
-              key={p.name}
+              key={p.id}
               className={`inline-flex items-center rounded-full border px-3 py-1.5 text-sm ${
                 p.rsvp === "yes"
                   ? "border-primary/30 bg-primary/5 text-primary"
@@ -246,7 +247,7 @@ function OrganizerInsights({
   if (voteCounts.length >= 2 && voteCounts[0].count === voteCounts[1].count && voteCounts[0].count > 0) {
     insights.push({
       type: "info",
-      text: `${voteCounts[0].destination} and ${voteCounts[1].destination} are tied. You\u2019ll pick the winner when you lock.`,
+      text: `${voteCounts[0].destination} and ${voteCounts[1].destination} are tied. The plan will use ${voteCounts[0].destination} \u2014 wait for more votes or lock if you\u2019re happy with it.`,
     });
   }
 

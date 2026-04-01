@@ -62,6 +62,11 @@ export function ParticipantForm({
       return;
     }
 
+    if (budgetMin && budgetMax && parseInt(budgetMin) > parseInt(budgetMax)) {
+      setError("Budget minimum can\u2019t be more than maximum.");
+      return;
+    }
+
     setSubmitting(true);
 
     const db = getSupabase();
@@ -199,6 +204,7 @@ export function ParticipantForm({
                 id="budget-min"
                 type="number"
                 inputMode="numeric"
+                min="0"
                 value={budgetMin}
                 onChange={(e) => setBudgetMin(e.target.value)}
                 placeholder="Min ₹"
@@ -212,6 +218,7 @@ export function ParticipantForm({
                 id="budget-max"
                 type="number"
                 inputMode="numeric"
+                min="0"
                 value={budgetMax}
                 onChange={(e) => setBudgetMax(e.target.value)}
                 placeholder="Max ₹"
