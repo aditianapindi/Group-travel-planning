@@ -1,79 +1,75 @@
-# Group Travel Planning Platform
+# Nod — Group Trip Decision Engine
 
-## WHAT — Project Overview
+## WHAT
 
-A collaborative travel planning platform that eliminates coordination friction
-for groups and families — so everyone participates, not just the organizer.
+"Get everyone's nod." Collapses the 50-message, 2-week trip alignment ordeal into 5 minutes via a shareable link. Not a planning tool — a decision tool.
 
-**Current phase**: Research & Discovery (no building yet)
-**Output goal**: Validated product concept with user flows, features, and GTM hypothesis
-
-### Tech Stack (TBD — decided after research phase)
-
-- Frontend: TBD
-- Backend: TBD
-- Styling: TBD
+**Phase**: MVP live at nod.sunforged.work · PRD due end of day April 1
+**Stack**: Next.js 16 (App Router) · Supabase (DB + Realtime) · Gemini 2.5 Flash · Tailwind v4 · Vercel
+**Repo**: github.com/aditianapindi/Group-travel-planning
 
 ---
 
-## WHY — Constraints & Principles
+## WHY — Principles
 
-### Design Principles
-
-- Mobile-first responsive design — planning happens on phones, not desks
-- Async-first — groups span time zones, never require real-time to make progress
-- Transparency > control — everyone sees budget, options, votes
-- Progressive complexity — weekend trip and 2-week international use the same tool
-
-### Rules
-
-- No premature building — understand the problem before solutioning
-- Every feature must tie to a validated user pain point
-- No feature creep — solve one workflow end-to-end before expanding
-- Track assumptions explicitly — test them, don't assume them true
-- Research depth: what competitors get wrong matters more than what they do
-- **Source verification**: every quantitative claim must have a [Source: name, year] tag or be flagged as unverified. AI-generated research produces plausible but fabricated stats — we caught 4 in our own secondary research. Never cite a number without tracing it to an original report.
-- Never commit API keys or secrets
-- All user-facing text must support i18n
-- Use server components by default
+- Mobile-first — planning happens on phones. 44px touch targets. <2s load.
+- Async-first — groups span time zones. Never require real-time to make progress.
+- Transparency > control — everyone sees budget, votes, dates. No side channels.
+- Organizer relief is the entry point, but product must serve ALL participants.
+- Every feature tied to validated pain (22+ interviews, 9-person survey, 65+ sources).
+- Source verification: every stat must cite source. We caught 4 fabricated stats.
+- Secrets: manage_key + response_token stripped from client payloads. Never commit API keys.
+- Server components by default. No console.logs. Handle every state: loading, empty, error, success.
 
 ---
 
-## HOW — Commands & Workflows
-
-### Commands (active after build phase)
-
-- Dev server: `npm run dev`
-- Build: `npm run build`
-- Tests: `npm test`
-- Lint: `npm run lint`
-
-### Feedback Loops
-
-- Always run lint after editing files
-- Always run tests after changing logic
-- Always run build before committing
-
-### Session Protocol
-
-- **Start**: Read `knowledge/` for past decisions and session journals
-- **End**: Write session journal + decision notes to `knowledge/`
-
-### Project Structure
+## HOW — Commands & Structure
 
 ```
-research/    — competitor analysis, user interviews, surveys
-insights/    — personas, JTBD, synthesized patterns
-artifacts/   — wireframes, flows, decks, specs
-knowledge/   — decisions, session journals, product principles
+npm run dev        npm run build       npm run lint
 ```
 
-### Key References
+**Session protocol**: Start → read `knowledge/`. End → write session journal + decisions.
+**Build before commit. Run build after every change. Verify rendered output for each persona before handoff.**
 
-- Case study brief: `research/case-study-brief.md`
-- Research questions: `research/key-questions.md`
+```
+app/              — pages, components, API routes
+lib/              — supabase, holidays, calendar, slug utilities
+research/         — competitor analysis, user interviews, surveys
+insights/         — personas, synthesis, brainstorms
+artifacts/        — interview guides, surveys
+knowledge/        — session journals, decisions, test checklist, product principles
+```
+
+---
+
+## KEY DECISIONS
+
+- **Two personas, one link**: Organizer (has ?key=manage_key) vs participant (no key). Manage key = organizer identity.
+- **Response tokens**: UUID per submission. Enables dedup + edit. Stored in localStorage, stripped from client payload.
+- **Itinerary is organizer-only** until explicitly shared. Share flow is PRD feature.
+- **Date voting**: Holiday long weekend picker → date pills → calendar links after lock. The commitment ratchet.
+- **Budget is total trip cost** (travel + stay + food + activities). Label makes this explicit.
+- **Realtime**: Supabase Realtime for participant inserts/updates + trip status changes. Publication must include ALL columns.
+- **Dark mode deferred**: Tailwind v4 @theme is build-time — can't nest in media query. Needs dark: variants per component.
+
+---
+
+## PAST MISTAKES
+
+- `@theme` inside `@media` breaks Tailwind v4 — tokens get overwritten globally.
+- `select("*")` leaks secrets (manage_key, response_token) to client via Next.js serialization. Always strip.
+- `redirect()` inside try-catch shows NEXT_REDIRECT error. Check for it before treating as error.
+- JSX `{" "}{var} text` can lose spaces. Use template literals: `` {`${var} text`} ``.
+- Supabase publication doesn't auto-include new columns. After ALTER TABLE, drop and re-add table to publication.
+- Verify rendered output for EACH persona before handoff. Caught "Aditiwill", wrong tone, duplicate names.
+
+---
+
+## REFERENCES
+
 - Product principles: `knowledge/product-principles.md`
-- Category risk analysis: `knowledge/decision-category-risk.md`
-- Competitor viability & business models: `research/competitor-viability-and-business-models.md`
-- **Deadline**: April 4th, 2026 — PRD + deployed MVP
-- **Markets**: India (primary), US (user resides here)
+- Category risk: `knowledge/decision-category-risk.md`
+- Session journals: `knowledge/session-3-2026-03-31.md`, `knowledge/session-4-2026-04-01.md`
+- Test checklist: `knowledge/test-checklist.md`
+- Decisions: `knowledge/decision-holiday-calendar.md`, `knowledge/decision-participant-motivation.md`
