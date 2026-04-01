@@ -379,8 +379,8 @@ function ConfirmationBlock({
             : " Waiting for more responses before you can lock."}
         </p>
         {canEdit && onEdit && (
-          <button onClick={onEdit} className="mt-2 text-sm text-primary underline underline-offset-2 hover:text-primary-hover transition-colors min-h-[44px]">
-            Edit your response
+          <button onClick={onEdit} className="mt-2 text-xs text-primary underline underline-offset-2 hover:text-primary-hover transition-colors">
+            Edit
           </button>
         )}
       </div>
@@ -392,7 +392,7 @@ function ConfirmationBlock({
       <p className="text-sm text-primary font-medium">You&apos;re in!</p>
       <p className="text-sm text-ink mt-1.5">
         {yesCount} {yesCount === 1 ? "person has" : "people have"} responded.
-        {" "}{organizer} will lock the plan once everyone&apos;s in.
+        {` ${organizer} will lock the plan once everyone\u2019s in.`}
       </p>
       {yesCount >= 2 && (
         <p className="text-sm text-secondary mt-1">
