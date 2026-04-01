@@ -217,7 +217,7 @@ A fully functional MVP deployed at **nod.sunforged.work** covering the complete 
 
 Open **nod.sunforged.work** on mobile (primary) or desktop. The full walkthrough takes ~5 minutes. The AI itinerary is live - generated in real time by Gemini 2.5 Flash, not mocked.
 
-The flow has two personas navigating the same link. The **organiser** (has `?key=manage_key` in URL) sees creation controls, vote results, lock button, and AI itinerary. The **participant** (no key) sees the motivation block, voting form, and confirmation.
+The flow has two personas navigating the same link. The **organiser** (identified via manage_key saved in localStorage - never visible in URL) sees creation controls, vote results, lock button, and AI itinerary. The **participant** sees the motivation block, voting form, and confirmation.
 
 ---
 
@@ -307,7 +307,7 @@ Finally, a **Next Steps** section provides outbound booking links in a 2x2 grid:
 
 ### Key Technical Decisions
 
-**Two personas, one link.** The organiser's URL contains `?key=manage_key`. No key = participant. This eliminates authentication entirely - no login, no sign-up, no friction. The manage_key is stripped from all client-facing payloads to prevent participants from accessing organiser controls.
+**Two personas, one link.** The organiser is identified by a manage_key saved to localStorage on first visit and immediately stripped from the URL via `replaceState`. No key in localStorage = participant. This eliminates authentication entirely - no login, no sign-up, no friction. The manage_key is never visible in the address bar and is stripped from all client-facing payloads.
 
 **Response tokens for dedup + edit.** Each submission generates a UUID stored in localStorage. On reload, the token identifies the user - enabling edits without login. The token is server-enforced (participant ID + token must match) and stripped from client payloads.
 
@@ -316,6 +316,16 @@ Finally, a **Next Steps** section provides outbound booking links in a 2x2 grid:
 **Supabase Realtime, not polling.** Realtime subscriptions on `participants` (INSERT + UPDATE) and `trips` (UPDATE for lock/plan status). Publication must include ALL columns - after schema migrations, both tables are dropped and re-added to the publication. Learned this the hard way.
 
 **AI itinerary with group context.** The Gemini prompt receives: destination, dates, budget range (validated: min ≤ max, no negatives), group size, and activity preferences. 30-second timeout via AbortController. Unified error message: *"Couldn't generate the plan. Tap to try again."* The group context - not available to any individual ChatGPT prompt - is the quality differentiator.
+
+### What We'd Do Differently
+
+1. **Start with the holiday calendar.** It's the most differentiated feature and should have been P0 from day one. We almost deferred it entirely - building it late in Session 3 was the right call but a close miss.
+2. **Test with a real group earlier.** The prototype was stress-tested by walking through personas, not by sharing with an actual friend group during build. Real group behaviour would have surfaced motivation issues sooner.
+3. **Security audit earlier.** We found open RLS policies and manage_key URL exposure late in the build. Running a security checklist after the first deploy would have caught these sooner.
+
+---
+
+## 06  APPENDIX
 
 ### Security Audit & Mitigations
 
@@ -346,16 +356,6 @@ We conducted a full security audit of the prototype against OWASP top 10. Here i
 
 **Security architecture note:** Nod deliberately has no user accounts - zero friction is a core product principle (55% of survey respondents won't download an app, let alone create an account). This means traditional auth-based security is unavailable. The manage_key and response_token pattern provides pseudo-auth for MVP. V1.1 should evaluate whether lightweight auth (magic links, passkeys) can be added without breaking the "30-second participation" promise.
 
-### What We'd Do Differently
-
-1. **Start with the holiday calendar.** It's the most differentiated feature and should have been P0 from day one. We almost deferred it entirely - building it late in Session 3 was the right call but a close miss.
-2. **Test with a real group earlier.** The prototype was stress-tested by walking through personas, not by sharing with an actual friend group during build. Real group behaviour would have surfaced motivation issues sooner.
-3. **Dark mode needs a Tailwind v4 strategy.** The `@theme` > `@media` incompatibility wasted 45 minutes. For any Tailwind v4 project: plan dark mode with `dark:` variants from the start, not as a CSS override.
-
----
-
-## 06  APPENDIX
-
 ### Diagrams
 
 Rendered from Mermaid source at `PRD-diagrams.md`. Includes: Organiser Flow, Participant Flow, System Architecture, Trip Lifecycle, Commitment Ratchet, and Data Flow diagrams.
@@ -366,7 +366,7 @@ Rendered from Mermaid source at `PRD-diagrams.md`. Includes: Organiser Flow, Par
 
 1. Opens nod.sunforged.work. Sees "Group trips, decided." and taps "Plan a Trip."
 2. Fills creation form: trip name, 2-3 destination options, response deadline, optional holiday long weekends. Budget label clarifies "total trip budget."
-3. Submits. Supabase creates trip record with unique slug and manage_key. Organiser redirected to `/trip/[slug]?key=manage_key`.
+3. Submits. Supabase creates trip record with unique slug and manage_key. Organiser redirected to `/trip/[slug]`. The manage_key is saved to localStorage and stripped from the URL immediately - address bar always shows the clean link.
 4. Votes on own preferences (name pre-filled, RSVP hidden - always "yes").
 5. Shares link via copy, WhatsApp, or iMessage. Message pre-fills: "[Trip name] - vote on where and when! [link]"
 6. Watches responses arrive in real time (Supabase Realtime, no refresh needed).
@@ -384,7 +384,7 @@ Rendered from Mermaid source at `PRD-diagrams.md`. Includes: Organiser Flow, Par
 5. Submits. Response token (UUID) saved to localStorage.
 6. Sees confirmation: "3 people have responded. [Organiser] can lock the plan once everyone's in."
 7. If they return later, the token identifies them. "Edit" link pre-fills their existing data. Edits require token match (server-enforced).
-8. When organiser locks: realtime status update. Participant sees "The plan is ready! [Organiser] will share it soon."
+8. When organiser locks and generates: realtime status update. Participant sees the itinerary + booking links.
 
 ### System Architecture
 
@@ -432,13 +432,13 @@ CREATED --> OPEN --> LOCKED --> PLANNED
   |           |        |          |
   Trip form   Votes    Freeze     AI itinerary
   submitted   arrive   voting     generated
-              via RT              organiser-only
+              via RT              visible to all
 ```
 
 - **CREATED**: Organiser submits form. Trip exists in Supabase with slug + manage_key. No participants yet.
 - **OPEN**: Trip page is live. Participants vote. Organiser sees real-time updates. Status bar shows deadline.
 - **LOCKED**: Organiser freezes voting. Results are final. Calendar links appear. No more submissions or edits.
-- **PLANNED**: AI itinerary generated from group context. Visible only to organiser until shared. TripSummary shows cost vs. budget.
+- **PLANNED**: AI itinerary generated from group context. Visible to everyone. TripSummary shows cost vs. budget. Next steps booking links shown.
 
 ### How We Built Nod
 
@@ -480,7 +480,7 @@ Attempted dark mode, reverted (Tailwind v4 `@theme` is build-time only, can't ne
 
 4. **Budget label clarity** - "Budget" was ambiguous. Some users entered per-day, others per-person, others total trip. Fixed with explicit label: "Total trip budget (include travel, stay, food, and activities)." One label change, zero confusion.
 
-5. **Itinerary visibility** - Originally visible to everyone after generation. Changed to organiser-only until shared. Rationale: the organiser curates before the group sees it. Participants see "The plan is ready! [Organiser] will share it soon." Share flow is V1.1.
+5. **Itinerary visibility** - Initially organiser-only. Changed back to visible to everyone once generated, with a "Share Plan" bar so the organiser can proactively send the link via WhatsApp/iMessage. Gating added no value - the organiser already reviewed by generating. Next steps booking links (Booking.com, Airbnb, MakeMyTrip, ixigo, Klook, Viator) appear below for the whole group.
 
 ### File Structure
 

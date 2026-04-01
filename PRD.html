@@ -252,7 +252,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <p>Open <b>nod.sunforged.work</b> on mobile (primary) or desktop. The full walkthrough takes ~5 minutes. The AI itinerary is live - generated in real time by Gemini 2.5 Flash, not mocked.</p>
 
-<p>The flow has two personas navigating the same link. The <b>organiser</b> (has <code>?key=manage_key</code> in URL) sees creation controls, vote results, lock button, and AI itinerary. The <b>participant</b> (no key) sees the motivation block, voting form, and confirmation.</p>
+<p>The flow has two personas navigating the same link. The <b>organiser</b> (identified via manage_key saved in localStorage - never visible in URL) sees creation controls, vote results, lock button, and AI itinerary. The <b>participant</b> sees the motivation block, voting form, and confirmation.</p>
 
 <hr>
 
@@ -344,7 +344,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <h3>Key Technical Decisions</h3>
 
-<p><b>Two personas, one link.</b> The organiser's URL contains <code>?key=manage_key</code>. No key = participant. This eliminates authentication entirely - no login, no sign-up, no friction. The manage_key is stripped from all client-facing payloads to prevent participants from accessing organiser controls.</p>
+<p><b>Two personas, one link.</b> The organiser is identified by a manage_key saved to localStorage on first visit and immediately stripped from the URL via <code>replaceState</code>. No key in localStorage = participant. This eliminates authentication entirely - no login, no sign-up, no friction. The manage_key is never visible in the address bar and is stripped from all client-facing payloads.</p>
 
 <p><b>Response tokens for dedup + edit.</b> Each submission generates a UUID stored in localStorage. On reload, the token identifies the user - enabling edits without login. The token is server-enforced (participant ID + token must match) and stripped from client payloads.</p>
 
@@ -372,12 +372,41 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 <ol>
 <li><b>Start with the holiday calendar.</b> It's the most differentiated feature and should have been P0 from day one. We almost deferred it entirely - building it late in Session 3 was the right call but a close miss.</li>
 <li><b>Test with a real group earlier.</b> The prototype was stress-tested by walking through personas, not by sharing with an actual friend group during build. Real group behaviour would have surfaced motivation issues sooner.</li>
-<li><b>Dark mode needs a Tailwind v4 strategy.</b> The <code>@theme</code> to <code>@media</code> incompatibility wasted 45 minutes. For any Tailwind v4 project: plan dark mode with <code>dark:</code> variants from the start, not as a CSS override.</li>
+<li><b>Security audit earlier.</b> We found open RLS policies and manage_key URL exposure late in the build. Running a security checklist after the first deploy would have caught these sooner.</li>
 </ol>
 
 <hr>
 
 <h2>06 &nbsp;APPENDIX</h2>
+
+<h3>Security Audit &amp; Mitigations</h3>
+
+<p>We conducted a full security audit of the prototype against OWASP top 10.</p>
+
+<p><b>Fixed in prototype:</b></p>
+<table>
+<tr><th>Issue</th><th>Severity</th><th>Fix</th></tr>
+<tr><td>manage_key exposed in URL</td><td>Critical</td><td>Key saved to localStorage on first visit, stripped from URL via <code>replaceState</code>. Address bar always shows clean participant URL.</td></tr>
+<tr><td>Negative/invalid budgets accepted</td><td>Medium</td><td>Server-side validation: no negatives, min must not exceed max.</td></tr>
+<tr><td><code>JSON.parse</code> crash on malformed date options</td><td>Medium</td><td>Try-catch with graceful fallback (no dates).</td></tr>
+<tr><td>Invalid deadline values</td><td>Medium</td><td>parseInt validation: must be 1-30 days.</td></tr>
+<tr><td>No input length limits</td><td>Medium</td><td>Server-side: trip name max 80, participant name max 50, destination max 100 chars, max 6 destinations.</td></tr>
+<tr><td>Hydration mismatch corrupting component tree</td><td>Critical</td><td>Moved localStorage reads from useState to useEffect. Replaced Tailwind v4 <code>break-words</code> class with inline style.</td></tr>
+<tr><td><code>select(*)</code> leaks secrets</td><td>Critical</td><td>Explicit column selection; manage_key and response_token stripped before client serialisation.</td></tr>
+<tr><td>Duplicate submissions</td><td>Medium</td><td>localStorage response_token prevents re-submission; edit flow for updates.</td></tr>
+</table>
+
+<p><b>Known limitations (acceptable for MVP, planned for V1.1):</b></p>
+<table>
+<tr><th>Issue</th><th>Severity</th><th>Why not fixed</th><th>V1.1 plan</th></tr>
+<tr><td>RLS policies are fully open</td><td>Critical</td><td>No user auth = can't write meaningful row-level policies. Public anon key + <code>using (true)</code> means any browser can query secrets via DevTools.</td><td>Row-level policies checking manage_key/response_token. Evaluate lightweight auth (magic link or passkey).</td></tr>
+<tr><td>Realtime broadcasts response_token</td><td>Critical</td><td>Supabase publication includes all columns. SQL migration risky before deadline.</td><td>Create a database view excluding secrets, publish the view instead.</td></tr>
+<tr><td>No rate limiting on generate-itinerary</td><td>Medium</td><td>Needs Vercel Edge middleware.</td><td>Rate limiting per IP (max 5 calls per trip per hour).</td></tr>
+<tr><td>Prompt injection via names/destinations</td><td>Medium</td><td>Names interpolated directly into Gemini prompt.</td><td>Strip control characters, enforce max length, add instruction boundary markers.</td></tr>
+<tr><td>Deadline not enforced server-side</td><td>Low</td><td>Client hides form after deadline, but direct API call could still submit.</td><td>Server-side deadline check in participant insert/update.</td></tr>
+</table>
+
+<p><b>Security architecture note:</b> Nod deliberately has no user accounts - zero friction is a core product principle (55% of survey respondents won't download an app, let alone create an account). The manage_key and response_token pattern provides pseudo-auth for MVP. V1.1 should evaluate whether lightweight auth (magic links, passkeys) can be added without breaking the "30-second participation" promise.</p>
 
 <h3>Diagrams</h3>
 
@@ -392,7 +421,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 <ol>
 <li>Opens nod.sunforged.work. Sees "Group trips, decided." and taps "Plan a Trip."</li>
 <li>Fills creation form: trip name, 2-3 destination options, response deadline, optional holiday long weekends. Budget label clarifies "total trip budget."</li>
-<li>Submits. Supabase creates trip record with unique slug and manage_key. Organiser redirected to <code>/trip/[slug]?key=manage_key</code>.</li>
+<li>Submits. Supabase creates trip record with unique slug and manage_key. Organiser redirected to <code>/trip/[slug]</code>. The manage_key is saved to localStorage and stripped from the URL immediately - address bar always shows the clean link.</li>
 <li>Votes on own preferences (name pre-filled, RSVP hidden - always "yes").</li>
 <li>Shares link via copy, WhatsApp, or iMessage. Message pre-fills: "[Trip name] - vote on where and when! [link]"</li>
 <li>Watches responses arrive in real time (Supabase Realtime, no refresh needed).</li>
@@ -412,7 +441,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 <li>Submits. Response token (UUID) saved to localStorage.</li>
 <li>Sees confirmation: "3 people have responded. [Organiser] can lock the plan once everyone's in."</li>
 <li>If they return later, the token identifies them. "Edit" link pre-fills their existing data. Edits require token match (server-enforced).</li>
-<li>When organiser locks: realtime status update. Participant sees "The plan is ready! [Organiser] will share it soon."</li>
+<li>When organiser locks and generates: realtime status update. Participant sees the itinerary + booking links.</li>
 </ol>
 
 <h3>System Architecture</h3>
@@ -489,7 +518,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <li><b>Budget label clarity.</b> "Budget" was ambiguous. Some users entered per-day, others per-person, others total trip. Fixed with explicit label: "Total trip budget (include travel, stay, food, and activities)." One label change, zero confusion.</li>
 
-<li><b>Itinerary visibility.</b> Originally visible to everyone after generation. Changed to organiser-only until shared. Rationale: the organiser curates before the group sees it. Participants see "The plan is ready! [Organiser] will share it soon." Share flow is V1.1.</li>
+<li><b>Itinerary visibility.</b> Initially organiser-only. Changed back to visible to everyone once generated, with a "Share Plan" bar so the organiser can proactively send the link via WhatsApp/iMessage. Gating added no value - the organiser already reviewed by generating. Next steps booking links appear below for the whole group.</li>
 </ol>
 
 </body>
