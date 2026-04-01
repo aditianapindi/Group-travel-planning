@@ -83,10 +83,8 @@ export function TripView({
   const hasResponded = responseToken !== null;
   const [isEditing, setIsEditing] = useState(false);
 
-  // Realtime subscription for new participants
+  // Realtime subscriptions — participants + trip status changes
   useEffect(() => {
-    if (tripStatus !== "collecting") return;
-
     const db = getSupabase();
     if (!db) return;
 
@@ -102,15 +100,43 @@ export function TripView({
         },
         (payload) => {
           setLocalParticipants((prev) => {
-            // Avoid duplicates (e.g. if the submitter's own insert triggers this)
             if (prev.some((p) => p.id === payload.new.id)) return prev;
             return [...prev, payload.new as Participant];
           });
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "participants",
+          filter: `trip_id=eq.${trip.id}`,
+        },
+        (payload) => {
+          setLocalParticipants((prev) =>
+            prev.map((p) => p.id === payload.new.id ? payload.new as Participant : p)
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "trips",
+          filter: `id=eq.${trip.id}`,
+        },
+        (payload) => {
+          const newStatus = (payload.new as { status: string }).status;
+          if (newStatus && newStatus !== tripStatus) {
+            setTripStatus(newStatus);
+          }
+        }
+      )
       .subscribe((status) => {
         if (status === "CHANNEL_ERROR") {
-          console.error("Realtime subscription error — falling back to manual refresh");
+          console.error("Realtime subscription error");
         }
       });
 
