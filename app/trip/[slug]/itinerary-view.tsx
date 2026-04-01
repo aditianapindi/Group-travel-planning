@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateGoogleCalendarUrl, generateIcsContent } from "@/lib/calendar";
 import { formatDateRange, type DateOption } from "@/lib/holidays";
 
@@ -318,11 +318,13 @@ function CalendarLinks({
   budgetRange: { min: number; max: number } | null;
   tripSlug?: string;
 }) {
-  const tripUrl = tripSlug
-    ? typeof window !== "undefined"
-      ? `${window.location.origin}/trip/${tripSlug}`
-      : `/trip/${tripSlug}`
-    : "";
+  const [tripUrl, setTripUrl] = useState(tripSlug ? `/trip/${tripSlug}` : "");
+
+  useEffect(() => {
+    if (tripSlug) {
+      setTripUrl(`${window.location.origin}/trip/${tripSlug}`);
+    }
+  }, [tripSlug]);
 
   const description = [
     `${groupSize} people`,
