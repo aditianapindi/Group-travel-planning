@@ -67,6 +67,8 @@ export function CreateTripForm() {
     try {
       await createTrip(formData);
     } catch (e) {
+      // Next.js redirect() throws a special error — don't treat it as a failure
+      if (e instanceof Error && e.message.includes("NEXT_REDIRECT")) return;
       setError(e instanceof Error ? e.message : "Something went wrong.");
       setSubmitting(false);
     }
