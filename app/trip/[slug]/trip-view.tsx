@@ -67,17 +67,18 @@ export function TripView({
   const [itinerary, setItinerary] = useState<Itinerary | null>(existingItinerary ?? null);
   const [tripStatus, setTripStatus] = useState(trip.status);
 
-  // Check if this user already responded (token persisted in localStorage)
-  const storageKey = `nod-token-${trip.id}`;
+  // Check if this user already responded (token + id persisted in localStorage)
+  const tokenKey = `nod-token-${trip.id}`;
+  const idKey = `nod-pid-${trip.id}`;
   const [responseToken, setResponseToken] = useState<string | null>(() => {
     if (typeof window === "undefined") return null;
-    return localStorage.getItem(storageKey);
+    return localStorage.getItem(tokenKey);
   });
   const [myParticipant, setMyParticipant] = useState<Participant | null>(() => {
     if (typeof window === "undefined") return null;
-    const token = localStorage.getItem(storageKey);
-    if (!token) return null;
-    return participants.find((p) => p.response_token === token) ?? null;
+    const pid = localStorage.getItem(idKey);
+    if (!pid) return null;
+    return participants.find((p) => p.id === pid) ?? null;
   });
   const hasResponded = responseToken !== null;
   const [isEditing, setIsEditing] = useState(false);
@@ -126,7 +127,8 @@ export function TripView({
     if (participant.response_token) {
       setResponseToken(participant.response_token);
       setMyParticipant(participant);
-      localStorage.setItem(storageKey, participant.response_token);
+      localStorage.setItem(tokenKey, participant.response_token);
+      localStorage.setItem(idKey, participant.id);
     }
     setIsEditing(false);
   }
@@ -203,7 +205,7 @@ export function TripView({
           dateOptions={trip.date_options}
           onSubmit={isEditing ? handleUpdatedParticipant : handleNewParticipant}
           organizerName={isOrganizer ? trip.created_by : undefined}
-          existingParticipant={isEditing ? myParticipant : undefined}
+          existingParticipant={isEditing && myParticipant ? { ...myParticipant, response_token: responseToken } : undefined}
         />
       )}
 

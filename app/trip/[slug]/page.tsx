@@ -55,11 +55,14 @@ export default async function TripPage({ params, searchParams }: Props) {
   // Strip manage_key before sending to client — it's a secret
   const { manage_key: _, ...trip } = tripRow;
 
-  const { data: participants } = await db
+  const { data: participantsRaw } = await db
     .from("participants")
     .select("*")
     .eq("trip_id", trip.id)
     .order("created_at", { ascending: true });
+
+  // Strip response_token from participants before sending to client
+  const participants = (participantsRaw ?? []).map(({ response_token: _rt, ...p }) => p);
 
   // Load existing itinerary if trip is planned
   let existingItinerary = null;
@@ -80,7 +83,7 @@ export default async function TripPage({ params, searchParams }: Props) {
   return (
     <TripView
       trip={trip}
-      participants={participants ?? []}
+      participants={participants}
       isOrganizer={isOrganizer}
       manageKey={isOrganizer ? key : undefined}
       existingItinerary={existingItinerary}
