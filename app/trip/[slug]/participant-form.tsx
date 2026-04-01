@@ -75,6 +75,11 @@ export function ParticipantForm({
       return;
     }
 
+    if (rsvp === "yes" && dateOptions && dateOptions.length > 0 && dateVotes.length === 0) {
+      setError("Pick at least one date that works for you.");
+      return;
+    }
+
     if (budgetMin && budgetMax && parseInt(budgetMin) > parseInt(budgetMax)) {
       setError("Budget minimum can\u2019t be more than maximum.");
       return;

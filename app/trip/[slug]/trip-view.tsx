@@ -7,7 +7,7 @@ import { ShareBar } from "./share-bar";
 import { ParticipantForm } from "./participant-form";
 import { StatusBar } from "./status-bar";
 import { VoteResults } from "./vote-results";
-import { GenerateButton, ItineraryView } from "./itinerary-view";
+import { GenerateButton, ItineraryView, CalendarLinks } from "./itinerary-view";
 
 type DateOption = {
   start: string;
@@ -214,6 +214,26 @@ export function TripView({
           onLocked={handleLocked}
         />
       )}
+
+      {/* Calendar links — shown once locked, if dates were voted on */}
+      {(isLocked || isPlanned) && (() => {
+        const winDate = getWinningDate(localParticipants, trip.date_options);
+        if (!winDate) return null;
+        return (
+          <div className="mt-6 rounded-xl bg-primary/5 border border-primary/20 px-4 py-4">
+            <p className="text-sm font-medium text-primary">Trip dates locked</p>
+            <CalendarLinks
+              tripName={`${trip.name}`}
+              destination={trip.destinations[0] ?? ""}
+              startDate={winDate.start}
+              endDate={winDate.end}
+              groupSize={localParticipants.filter(p => p.rsvp === "yes").length}
+              budgetRange={null}
+              tripSlug={trip.slug}
+            />
+          </div>
+        );
+      })()}
 
       {/* Generate itinerary — locked phase, organizer sees button, participants see message */}
       {isLocked && !itinerary && (

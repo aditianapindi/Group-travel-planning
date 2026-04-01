@@ -128,13 +128,13 @@ export function ItineraryView({
         </p>
       </div>
 
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         {itinerary.days.map((day, dayIdx) => (
           <div key={day.day}>
-            <h3 className="text-sm font-medium text-ink mb-4">
+            <h3 className="text-sm font-medium text-ink mb-3">
               Day {day.day} — {day.title}
             </h3>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-3">
               {day.slots.map((slot, slotIdx) => {
                 const selectedIdx = getSelected(dayIdx, slotIdx);
                 const selectedOption = slot.options[selectedIdx] ?? slot.options[0];
@@ -171,8 +171,8 @@ export function ItineraryView({
                       </div>
                     )}
 
-                    {/* Selected option detail card — Airbnb-style shadow, no border */}
-                    <div className="rounded-xl bg-white px-4 py-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.04)]">
+                    {/* Selected option detail card */}
+                    <div className="rounded-xl bg-white px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.04)]">
                       <div className="flex justify-between items-start gap-2">
                         <p className="text-sm font-medium text-ink">
                           {selectedOption.name}
@@ -181,11 +181,8 @@ export function ItineraryView({
                           {selectedOption.estimatedCost}
                         </span>
                       </div>
-                      <p className="text-sm text-secondary mt-1.5 leading-relaxed">
+                      <p className="text-xs text-secondary mt-1">
                         {selectedOption.description}
-                      </p>
-                      <p className="text-xs text-muted mt-2">
-                        {selectedOption.why}
                       </p>
                     </div>
                   </div>
@@ -284,24 +281,13 @@ function TripSummary({
           </p>
         )}
 
-        {/* Calendar links — shown when dates are decided */}
-        {winningDate && (
-          <CalendarLinks
-            tripName={`${itinerary.destination} trip`}
-            destination={itinerary.destination}
-            startDate={winningDate.start}
-            endDate={winningDate.end}
-            groupSize={itinerary.groupSize}
-            budgetRange={itinerary.budgetRange}
-            tripSlug={tripSlug}
-          />
-        )}
+        {/* Calendar links moved to trip-view (shown after lock, before itinerary) */}
       </div>
     </div>
   );
 }
 
-function CalendarLinks({
+export function CalendarLinks({
   tripName,
   destination,
   startDate,
