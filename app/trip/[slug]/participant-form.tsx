@@ -13,6 +13,7 @@ type Participant = {
   budget_max: number | null;
   destination_votes: string[];
   date_votes: DateOption[];
+  response_token: string | null;
   headcount: number;
   has_kids: boolean;
   group_type: string;
@@ -25,22 +26,27 @@ export function ParticipantForm({
   dateOptions,
   onSubmit,
   organizerName,
+  existingParticipant,
 }: {
   tripId: string;
   destinations: string[];
   dateOptions?: DateOption[];
   onSubmit: (participant: Participant) => void;
   organizerName?: string;
+  existingParticipant?: Participant | null;
 }) {
-  const [name, setName] = useState(organizerName ?? "");
-  const [rsvp, setRsvp] = useState<"yes" | "maybe" | "no">("yes");
-  const [votes, setVotes] = useState<string[]>([]);
-  const [dateVotes, setDateVotes] = useState<string[]>([]); // stores start dates as IDs
-  const [budgetMin, setBudgetMin] = useState("");
-  const [budgetMax, setBudgetMax] = useState("");
-  const [headcount, setHeadcount] = useState(1);
-  const [hasKids, setHasKids] = useState(false);
-  const [groupType, setGroupType] = useState("mixed");
+  const isEdit = !!existingParticipant;
+  const [name, setName] = useState(organizerName ?? existingParticipant?.name ?? "");
+  const [rsvp, setRsvp] = useState<"yes" | "maybe" | "no">((existingParticipant?.rsvp as "yes" | "maybe" | "no") ?? "yes");
+  const [votes, setVotes] = useState<string[]>(existingParticipant?.destination_votes ?? []);
+  const [dateVotes, setDateVotes] = useState<string[]>(
+    existingParticipant?.date_votes?.map((d) => d.start) ?? []
+  );
+  const [budgetMin, setBudgetMin] = useState(existingParticipant?.budget_min?.toString() ?? "");
+  const [budgetMax, setBudgetMax] = useState(existingParticipant?.budget_max?.toString() ?? "");
+  const [headcount, setHeadcount] = useState(existingParticipant?.headcount ?? 1);
+  const [hasKids, setHasKids] = useState(existingParticipant?.has_kids ?? false);
+  const [groupType, setGroupType] = useState(existingParticipant?.group_type ?? "mixed");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -94,22 +100,44 @@ export function ParticipantForm({
       return;
     }
 
-    const { data, error: dbError } = await db
-      .from("participants")
-      .insert({
-        trip_id: tripId,
-        name: name.trim(),
-        rsvp,
-        budget_min: budgetMin ? parseInt(budgetMin) : null,
-        budget_max: budgetMax ? parseInt(budgetMax) : null,
-        destination_votes: votes,
-        date_votes: dateOptions?.filter((d) => dateVotes.includes(d.start)) ?? [],
-        headcount,
-        has_kids: hasKids,
-        group_type: groupType,
-      })
-      .select()
-      .single();
+    const payload = {
+      trip_id: tripId,
+      name: name.trim(),
+      rsvp,
+      budget_min: budgetMin ? parseInt(budgetMin) : null,
+      budget_max: budgetMax ? parseInt(budgetMax) : null,
+      destination_votes: votes,
+      date_votes: dateOptions?.filter((d) => dateVotes.includes(d.start)) ?? [],
+      headcount,
+      has_kids: hasKids,
+      group_type: groupType,
+    };
+
+    let data: Participant | null = null;
+    let dbError: unknown = null;
+
+    if (isEdit && existingParticipant) {
+      // Update existing response
+      const result = await db
+        .from("participants")
+        .update(payload)
+        .eq("id", existingParticipant.id)
+        .eq("response_token", existingParticipant.response_token)
+        .select()
+        .single();
+      data = result.data;
+      dbError = result.error;
+    } else {
+      // New response — generate token
+      const token = crypto.randomUUID();
+      const result = await db
+        .from("participants")
+        .insert({ ...payload, response_token: token })
+        .select()
+        .single();
+      data = result.data;
+      dbError = result.error;
+    }
 
     if (dbError || !data) {
       setError("Failed to submit. Try again.");
@@ -402,7 +430,7 @@ export function ParticipantForm({
         aria-busy={submitting}
         className="w-full rounded-lg bg-primary text-white font-medium py-3 min-h-[48px] hover:bg-primary-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {submitting ? "Submitting..." : "Submit your nod"}
+        {submitting ? "Saving..." : isEdit ? "Update your response" : "Submit your nod"}
       </button>
     </form>
   );

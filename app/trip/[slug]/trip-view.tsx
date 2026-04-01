@@ -36,6 +36,10 @@ type Participant = {
   budget_max: number | null;
   destination_votes: string[];
   date_votes: DateOption[];
+  response_token: string | null;
+  headcount: number;
+  has_kids: boolean;
+  group_type: string;
   created_at: string;
 };
 
@@ -63,12 +67,20 @@ export function TripView({
   const [itinerary, setItinerary] = useState<Itinerary | null>(existingItinerary ?? null);
   const [tripStatus, setTripStatus] = useState(trip.status);
 
-  // Check if this user already responded (persisted in localStorage)
-  const storageKey = `nod-responded-${trip.id}`;
-  const [hasResponded, setHasResponded] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem(storageKey) === "true";
+  // Check if this user already responded (token persisted in localStorage)
+  const storageKey = `nod-token-${trip.id}`;
+  const [responseToken, setResponseToken] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem(storageKey);
   });
+  const [myParticipant, setMyParticipant] = useState<Participant | null>(() => {
+    if (typeof window === "undefined") return null;
+    const token = localStorage.getItem(storageKey);
+    if (!token) return null;
+    return participants.find((p) => p.response_token === token) ?? null;
+  });
+  const hasResponded = responseToken !== null;
+  const [isEditing, setIsEditing] = useState(false);
 
   // Realtime subscription for new participants
   useEffect(() => {
@@ -111,8 +123,20 @@ export function TripView({
       if (prev.some((p) => p.id === participant.id)) return prev;
       return [...prev, participant];
     });
-    setHasResponded(true);
-    localStorage.setItem(storageKey, "true");
+    if (participant.response_token) {
+      setResponseToken(participant.response_token);
+      setMyParticipant(participant);
+      localStorage.setItem(storageKey, participant.response_token);
+    }
+    setIsEditing(false);
+  }
+
+  function handleUpdatedParticipant(participant: Participant) {
+    setLocalParticipants((prev) =>
+      prev.map((p) => p.id === participant.id ? participant : p)
+    );
+    setMyParticipant(participant);
+    setIsEditing(false);
   }
 
   function handleItineraryGenerated(newItinerary: Itinerary) {
@@ -171,14 +195,15 @@ export function TripView({
         />
       )}
 
-      {/* Participant input — show if collecting and deadline hasn't passed */}
-      {canRespond && !hasResponded && (
+      {/* Participant input — new response or editing existing */}
+      {canRespond && (!hasResponded || isEditing) && (
         <ParticipantForm
           tripId={trip.id}
           destinations={trip.destinations}
           dateOptions={trip.date_options}
-          onSubmit={handleNewParticipant}
+          onSubmit={isEditing ? handleUpdatedParticipant : handleNewParticipant}
           organizerName={isOrganizer ? trip.created_by : undefined}
+          existingParticipant={isEditing ? myParticipant : undefined}
         />
       )}
 
@@ -192,12 +217,14 @@ export function TripView({
         </div>
       )}
 
-      {/* Confirmation after responding */}
-      {hasResponded && (
+      {/* Confirmation after responding — with edit option */}
+      {hasResponded && !isEditing && (
         <ConfirmationBlock
           participants={localParticipants}
           organizer={trip.created_by}
           isOrganizer={isOrganizer}
+          canEdit={canRespond}
+          onEdit={() => setIsEditing(true)}
         />
       )}
 
@@ -326,13 +353,16 @@ function ConfirmationBlock({
   participants,
   organizer,
   isOrganizer,
+  canEdit,
+  onEdit,
 }: {
   participants: Participant[];
   organizer: string;
   isOrganizer: boolean;
+  canEdit?: boolean;
+  onEdit?: () => void;
 }) {
   const yesNames = participants.filter((p) => p.rsvp === "yes").map((p) => p.name);
-  // Deduplicate names (organizer may appear in both trip.created_by and participants)
   const uniqueYesNames = [...new Set(yesNames)];
   const yesCount = uniqueYesNames.length;
 
@@ -346,6 +376,11 @@ function ConfirmationBlock({
             ? " You can lock the trip when you\u2019re ready."
             : " Waiting for more responses before you can lock."}
         </p>
+        {canEdit && onEdit && (
+          <button onClick={onEdit} className="mt-2 text-sm text-primary underline underline-offset-2 hover:text-primary-hover transition-colors min-h-[44px]">
+            Edit your response
+          </button>
+        )}
       </div>
     );
   }
@@ -361,6 +396,11 @@ function ConfirmationBlock({
         <p className="text-sm text-secondary mt-1">
           {formatNames(uniqueYesNames)} — so far.
         </p>
+      )}
+      {canEdit && onEdit && (
+        <button onClick={onEdit} className="mt-2 text-sm text-primary underline underline-offset-2 hover:text-primary-hover transition-colors min-h-[44px]">
+          Edit your response
+        </button>
       )}
     </div>
   );
