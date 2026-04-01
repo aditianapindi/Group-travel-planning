@@ -15,6 +15,46 @@
   --font-body: var(--font-dm-sans);
 }
 
+/* Dark mode — override tokens */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-ink: #F0F0F0;
+    --color-secondary: #A0A0A0;
+    --color-muted: #707070;
+    --color-border: #333333;
+    --color-surface: #1E1E1E;
+    --color-primary: #6B9B5E;
+    --color-primary-hover: #7DB06E;
+    --color-success: #4CAF70;
+    --color-error: #EF6B6B;
+  }
+
+  body {
+    background: #141413;
+  }
+
+  /* Cards and inputs need dark backgrounds */
+  input, select, textarea {
+    background: #1E1E1E;
+    color: var(--color-ink);
+  }
+
+  /* Override Tailwind bg-white for cards, buttons, pills */
+  .bg-white {
+    background-color: #1E1E1E;
+  }
+
+  /* Shadows need to be subtler in dark mode */
+  [class*="shadow-"] {
+    --tw-shadow-color: rgba(0, 0, 0, 0.3);
+  }
+
+  /* Error backgrounds */
+  .bg-red-50 {
+    background-color: rgba(239, 107, 107, 0.1);
+  }
+}
+
 body {
   background: #FAF9F7;
   color: var(--color-ink);
