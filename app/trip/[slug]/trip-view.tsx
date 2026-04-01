@@ -290,27 +290,19 @@ export function TripView({
         );
       })()}
 
-      {/* Generate itinerary — locked phase, organizer sees button, participants see message */}
-      {isLocked && !itinerary && (
+      {/* Generate itinerary — organizer only */}
+      {isLocked && !itinerary && isOrganizer && (
         <div className="mt-6">
-          {manageKey ? (
-            <GenerateButton
-              tripId={trip.id}
-              manageKey={manageKey}
-              onGenerated={handleItineraryGenerated}
-            />
-          ) : (
-            <div className="rounded-xl bg-surface px-4 py-3 text-center">
-              <p className="text-sm text-secondary">
-                Trip is locked. Waiting for the organizer to generate the plan.
-              </p>
-            </div>
-          )}
+          <GenerateButton
+            tripId={trip.id}
+            manageKey={manageKey!}
+            onGenerated={handleItineraryGenerated}
+          />
         </div>
       )}
 
-      {/* Itinerary — visible to everyone once generated */}
-      {itinerary && (
+      {/* Itinerary — organizer only */}
+      {itinerary && isOrganizer && (
         <ItineraryView
           itinerary={itinerary}
           isOrganizer={isOrganizer}
@@ -318,6 +310,18 @@ export function TripView({
           winningDate={getWinningDate(localParticipants, trip.date_options)}
           tripSlug={trip.slug}
         />
+      )}
+
+      {/* Participant view — locked/planned, no itinerary access */}
+      {(isLocked || isPlanned) && !isOrganizer && (
+        <div className="mt-6 rounded-xl bg-surface px-4 py-4 text-center">
+          <p className="text-sm text-ink font-medium">
+            {isPlanned ? "The plan is ready!" : "Trip is locked."}
+          </p>
+          <p className="text-sm text-secondary mt-1">
+            {trip.created_by} will share the itinerary with the group soon.
+          </p>
+        </div>
       )}
     </main>
   );
