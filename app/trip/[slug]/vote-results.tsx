@@ -94,6 +94,11 @@ export function VoteResults({
         </div>
       </section>
 
+      {/* Organizer insights — budget + vote edge cases */}
+      {isOrganizer && tripStatus === "collecting" && yesParticipants.length >= 1 && (
+        <OrganizerInsights participants={yesParticipants} voteCounts={voteCounts} />
+      )}
+
       {/* Organizer next step — collecting phase only */}
       {isOrganizer && tripStatus === "collecting" && (
         yesParticipants.length >= 2 ? (
@@ -198,5 +203,69 @@ function LockButton({
     >
       Lock trip — close voting
     </button>
+  );
+}
+
+function OrganizerInsights({
+  participants,
+  voteCounts,
+}: {
+  participants: { budget_min: number | null; budget_max: number | null; name: string }[];
+  voteCounts: { destination: string; count: number }[];
+}) {
+  const insights: { type: "warn" | "info"; text: string }[] = [];
+
+  // Budget analysis
+  const withBudget = participants.filter((p) => p.budget_min != null && p.budget_max != null);
+  const withoutBudget = participants.filter((p) => p.budget_min == null || p.budget_max == null);
+
+  if (withBudget.length >= 2) {
+    const overlapMin = Math.max(...withBudget.map((p) => p.budget_min!));
+    const overlapMax = Math.min(...withBudget.map((p) => p.budget_max!));
+
+    if (overlapMin > overlapMax) {
+      // Find the person with lowest max and highest min to show the gap
+      const lowestMax = Math.min(...withBudget.map((p) => p.budget_max!));
+      const highestMin = Math.max(...withBudget.map((p) => p.budget_min!));
+      insights.push({
+        type: "warn",
+        text: `Budgets don\u2019t overlap \u2014 one person caps at \u20B9${lowestMax.toLocaleString("en-IN")} but another starts at \u20B9${highestMin.toLocaleString("en-IN")}. You may need to discuss this with the group before locking.`,
+      });
+    }
+  }
+
+  if (withoutBudget.length > 0 && withBudget.length > 0) {
+    const names = withoutBudget.map((p) => p.name).join(", ");
+    insights.push({
+      type: "info",
+      text: `${names} didn\u2019t share a budget. The overlap is based on ${withBudget.length} ${withBudget.length === 1 ? "person" : "people"}.`,
+    });
+  }
+
+  // Vote tie detection
+  if (voteCounts.length >= 2 && voteCounts[0].count === voteCounts[1].count && voteCounts[0].count > 0) {
+    insights.push({
+      type: "info",
+      text: `${voteCounts[0].destination} and ${voteCounts[1].destination} are tied. You\u2019ll pick the winner when you lock.`,
+    });
+  }
+
+  if (insights.length === 0) return null;
+
+  return (
+    <section className="flex flex-col gap-2">
+      {insights.map((insight, i) => (
+        <div
+          key={i}
+          className={`rounded-xl px-4 py-3 text-sm ${
+            insight.type === "warn"
+              ? "bg-red-50 text-error"
+              : "bg-surface text-secondary"
+          }`}
+        >
+          {insight.text}
+        </div>
+      ))}
+    </section>
   );
 }

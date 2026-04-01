@@ -108,6 +108,8 @@ export function TripView({
   const isCollecting = tripStatus === "collecting";
   const isLocked = tripStatus === "locked";
   const isPlanned = tripStatus === "planned";
+  const deadlinePassed = trip.deadline ? new Date(trip.deadline).getTime() < Date.now() : false;
+  const canRespond = isCollecting && !deadlinePassed;
 
   return (
     <main className="flex-1 px-4 py-8 max-w-lg mx-auto w-full">
@@ -142,7 +144,7 @@ export function TripView({
       )}
 
       {/* Motivation block — show to participants who haven't responded yet */}
-      {isCollecting && !hasResponded && !isOrganizer && (
+      {canRespond && !hasResponded && !isOrganizer && (
         <MotivationBlock
           participants={localParticipants}
           organizer={trip.created_by}
@@ -150,14 +152,24 @@ export function TripView({
         />
       )}
 
-      {/* Participant input — show if collecting and hasn't responded */}
-      {isCollecting && !hasResponded && (
+      {/* Participant input — show if collecting and deadline hasn't passed */}
+      {canRespond && !hasResponded && (
         <ParticipantForm
           tripId={trip.id}
           destinations={trip.destinations}
           onSubmit={handleNewParticipant}
           organizerName={isOrganizer ? trip.created_by : undefined}
         />
+      )}
+
+      {/* Deadline passed — form hidden, show message */}
+      {isCollecting && deadlinePassed && !hasResponded && (
+        <div className="mt-6 rounded-xl bg-surface px-4 py-4">
+          <p className="text-sm text-ink font-medium">Voting has closed.</p>
+          <p className="text-sm text-secondary mt-1">
+            The deadline passed. {isOrganizer ? "You can still lock the trip and generate a plan." : `Reach out to ${trip.created_by} if you want to add your input.`}
+          </p>
+        </div>
       )}
 
       {/* Confirmation after responding */}

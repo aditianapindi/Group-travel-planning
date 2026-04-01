@@ -83,7 +83,7 @@ export function StatusBar({
       )}
 
       {budgetOverlap && !hasOverlap && (
-        <span className="text-error">No budget overlap</span>
+        <span className="text-error">Budgets don&apos;t overlap</span>
       )}
 
       {deadlineText && <span className={deadlineUrgent ? "text-primary font-medium" : ""}>{deadlineText}</span>}
