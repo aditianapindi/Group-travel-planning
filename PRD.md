@@ -470,30 +470,25 @@ CREATED --> OPEN --> LOCKED --> PLANNED
 
 ### How We Built Nod
 
-**March 28-30: Discovery (no code)**
+**March 28: Research foundation (Session 2)**
 
-22+ user interviews across two batches, a 9-person survey, and 65+ secondary sources. Conducted competitive analysis of 14 tools (Wanderlog, TripIt, Splitwise, Lambus, Tripsy, Layla AI, Mindtrip, and others). Analysed academic research on social loafing, paradox of choice, and commitment devices.
+Market context, user segments, category risk analysis. Created competitor viability study across 8 companies. Verified 65 source citations - caught 4 fabricated stats. Identified the ~300-startup graveyard and formulated 5 possible theses for "why different." Added product principles 6-8 (WhatsApp gravity, during-trip monetisation, booking leakage).
 
-The critical finding: this is the highest-failure vertical in travel (~300 dead startups). Two full days on category risk analysis before writing a single line of product spec. The output: 5 failure modes, 3 survivor strategies, and a clear thesis (WhatsApp-compatible link + monetise during trip via experience affiliate). Synthesis brainstorm produced Concepts A+B+C and the hard MVP scope.
+**March 29-30: Interviews, survey + synthesis**
+
+12 additional interviews (Akanksha's cohort) broke three assumptions: budget IS the root cause (not scheduling), the organiser is a network node (not the persona), and alignment is the entire product (not planning). Ran 9-person survey. Synthesis brainstorm produced Concepts A+B+C, the hard MVP scope (7 features from 12), and the trip journey friction map. Selected thesis C+D: WhatsApp-compatible link + monetise during trip via experience affiliate.
 
 **March 31: Build + verify (Session 3)**
 
-Built the core flow: create > share > respond > lock > generate. Added participant motivation design (named accountability, deadline consequence, 30-second form). Switched from polling to Supabase Realtime. Stress-tested every persona's view. Caught rendering bugs by mentally walking through each screen as organiser AND participant before handoff.
-
-Key build decisions:
-- **No auth**: manage_key saved to localStorage on first visit, stripped from URL. No key = participant. Zero friction.
-- **Response tokens**: UUID per submission in localStorage. Enables edit without login.
-- **Supabase Realtime**: Replaced polling with INSERT/UPDATE subscriptions. Publication must include ALL columns (learned the hard way after schema migration broke realtime).
-- **Holiday picker**: Hardcoded 2026 Indian holidays in `lib/holidays.ts`. Computed long weekends. Curated list, not calendar grid.
-- **AI itinerary**: Single Gemini endpoint. Group context (destination, dates, budget, size) in prompt. 30-second timeout. Structured JSON response.
+Built the core flow in one session: create > share > respond > lock > generate. Participant motivation design (named accountability, deadline consequence, 30-second form). Switched from polling to Supabase Realtime. Date voting chain with holiday long weekend picker. Deployed to Vercel (nod.sunforged.work). E2E testing caught manage_key leak via `select(*)`, duplicate submissions, React key collisions, and rendering bugs.
 
 **April 1: Harden, polish + deploy (Session 4)**
 
-Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads, URL stripping via replaceState, input validation). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 incompatibility). Collapsible itinerary timeline, share plan bar, next steps booking links, custom date input, vote results redesign, group insights dashboard. Ran security audit against OWASP top 10. Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).
+Response tokens for edit-without-organiser. Security fixes (manage_key stripped from URL via replaceState, input validation, hydration mismatch fix). Collapsible itinerary timeline, share plan bar, next steps booking links, custom date input, vote results redesign with icons, group insights dashboard. Security audit against OWASP top 10. Final deploy.
 
 **April 2: PRD**
 
-Wrote and finalised PRD. Documented known security limitations (open RLS, realtime token leak) with V1.1 plans.
+Wrote and finalised PRD. Documented known security limitations with V1.1 plans.
 
 **Key iterations that shaped the product:**
 
