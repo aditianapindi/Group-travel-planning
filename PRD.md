@@ -182,6 +182,7 @@ A fully functional MVP deployed at **nod.sunforged.work** covering the complete 
 | **Calendar links** | Google Calendar URL + .ics download after lock. Trip name, dates, destination, group size, URL included. |
 | **Response tokens** | UUID per submission, stored in localStorage. Enables edit without organiser mediation. |
 | **Organiser/participant split** | manage_key in localStorage = organiser (stripped from URL on first visit). No key = participant. Different UX for each. |
+| **Group insights** | Live analytics dashboard at `/insights`: trips created, avg group size, RSVP rates, budget ranges, top destinations, trip funnel (collecting > locked > planned). Demonstrates collective intelligence thesis. |
 
 ### Technology Stack
 
