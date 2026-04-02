@@ -470,33 +470,30 @@ CREATED --> OPEN --> LOCKED --> PLANNED
 
 ### How We Built Nod
 
-**Days 1-3: Discovery (no code)**
+**March 28-30: Discovery (no code)**
 
-Started with 10 user interviews across friend groups, families, and trip organisers. Mapped the group trip journey end-to-end. Ran a 9-person survey to quantify pain points. Conducted competitive analysis of 14 tools (Wanderlog, TripIt, Splitwise, Lambus, Tripsy, Layla AI, Mindtrip, and others). Analysed 65+ secondary sources including academic research on social loafing, paradox of choice, and commitment devices.
+22+ user interviews across two batches, a 9-person survey, and 65+ secondary sources. Conducted competitive analysis of 14 tools (Wanderlog, TripIt, Splitwise, Lambus, Tripsy, Layla AI, Mindtrip, and others). Analysed academic research on social loafing, paradox of choice, and commitment devices.
 
-The critical finding: this is the highest-failure vertical in travel (~300 dead startups). We spent two full days on category risk analysis before writing a single line of product spec. The output: 5 failure modes, 3 survivor strategies, and a clear thesis (WhatsApp-compatible link + monetise during trip via experience affiliate).
+The critical finding: this is the highest-failure vertical in travel (~300 dead startups). Two full days on category risk analysis before writing a single line of product spec. The output: 5 failure modes, 3 survivor strategies, and a clear thesis (WhatsApp-compatible link + monetise during trip via experience affiliate). Synthesis brainstorm produced Concepts A+B+C and the hard MVP scope.
 
-**Days 4-5: Batch 2 interviews + synthesis**
+**March 31: Build + verify (Session 3)**
 
-12 additional interviews (Akanksha's cohort) broke three assumptions: budget IS the root cause (not scheduling), the organiser is a network node (not the persona), and alignment is the entire product (not planning). These findings restructured the MVP scope from 12 features to 7.
+Built the core flow: create > share > respond > lock > generate. Added participant motivation design (named accountability, deadline consequence, 30-second form). Switched from polling to Supabase Realtime. Stress-tested every persona's view. Caught rendering bugs by mentally walking through each screen as organiser AND participant before handoff.
 
-**Days 6-7: Build + deploy**
-
-Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server components by default. The key build decisions:
-
+Key build decisions:
 - **No auth**: manage_key saved to localStorage on first visit, stripped from URL. No key = participant. Zero friction.
 - **Response tokens**: UUID per submission in localStorage. Enables edit without login.
 - **Supabase Realtime**: Replaced polling with INSERT/UPDATE subscriptions. Publication must include ALL columns (learned the hard way after schema migration broke realtime).
 - **Holiday picker**: Hardcoded 2026 Indian holidays in `lib/holidays.ts`. Computed long weekends. Curated list, not calendar grid.
 - **AI itinerary**: Single Gemini endpoint. Group context (destination, dates, budget, size) in prompt. 30-second timeout. Structured JSON response.
 
-Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).
+**April 1: Harden + deploy (Session 4)**
 
-**Day 8: Harden + verify**
+Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 incompatibility). Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).
 
-Comprehensive E2E testing found and fixed: manage_key leaked via `select(*)`, duplicate submissions, budget min > max sent to Gemini, React key collisions, `redirect()` error handling, and a space-concatenation bug ("Aditiwill" instead of "Aditi will"). Added date voting chain, response token edit flow, inline lock confirmation, calendar links (Google Cal + .ics). Ran a security audit against OWASP top 10.
+**April 2: Polish, security audit, PRD**
 
-Attempted dark mode, reverted (Tailwind v4 `@theme` is build-time only, can't nest in `@media` query). Documented as post-MVP.
+Collapsible itinerary timeline, share plan bar, next steps booking links, custom date input, vote results redesign, group insights dashboard. Ran security audit against OWASP top 10 - fixed manage_key URL exposure, input validation, hydration mismatch. Documented known limitations (open RLS, realtime token leak) with V1.1 plans. Wrote and finalised PRD.
 
 **Key iterations that shaped the product:**
 
