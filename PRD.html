@@ -32,11 +32,12 @@
 
 <div class="toc">
 <p><b>Table of Contents</b></p>
-<p>01 &nbsp;Discovery Insights</p>
-<p>02 &nbsp;Problem Prioritisation</p>
-<p>03 &nbsp;Proposed Solution</p>
-<p>04 &nbsp;Implementation Plan</p>
-<p>05 &nbsp;Instruction Design</p>
+<p>01 &nbsp;Discovery Insights - 2</p>
+<p>02 &nbsp;Problem Prioritisation - 4</p>
+<p>03 &nbsp;Proposed Solution - 5</p>
+<p>04 &nbsp;Implementation Plan - 6</p>
+<p>05 &nbsp;Instruction Design - 7</p>
+<p>06 &nbsp;Appendix - 10</p>
 </div>
 
 <hr>
@@ -92,7 +93,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <h3>The Group Trip Journey: Where Behaviour Breaks Down</h3>
 
-<p>Every group trip follows the same arc. The problem isn't any single stage - it's that each stage has a behavioural failure mode that compounds into the next. <b>60% of trips die in stages 2-5</b> before a single booking is made.</p>
+<p>Every group trip follows the same arc. The problem isn't any single stage - it's that each stage has a behavioural failure mode that compounds into the next. <b>60% of group trips never happen</b> [<a href="https://www.novatrek.app/en/blog/why-group-travel-planning-is-broken">NovaTrek</a>] - most die in stages 2-5 before a single booking is made.</p>
 
 <table>
 <tr><th>Stage</th><th>What Happens Today</th><th>Behavioural Failure</th><th>Nod's Response</th></tr>
@@ -173,22 +174,22 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <h3>Why This Won't Be Failure #301</h3>
 
-<p>The 300 dead startups were <b>planning tools</b>. Nod is a <b>decision tool</b>. The difference:</p>
+<p>The ~300 dead startups were <b>planning tools</b>. Nod is a <b>decision tool</b>. The difference:</p>
 
 <ul>
-<li><b>No app download</b> - a shareable link works inside WhatsApp, not against it. Solves adoption friction.</li>
+<li><b>No app download</b> - a shareable link works inside WhatsApp, not against it. Solves adoption friction (Thesis C).</li>
 <li><b>Participant experience is the product</b> - 30-second form, not a feature-rich dashboard. Every dead startup built for the organiser alone.</li>
-<li><b>Group context is the moat</b> - ChatGPT gets one person's prompt. Nod gets: 6 confirmed, Oct 15-18, budget &#8377;8K-15K, 4 voted beach, 1 vegetarian. Richer input, better output, higher affiliate conversion.</li>
+<li><b>Group context is the moat</b> - ChatGPT gets one person's prompt. Nod gets: 6 confirmed, Oct 15-18, budget &#8377;8K-15K, 4 voted beach, 1 vegetarian. Richer input &gt; better output &gt; higher affiliate conversion.</li>
 <li><b>Monetise experiences, not hotels</b> - Hotels leak to OTAs. Experiences don't - no comparison-shopping habit, lower price sensitivity, discovery is the bottleneck. 8% Viator commission on activities the group already agreed on.</li>
 <li><b>Deadline and commitment devices</b> - We analysed 14 competing tools across group coordination, planning, and financial features. Not one offers deadline-driven convergence or commitment mechanisms [Competitive analysis, March 2026]. Nod's vote-lock-calendar chain is structurally unique.</li>
-<li><b>Free planning, always</b> - 78% of survey respondents pay nothing. Revenue comes from during-trip activity bookings, not planning-phase subscriptions.</li>
+<li><b>Free planning, always</b> - 78% of survey respondents pay nothing. Revenue comes from during-trip activity bookings (Thesis D.1), not planning-phase subscriptions.</li>
 </ul>
 
 <h3>Business Model</h3>
 
 <p><b>Free + Affiliate.</b> Planning is free forever. Revenue via experience affiliate commissions (Viator 8%, Klook, GetYourGuide) surfaced contextually after itinerary generation. Group intent data (6 people's combined constraints) is a richer lead than individual search on any marketplace.</p>
 
-<p>Modelled revenue per trip: group of 6, 3-4 activities booked, ~$40-75 per trip. Thin - but the tool needs volume, not margins. This follows the Wanderlog pattern, not the "charge for planning" pattern that killed 300 startups.</p>
+<p>Modelled revenue per trip: group of 6, 3-4 activities booked, ~$40-75 per trip. Thin - but the tool needs volume, not margins. This follows the Wanderlog pattern, not the "charge for planning" pattern that killed ~300 startups.</p>
 
 <hr>
 
@@ -200,16 +201,18 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <table>
 <tr><th>Feature</th><th>What It Does</th></tr>
-<tr><td><b>Trip creation</b></td><td>Name, destinations, deadline, holiday long weekend picker (2026 Indian holidays), budget guidance</td></tr>
+<tr><td><b>Trip creation</b></td><td>Name, destinations, deadline, holiday long weekend picker (2026 Indian holidays), custom date input, budget guidance</td></tr>
 <tr><td><b>Shareable link</b></td><td>Unique slug per trip. Copy, WhatsApp, iMessage share buttons.</td></tr>
 <tr><td><b>Participant form</b></td><td>Name, RSVP (yes/maybe/no), destination vote, date vote, budget range. 30 seconds.</td></tr>
 <tr><td><b>Motivation block</b></td><td>Named accountability ("Priya and Rahul are in"), deadline with consequence, "takes 30 seconds" nudge</td></tr>
 <tr><td><b>Vote results</b></td><td>Destination tally + date tally + budget range overlap. Real-time via Supabase Realtime.</td></tr>
 <tr><td><b>Trip lock</b></td><td>Organiser locks when ready. Inline confirmation (not browser alert).</td></tr>
-<tr><td><b>AI itinerary</b></td><td>Gemini 2.5 Flash generates day-by-day plan fitted to group's destination, budget, dates, and size</td></tr>
+<tr><td><b>AI itinerary</b></td><td>Gemini 2.5 Flash generates day-by-day plan. Collapsible timeline layout, cost summary, alternative swapping.</td></tr>
+<tr><td><b>Share plan</b></td><td>Copy link + WhatsApp + iMessage bar for organiser to share itinerary with group</td></tr>
+<tr><td><b>Next steps</b></td><td>Outbound booking links (Booking.com, Airbnb, MakeMyTrip, ixigo, Zoomcar, Klook, Viator) pre-filled with trip data</td></tr>
 <tr><td><b>Calendar links</b></td><td>Google Calendar URL + .ics download after lock. Trip name, dates, destination, group size, URL included.</td></tr>
 <tr><td><b>Response tokens</b></td><td>UUID per submission, stored in localStorage. Enables edit without organiser mediation.</td></tr>
-<tr><td><b>Organiser/participant split</b></td><td>manage_key URL param = organiser. No key = participant. Different UX for each.</td></tr>
+<tr><td><b>Organiser/participant split</b></td><td>manage_key in localStorage = organiser (stripped from URL on first visit). No key = participant. Different UX for each.</td></tr>
 </table>
 
 <h3>Technology Stack</h3>
@@ -228,7 +231,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 <table>
 <tr><th>Phase</th><th>Key Steps</th></tr>
 <tr><td><b>Now (Validation)</b></td><td>Share MVP with cohort + real friend groups. Collect: do participants actually respond? Does the organiser share the link?</td></tr>
-<tr><td><b>Next (V1.1)</b></td><td>Itinerary share flow (organiser to participants). Destination price estimates via Gemini at creation. Experience recommendations with affiliate links (Viator/Klook API). Expense splitting (simple, group-fitted).</td></tr>
+<tr><td><b>Next (V1.1)</b></td><td>Destination price estimates via Gemini at creation. Experience recommendations with real affiliate tracking (Viator/Klook API). Expense splitting (simple, group-fitted).</td></tr>
 <tr><td><b>Later (V2)</b></td><td>Trip Trigger (proactive nudges when constraints align). Multi-trip dashboard. Dark mode. WhatsApp Business API integration for native entry. Anti-Agent recommendations.</td></tr>
 </table>
 
@@ -236,7 +239,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <table>
 <tr><th>Feature</th><th>Why Deferred</th><th>PRD Status</th></tr>
-<tr><td>Itinerary share flow</td><td>Organiser reviews first - share is a deliberate action, not auto-visible</td><td>Designed</td></tr>
+<tr><td>Itinerary share flow</td><td>Built. Itinerary visible to all once generated. Share Plan bar (copy + WhatsApp + iMessage) lets organiser proactively notify the group.</td><td>Built</td></tr>
 <tr><td>Destination price estimates</td><td>Needs Gemini API call at trip creation + schema change</td><td>Designed</td></tr>
 <tr><td>Experience affiliate links</td><td>Needs Viator/Klook API integration</td><td>Thesis validated</td></tr>
 <tr><td>Multi-trip dashboard</td><td>No need until repeat usage proven</td><td>Conceptual</td></tr>
@@ -310,9 +313,9 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <p class="screen-title">Screen 6: Vote Results + Lock - ~30s (organiser only)</p>
 
-<p>Vote results are shown in a 2-column card grid: <b>Where</b> (destination tallies with map pin icon) and <b>When</b> (date tallies with calendar icon). The leading option is highlighted with bold text and a green bar; others are muted. Below, a compact <b>Responded</b> card shows participant name pills with a people icon. Status bar switches from "24h left to vote" to "Trip locked" or "Plan ready" based on trip state.</p>
+<p>Vote results are shown in a 2-column card grid: <b>Where</b> (destination tallies with map pin icon) and <b>When</b> (date tallies with calendar icon). The leading option is highlighted with bold text and a green bar; others are muted. Budget overlap is shown in the status bar when 2+ participants have submitted ranges. Below, a compact <b>Responded</b> card shows participant name pills with a people icon. Status bar switches from "24h left to vote" to "Trip locked" or "Plan ready" based on trip state.</p>
 
-<p>When ready, a "Lock Trip" button with an <b>inline confirmation</b> (not a browser confirm() dialog) freezes voting.</p>
+<p>When ready, a "Lock Trip" button with an <b>inline confirmation</b> (not a browser <code>confirm()</code> dialog) freezes voting.</p>
 
 <blockquote>Look for: Real-time updates. Open the organiser view and a participant view side-by-side - submit a vote in one tab and watch it appear in the other without refresh. The leading destination/date is visually distinct from others.</blockquote>
 
@@ -332,40 +335,17 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <hr>
 
-<h3>How We Built Nod</h3>
-
-<p><b>From research to working prototype in 4 sessions.</b></p>
-
-<p><b>Session 1-2: Research.</b> 22+ interviews, 9-person survey, 65+ secondary sources. Three weeks of discovery before any code. The core insight: this is a decision problem, not a planning problem. The category risk analysis (300 dead startups, 5 failure modes, 3 survivors) shaped every product decision that followed.</p>
-
-<p><b>Session 3: Build + verify.</b> Built the core flow: create &gt; share &gt; respond &gt; lock &gt; generate. Added participant motivation design (named accountability, deadline consequence, 30-second form). Switched from polling to Supabase Realtime. Stress-tested every persona's view. Caught rendering bugs by mentally walking through each screen as organiser AND participant before handoff.</p>
-
-<p><b>Session 4: Harden.</b> Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads - <code>select(*)</code> leaks secrets via Next.js serialisation). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 <code>@theme</code> is build-time only). Deployed to Vercel with custom domain.</p>
-
 <h3>Key Technical Decisions</h3>
 
 <p><b>Two personas, one link.</b> The organiser is identified by a manage_key saved to localStorage on first visit and immediately stripped from the URL via <code>replaceState</code>. No key in localStorage = participant. This eliminates authentication entirely - no login, no sign-up, no friction. The manage_key is never visible in the address bar and is stripped from all client-facing payloads.</p>
 
 <p><b>Response tokens for dedup + edit.</b> Each submission generates a UUID stored in localStorage. On reload, the token identifies the user - enabling edits without login. The token is server-enforced (participant ID + token must match) and stripped from client payloads.</p>
 
-<p><b>Holiday long weekend picker.</b> 2026 Indian national holidays are hardcoded in <code>lib/holidays.ts</code>. Long weekends are computed (holiday plus adjacent weekend). The organiser taps 2-3 options, and they become votable date pills for participants. Curated list beats calendar grid - faster on mobile, surfaces the scheduling insight that no competitor offers.</p>
+<p><b>Holiday long weekend picker.</b> 2026 Indian national holidays are hardcoded in <code>lib/holidays.ts</code>. Long weekends are computed (holiday &plusmn; adjacent weekend). The organiser taps 2-3 options &gt; they become votable date pills for participants. Curated list &gt; calendar grid - faster on mobile, surfaces the scheduling insight that no competitor offers.</p>
 
 <p><b>Supabase Realtime, not polling.</b> Realtime subscriptions on <code>participants</code> (INSERT + UPDATE) and <code>trips</code> (UPDATE for lock/plan status). Publication must include ALL columns - after schema migrations, both tables are dropped and re-added to the publication. Learned this the hard way.</p>
 
-<p><b>AI itinerary with group context.</b> The Gemini prompt receives: destination, dates, budget range (validated: min must not exceed max, no negatives), group size, and activity preferences. 30-second timeout via AbortController. Unified error message: <i>"Couldn't generate the plan. Tap to try again."</i> The group context - not available to any individual ChatGPT prompt - is the quality differentiator.</p>
-
-<h3>Security and Edge Cases</h3>
-
-<table>
-<tr><th>Issue</th><th>Resolution</th></tr>
-<tr><td><code>select(*)</code> leaks manage_key + response_token</td><td>Explicit column selection; secrets stripped before client serialisation</td></tr>
-<tr><td>Duplicate submissions</td><td>localStorage response_token prevents re-submission; edit flow for updates</td></tr>
-<tr><td>Budget min &gt; max</td><td>Validation on submit; full range sent to Gemini if overlap invalid</td></tr>
-<tr><td>React key collisions</td><td><code>p.id</code> instead of <code>p.name</code> (names aren't unique)</td></tr>
-<tr><td><code>redirect()</code> in try-catch</td><td>Next.js throws NEXT_REDIRECT internally; check before treating as error</td></tr>
-<tr><td>Long trip names overflow</td><td><code>maxLength=80</code> + <code>break-words</code> CSS</td></tr>
-<tr><td>Deadline not enforced server-side</td><td>Acceptable for MVP - client hides form after deadline. Server enforcement is V1.1.</td></tr>
-</table>
+<p><b>AI itinerary with group context.</b> The Gemini prompt receives: destination, dates, budget range (validated: min &le; max, no negatives), group size, and activity preferences. 30-second timeout via AbortController. Unified error message: <i>"Couldn't generate the plan. Tap to try again."</i> The group context - not available to any individual ChatGPT prompt - is the quality differentiator.</p>
 
 <h3>What We'd Do Differently</h3>
 
@@ -381,7 +361,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <h3>Security Audit &amp; Mitigations</h3>
 
-<p>We conducted a full security audit of the prototype against OWASP top 10.</p>
+<p>We conducted a full security audit of the prototype against OWASP top 10. Here is what we found, what we fixed, and what remains as known limitations.</p>
 
 <p><b>Fixed in prototype:</b></p>
 <table>
@@ -389,7 +369,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 <tr><td>manage_key exposed in URL</td><td>Critical</td><td>Key saved to localStorage on first visit, stripped from URL via <code>replaceState</code>. Address bar always shows clean participant URL.</td></tr>
 <tr><td>Negative/invalid budgets accepted</td><td>Medium</td><td>Server-side validation: no negatives, min must not exceed max.</td></tr>
 <tr><td><code>JSON.parse</code> crash on malformed date options</td><td>Medium</td><td>Try-catch with graceful fallback (no dates).</td></tr>
-<tr><td>Invalid deadline values</td><td>Medium</td><td>parseInt validation: must be 1-30 days.</td></tr>
+<tr><td>Invalid deadline values (negative, NaN)</td><td>Medium</td><td>parseInt validation: must be 1-30 days.</td></tr>
 <tr><td>No input length limits</td><td>Medium</td><td>Server-side: trip name max 80, participant name max 50, destination max 100 chars, max 6 destinations.</td></tr>
 <tr><td>Hydration mismatch corrupting component tree</td><td>Critical</td><td>Moved localStorage reads from useState to useEffect. Replaced Tailwind v4 <code>break-words</code> class with inline style.</td></tr>
 <tr><td><code>select(*)</code> leaks secrets</td><td>Critical</td><td>Explicit column selection; manage_key and response_token stripped before client serialisation.</td></tr>
@@ -399,20 +379,18 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 <p><b>Known limitations (acceptable for MVP, planned for V1.1):</b></p>
 <table>
 <tr><th>Issue</th><th>Severity</th><th>Why not fixed</th><th>V1.1 plan</th></tr>
-<tr><td>RLS policies are fully open</td><td>Critical</td><td>No user auth = can't write meaningful row-level policies. Public anon key + <code>using (true)</code> means any browser can query secrets via DevTools.</td><td>Row-level policies checking manage_key/response_token. Evaluate lightweight auth (magic link or passkey).</td></tr>
-<tr><td>Realtime broadcasts response_token</td><td>Critical</td><td>Supabase publication includes all columns. SQL migration risky before deadline.</td><td>Create a database view excluding secrets, publish the view instead.</td></tr>
-<tr><td>No rate limiting on generate-itinerary</td><td>Medium</td><td>Needs Vercel Edge middleware.</td><td>Rate limiting per IP (max 5 calls per trip per hour).</td></tr>
-<tr><td>Prompt injection via names/destinations</td><td>Medium</td><td>Names interpolated directly into Gemini prompt.</td><td>Strip control characters, enforce max length, add instruction boundary markers.</td></tr>
-<tr><td>Deadline not enforced server-side</td><td>Low</td><td>Client hides form after deadline, but direct API call could still submit.</td><td>Server-side deadline check in participant insert/update.</td></tr>
+<tr><td>RLS policies are fully open</td><td>Critical</td><td>No user auth = can't write meaningful row-level policies. The public Supabase anon key combined with <code>using (true)</code> policies means any browser can query manage_key and response_token directly via DevTools.</td><td>Add row-level policies that check manage_key on trip mutations and response_token on participant updates. Evaluate adding lightweight auth (magic link or passkey).</td></tr>
+<tr><td>Realtime broadcasts response_token</td><td>Critical</td><td>Supabase publication includes all columns. Changing it requires SQL migration (risky before deadline).</td><td>Create a database view excluding secrets, publish the view instead of the raw table.</td></tr>
+<tr><td>No rate limiting on generate-itinerary</td><td>Medium</td><td>Needs Vercel Edge middleware.</td><td>Add rate limiting per IP (max 5 calls per trip per hour).</td></tr>
+<tr><td>Prompt injection via names/destinations</td><td>Medium</td><td>Participant and destination names are interpolated directly into the Gemini prompt.</td><td>Strip control characters, enforce max length, and add instruction boundary markers in the prompt.</td></tr>
+<tr><td>Deadline not enforced server-side</td><td>Low</td><td>Client hides form after deadline, but a direct API call could still submit.</td><td>Add server-side deadline check in participant insert/update.</td></tr>
 </table>
 
-<p><b>Security architecture note:</b> Nod deliberately has no user accounts - zero friction is a core product principle (55% of survey respondents won't download an app, let alone create an account). The manage_key and response_token pattern provides pseudo-auth for MVP. V1.1 should evaluate whether lightweight auth (magic links, passkeys) can be added without breaking the "30-second participation" promise.</p>
+<p><b>Security architecture note:</b> Nod deliberately has no user accounts - zero friction is a core product principle (55% of survey respondents won't download an app, let alone create an account). This means traditional auth-based security is unavailable. The manage_key and response_token pattern provides pseudo-auth for MVP. V1.1 should evaluate whether lightweight auth (magic links, passkeys) can be added without breaking the "30-second participation" promise.</p>
 
 <h3>Diagrams</h3>
 
-<p>Mermaid diagram source available at <code>PRD-diagrams.md</code>. Rendered versions below. Includes: Organiser Flow, Participant Flow, System Architecture, Trip Lifecycle, Commitment Ratchet, and Data Flow diagrams.</p>
-
-<p><i>[Insert rendered Mermaid diagrams here - paste code from PRD-diagrams.md into <a href="https://mermaid.live">mermaid.live</a> to export as PNG]</i></p>
+<p>Rendered from Mermaid source at <code>PRD-diagrams.md</code>. Includes: Organiser Flow, Participant Flow, System Architecture, Trip Lifecycle, Commitment Ratchet, and Data Flow diagrams.</p>
 
 <h3>First-Time User Flows</h3>
 
@@ -446,34 +424,59 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <h3>System Architecture</h3>
 
-<table>
-<tr><th>Layer</th><th>Component</th><th>Role</th></tr>
-<tr><td rowspan="7"><b>Client</b><br>(Browser, mobile-first)</td><td>page.tsx</td><td>Landing page</td></tr>
-<tr><td>create-trip-form.tsx</td><td>Trip creation (client component)</td></tr>
-<tr><td>trip-view.tsx</td><td>Main trip view (organiser/participant split)</td></tr>
-<tr><td>participant-form.tsx</td><td>Voting form (30-second interaction)</td></tr>
-<tr><td>vote-results.tsx</td><td>Tallies + lock button (organiser only)</td></tr>
-<tr><td>itinerary-view.tsx</td><td>AI plan + TripSummary (organiser only)</td></tr>
-<tr><td>share-bar.tsx / status-bar.tsx</td><td>Copy/WhatsApp/iMessage + deadline display</td></tr>
-<tr><td><b>Server</b><br>(Next.js 16, Vercel)</td><td>actions.ts</td><td>Server actions: createTrip, submitParticipant, updateParticipant, lockTrip</td></tr>
-<tr><td><b>API</b></td><td>/api/generate-itinerary/route.ts</td><td>Gemini 2.5 Flash endpoint. Group context prompt. 30s timeout via AbortController.</td></tr>
-<tr><td rowspan="2"><b>Database</b><br>(Supabase)</td><td>PostgreSQL</td><td>trips + participants tables. Secrets (manage_key, response_token) stripped from client payloads.</td></tr>
-<tr><td>Realtime</td><td>INSERT/UPDATE subscriptions on both tables. Publication includes ALL columns.</td></tr>
-<tr><td rowspan="4"><b>Libraries</b></td><td>holidays.ts</td><td>2026 Indian national holidays (hardcoded) + long weekend computation</td></tr>
-<tr><td>calendar.ts</td><td>Google Calendar URL generation + .ics file download</td></tr>
-<tr><td>slug.ts</td><td>Unique trip slug generation</td></tr>
-<tr><td>supabase.ts</td><td>Supabase client initialisation</td></tr>
-</table>
+<pre>
+Browser (Mobile-first)
+  |
+  +-- Landing Page (page.tsx)
+  +-- Trip Creation Form (create-trip-form.tsx)
+  +-- Trip View (trip-view.tsx)
+  |     +-- Motivation Block
+  |     +-- Participant Form (participant-form.tsx)
+  |     +-- Confirmation Block
+  |     +-- Share Bar (share-bar.tsx)
+  |     +-- Status Bar (status-bar.tsx)
+  +-- Vote Results (vote-results.tsx)
+  +-- Itinerary View (itinerary-view.tsx)
+  |
+  +-- Server Actions (actions.ts)
+  |     +-- createTrip()
+  |     +-- submitParticipant()
+  |     +-- updateParticipant()
+  |     +-- lockTrip()
+  |
+  +-- API Route (/api/generate-itinerary/route.ts)
+  |     +-- Gemini 2.5 Flash
+  |     +-- 30s timeout (AbortController)
+  |     +-- Group context prompt
+  |
+  +-- Supabase
+  |     +-- PostgreSQL: trips, participants tables
+  |     +-- Realtime: INSERT/UPDATE subscriptions
+  |     +-- Publication: ALL columns (drop + re-add after schema changes)
+  |
+  +-- Utility Libraries
+        +-- holidays.ts (2026 Indian national holidays)
+        +-- calendar.ts (Google Calendar URL + .ics generation)
+        +-- slug.ts (unique trip slug generation)
+        +-- supabase.ts (client initialisation)
+</pre>
 
 <h3>Trip Lifecycle States</h3>
 
-<table>
-<tr><th>State</th><th>Trigger</th><th>What's Visible</th><th>What's Possible</th></tr>
-<tr><td><b>CREATED</b></td><td>Organiser submits form</td><td>Trip page with share bar + empty response section</td><td>Share link, vote as organiser</td></tr>
-<tr><td><b>OPEN</b></td><td>Trip page is live</td><td>Motivation block, form, real-time response count</td><td>Participants vote, organiser watches tallies</td></tr>
-<tr><td><b>LOCKED</b></td><td>Organiser taps Lock</td><td>Final tallies, calendar links, "Generate Itinerary" button</td><td>No more votes or edits. Organiser generates plan.</td></tr>
-<tr><td><b>PLANNED</b></td><td>Itinerary generated</td><td>Organiser: day-by-day plan + TripSummary. Participant: "The plan is ready!"</td><td>Organiser reviews. Calendar download. Share flow (V1.1).</td></tr>
-</table>
+<pre>
+CREATED --> OPEN --> LOCKED --> PLANNED
+  |           |        |          |
+  Trip form   Votes    Freeze     AI itinerary
+  submitted   arrive   voting     generated
+              via RT              visible to all
+</pre>
+
+<ul>
+<li><b>CREATED</b>: Organiser submits form. Trip exists in Supabase with slug + manage_key. No participants yet.</li>
+<li><b>OPEN</b>: Trip page is live. Participants vote. Organiser sees real-time updates. Status bar shows deadline.</li>
+<li><b>LOCKED</b>: Organiser freezes voting. Results are final. Calendar links appear. No more submissions or edits.</li>
+<li><b>PLANNED</b>: AI itinerary generated from group context. Visible to everyone. TripSummary shows cost vs. budget. Next steps booking links shown.</li>
+</ul>
 
 <h3>How We Built Nod</h3>
 
@@ -489,10 +492,10 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <p><b>Week 3: Build + deploy</b></p>
 
-<p>Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server components by default. Key build decisions:</p>
+<p>Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server components by default. The key build decisions:</p>
 
 <ul>
-<li><b>No auth</b>: manage_key in URL = organiser. No key = participant. Zero friction.</li>
+<li><b>No auth</b>: manage_key saved to localStorage on first visit, stripped from URL. No key = participant. Zero friction.</li>
 <li><b>Response tokens</b>: UUID per submission in localStorage. Enables edit without login.</li>
 <li><b>Supabase Realtime</b>: Replaced polling with INSERT/UPDATE subscriptions. Publication must include ALL columns (learned the hard way after schema migration broke realtime).</li>
 <li><b>Holiday picker</b>: Hardcoded 2026 Indian holidays in <code>lib/holidays.ts</code>. Computed long weekends. Curated list, not calendar grid.</li>
@@ -507,19 +510,52 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 <p>Attempted dark mode, reverted (Tailwind v4 <code>@theme</code> is build-time only, can't nest in <code>@media</code> query). Documented as post-MVP.</p>
 
-<h3>Key Iterations That Shaped the Product</h3>
+<p><b>Key iterations that shaped the product:</b></p>
 
 <ol>
 <li><b>Motivation block.</b> Originally the form was just a form. Testing showed no reason for a participant to fill it out. Added: named accountability ("Priya and Rahul are in"), deadline consequence ("majority decides without you"), tiny ask framing ("takes 30 seconds"). Behavioural levers ranked: named accountability &gt; deadline &gt; tiny ask &gt; instant feedback.</li>
 
 <li><b>Organiser as participant.</b> Initially the organiser had a separate admin view. Changed to: organiser votes through the same form (name pre-filled, RSVP hidden). This reduced code complexity and made the organiser a participant, not just a manager.</li>
 
-<li><b>Calendar as commitment device.</b> Calendar links were originally at the bottom of the itinerary. Moved them to appear after lock, before itinerary. The commitment ratchet: vote (low commitment) &gt; lock (frozen) &gt; calendar (date blocked) &gt; itinerary (concrete plan). Each step makes backing out harder.</li>
+<li><b>Calendar as commitment device.</b> Calendar links were originally at the bottom of the itinerary. Moved them to appear after lock, before itinerary. The commitment ratchet: vote (low commitment) &gt; lock (frozen) &gt; calendar (date blocked in your calendar) &gt; itinerary (concrete plan). Each step makes backing out harder.</li>
 
 <li><b>Budget label clarity.</b> "Budget" was ambiguous. Some users entered per-day, others per-person, others total trip. Fixed with explicit label: "Total trip budget (include travel, stay, food, and activities)." One label change, zero confusion.</li>
 
-<li><b>Itinerary visibility.</b> Initially organiser-only. Changed back to visible to everyone once generated, with a "Share Plan" bar so the organiser can proactively send the link via WhatsApp/iMessage. Gating added no value - the organiser already reviewed by generating. Next steps booking links appear below for the whole group.</li>
+<li><b>Itinerary visibility.</b> Initially organiser-only. Changed back to visible to everyone once generated, with a "Share Plan" bar so the organiser can proactively send the link via WhatsApp/iMessage. Gating added no value - the organiser already reviewed by generating. Next steps booking links (Booking.com, Airbnb, MakeMyTrip, ixigo, Klook, Viator) appear below for the whole group.</li>
 </ol>
+
+<h3>File Structure</h3>
+
+<pre>
+nod/
+  app/
+    page.tsx                      Landing page
+    create-trip-form.tsx          Trip creation (client component)
+    actions.ts                    Server actions (create, submit, lock)
+    layout.tsx                    Root layout
+    error.tsx                     Error boundary
+    loading.tsx                   Loading spinner
+    api/
+      generate-itinerary/
+        route.ts                  Gemini 2.5 Flash endpoint
+    trip/
+      [slug]/
+        page.tsx                  Trip page (server component)
+        trip-view.tsx             Main trip view (organiser/participant split)
+        participant-form.tsx      Voting form
+        vote-results.tsx          Tallies + lock button
+        itinerary-view.tsx        AI plan + TripSummary
+        share-bar.tsx             Copy/WhatsApp/iMessage
+        status-bar.tsx            Deadline display
+  lib/
+    supabase.ts                   Client initialisation
+    holidays.ts                   2026 Indian holidays
+    calendar.ts                   Google Cal URL + .ics generation
+    slug.ts                       Unique slug generation
+  research/                       Interviews, surveys, competitor analysis
+  insights/                       Personas, synthesis, brainstorms
+  knowledge/                      Session journals, decisions, principles
+</pre>
 
 </body>
 </html>
