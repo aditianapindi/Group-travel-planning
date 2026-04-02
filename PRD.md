@@ -17,6 +17,7 @@ Aditi Anapindi  |  April 2026  |  Status: Prototype Live
 03  Proposed Solution - 5
 04  Implementation Plan - 6
 05  Instruction Design - 7
+06  Appendix - 10
 
 ---
 
@@ -69,7 +70,7 @@ WhatsApp polls fail not because people are lazy, but because: no consequence for
 
 ### The Group Trip Journey: Where Behaviour Breaks Down
 
-Every group trip follows the same arc. The problem isn't any single stage - it's that each stage has a behavioural failure mode that compounds into the next. **60% of trips die in stages 2-5** before a single booking is made.
+Every group trip follows the same arc. The problem isn't any single stage - it's that each stage has a behavioural failure mode that compounds into the next. **60% of group trips never happen** [NovaTrek] - most die in stages 2-5 before a single booking is made.
 
 | Stage | What Happens Today | Behavioural Failure | Nod's Response |
 |-------|-------------------|--------------------|-----------------------|
@@ -144,7 +145,7 @@ Nod is a **group decision engine**, not a planning tool. It collapses the 50-mes
 
 ### Why This Won't Be Failure #301
 
-The 300 dead startups were **planning tools**. Nod is a **decision tool**. The difference:
+The ~300 dead startups were **planning tools**. Nod is a **decision tool**. The difference:
 
 - **No app download** - a shareable link works inside WhatsApp, not against it. Solves adoption friction (Thesis C).
 - **Participant experience is the product** - 30-second form, not a feature-rich dashboard. Every dead startup built for the organiser alone.
@@ -169,16 +170,18 @@ A fully functional MVP deployed at **nod.sunforged.work** covering the complete 
 
 | Feature | What It Does |
 |---------|-------------|
-| **Trip creation** | Name, destinations, deadline, holiday long weekend picker (2026 Indian holidays), budget guidance |
+| **Trip creation** | Name, destinations, deadline, holiday long weekend picker (2026 Indian holidays), custom date input, budget guidance |
 | **Shareable link** | Unique slug per trip. Copy, WhatsApp, iMessage share buttons. |
 | **Participant form** | Name, RSVP (yes/maybe/no), destination vote, date vote, budget range. 30 seconds. |
 | **Motivation block** | Named accountability ("Priya and Rahul are in"), deadline with consequence, "takes 30 seconds" nudge |
 | **Vote results** | Destination tally + date tally + budget range overlap. Real-time via Supabase Realtime. |
 | **Trip lock** | Organiser locks when ready. Inline confirmation (not browser alert). |
-| **AI itinerary** | Gemini 2.5 Flash generates day-by-day plan fitted to group's destination, budget, dates, and size |
+| **AI itinerary** | Gemini 2.5 Flash generates day-by-day plan. Collapsible timeline layout, cost summary, alternative swapping. |
+| **Share plan** | Copy link + WhatsApp + iMessage bar for organiser to share itinerary with group |
+| **Next steps** | Outbound booking links (Booking.com, Airbnb, MakeMyTrip, ixigo, Zoomcar, Klook, Viator) pre-filled with trip data |
 | **Calendar links** | Google Calendar URL + .ics download after lock. Trip name, dates, destination, group size, URL included. |
 | **Response tokens** | UUID per submission, stored in localStorage. Enables edit without organiser mediation. |
-| **Organiser/participant split** | manage_key URL param = organiser. No key = participant. Different UX for each. |
+| **Organiser/participant split** | manage_key in localStorage = organiser (stripped from URL on first visit). No key = participant. Different UX for each. |
 
 ### Technology Stack
 
@@ -195,14 +198,14 @@ A fully functional MVP deployed at **nod.sunforged.work** covering the complete 
 | Phase | Key Steps |
 |-------|-----------|
 | **Now (Validation)** | Share MVP with cohort + real friend groups. Collect: do participants actually respond? Does the organiser share the link? |
-| **Next (V1.1)** | Itinerary share flow (organiser > participants). Destination price estimates via Gemini at creation. Experience recommendations with affiliate links (Viator/Klook API). Expense splitting (simple, group-fitted). |
+| **Next (V1.1)** | Destination price estimates via Gemini at creation. Experience recommendations with real affiliate tracking (Viator/Klook API). Expense splitting (simple, group-fitted). |
 | **Later (V2)** | Trip Trigger (proactive nudges when constraints align). Multi-trip dashboard. Dark mode. WhatsApp Business API integration for native entry. Anti-Agent recommendations. |
 
 ### Described But Not Built
 
 | Feature | Why Deferred | PRD Status |
 |---------|-------------|------------|
-| Itinerary share flow | Organiser reviews first - share is a deliberate action, not auto-visible | Designed |
+| Itinerary share flow | Built. Itinerary visible to all once generated. Share Plan bar (copy + WhatsApp + iMessage) lets organiser proactively notify the group. | Built |
 | Destination price estimates | Needs Gemini API call at trip creation + schema change | Designed |
 | Experience affiliate links | Needs Viator/Klook API integration | Thesis validated |
 | Multi-trip dashboard | No need until repeat usage proven | Conceptual |
@@ -273,7 +276,7 @@ After submitting, the participant sees: how many people have responded, their na
 
 **Screen 6: Vote Results + Lock** - ~30s (organiser only)
 
-Vote results are shown in a 2-column card grid: **Where** (destination tallies with map pin icon) and **When** (date tallies with calendar icon). The leading option is highlighted with bold text and a green bar; others are muted. Below, a compact **Responded** card shows participant name pills with a people icon. Status bar switches from "24h left to vote" to "Trip locked" or "Plan ready" based on trip state.
+Vote results are shown in a 2-column card grid: **Where** (destination tallies with map pin icon) and **When** (date tallies with calendar icon). The leading option is highlighted with bold text and a green bar; others are muted. Budget overlap is shown in the status bar when 2+ participants have submitted ranges. Below, a compact **Responded** card shows participant name pills with a people icon. Status bar switches from "24h left to vote" to "Trip locked" or "Plan ready" based on trip state.
 
 When ready, a "Lock Trip" button with an **inline confirmation** (not a browser `confirm()` dialog) freezes voting.
 
@@ -294,16 +297,6 @@ Finally, a **Next Steps** section provides outbound booking links in a 2x2 grid:
 > Look for: The collapsible days - tap Day 2/3 headers to expand. The timeline layout is ~60% less scroll than a card-per-activity design. Calendar links (Google Calendar + .ics) appear after lock with compact Google logo + download icon. The commitment ratchet: vote > lock > calendar > itinerary > booking links.
 
 ---
-
-### How We Built Nod
-
-**From research to working prototype in 4 sessions.**
-
-**Session 1-2: Research.** 22+ interviews, 9-person survey, 65+ secondary sources. Three weeks of discovery before any code. The core insight: this is a decision problem, not a planning problem. The category risk analysis (300 dead startups, 5 failure modes, 3 survivors) shaped every product decision that followed.
-
-**Session 3: Build + verify.** Built the core flow: create > share > respond > lock > generate. Added participant motivation design (named accountability, deadline consequence, 30-second form). Switched from polling to Supabase Realtime. Stress-tested every persona's view. Caught rendering bugs by mentally walking through each screen as organiser AND participant before handoff.
-
-**Session 4: Harden.** Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads - `select(*)` leaks secrets via Next.js serialisation). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 `@theme` is build-time only). Deployed to Vercel with custom domain.
 
 ### Key Technical Decisions
 
@@ -456,7 +449,7 @@ The critical finding: this is the highest-failure vertical in travel (~300 dead 
 
 Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server components by default. The key build decisions:
 
-- **No auth**: manage_key in URL = organiser. No key = participant. Zero friction.
+- **No auth**: manage_key saved to localStorage on first visit, stripped from URL. No key = participant. Zero friction.
 - **Response tokens**: UUID per submission in localStorage. Enables edit without login.
 - **Supabase Realtime**: Replaced polling with INSERT/UPDATE subscriptions. Publication must include ALL columns (learned the hard way after schema migration broke realtime).
 - **Holiday picker**: Hardcoded 2026 Indian holidays in `lib/holidays.ts`. Computed long weekends. Curated list, not calendar grid.
