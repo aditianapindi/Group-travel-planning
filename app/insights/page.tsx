@@ -191,7 +191,7 @@ export default async function InsightsPage() {
         <p className="text-sm text-ink mt-1">
           Every trip teaches Nod what groups actually want. Budget ranges reveal real spending comfort.
           Destination votes surface hidden preferences. RSVP patterns show who commits and who hesitates.
-          This is the group intelligence that no individual ChatGPT prompt can access.
+          This is group intelligence that no individual AI prompt can access.
         </p>
       </div>
     </main>
