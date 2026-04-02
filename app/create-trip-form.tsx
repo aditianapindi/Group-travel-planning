@@ -198,13 +198,13 @@ export function CreateTripForm() {
         )}
       </fieldset>
 
-      {/* Date options — long weekends */}
+      {/* Date options — long weekends as wrapping pills */}
       {longWeekends.length > 0 && (
         <fieldset>
           <legend className="block text-sm font-medium text-ink mb-1.5">
-            When? <span className="text-muted font-normal">(pick up to 3 for the group to vote on)</span>
+            When? <span className="text-muted font-normal">(pick up to 3)</span>
           </legend>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {longWeekends.map((option) => {
               const selected = selectedDates.some((d) => d.start === option.start);
               return (
@@ -214,23 +214,31 @@ export function CreateTripForm() {
                   role="checkbox"
                   aria-checked={selected}
                   onClick={() => toggleDate(option)}
-                  className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left min-h-[44px] transition-colors ${
+                  className={`rounded-full border px-3 py-2 text-sm min-h-[40px] transition-colors ${
                     selected
-                      ? "bg-primary/5 border-primary text-ink"
-                      : "bg-white border-border text-secondary hover:border-primary"
+                      ? "bg-primary text-white border-primary"
+                      : "bg-white border-border text-ink hover:border-primary"
                   }`}
                 >
-                  <span className="text-sm">
-                    <strong className={selected ? "text-primary" : "text-ink"}>
-                      {formatDateRange(option.start, option.end)}
-                    </strong>
-                    <span className="ml-2 text-muted">{option.days}d</span>
-                  </span>
-                  <span className="text-xs text-muted ml-2 text-right">{option.label}</span>
+                  {formatDateRange(option.start, option.end)} <span className={selected ? "text-white/70" : "text-muted"}>{option.days}d</span>
                 </button>
               );
             })}
           </div>
+          {/* Show holiday names for selected dates */}
+          {selectedDates.filter(d => longWeekends.some(lw => lw.start === d.start)).length > 0 && (
+            <div className="mt-2 flex flex-col gap-0.5">
+              {selectedDates
+                .map(d => longWeekends.find(lw => lw.start === d.start))
+                .filter(Boolean)
+                .map(lw => (
+                  <p key={lw!.start} className="text-xs text-secondary">
+                    {formatDateRange(lw!.start, lw!.end)}: {lw!.label}
+                  </p>
+                ))
+              }
+            </div>
+          )}
         </fieldset>
       )}
 
