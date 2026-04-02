@@ -470,17 +470,17 @@ CREATED --> OPEN --> LOCKED --> PLANNED
 
 ### How We Built Nod
 
-**Week 1-2: Discovery (no code)**
+**Days 1-3: Discovery (no code)**
 
 Started with 10 user interviews across friend groups, families, and trip organisers. Mapped the group trip journey end-to-end. Ran a 9-person survey to quantify pain points. Conducted competitive analysis of 14 tools (Wanderlog, TripIt, Splitwise, Lambus, Tripsy, Layla AI, Mindtrip, and others). Analysed 65+ secondary sources including academic research on social loafing, paradox of choice, and commitment devices.
 
-The critical finding: this is the highest-failure vertical in travel (~300 dead startups). We spent two full days on category risk analysis before writing a single line of product spec. The output: 5 failure modes, 3 survivor strategies, and a clear thesis (C+D: WhatsApp-compatible link + monetise during trip via experience affiliate).
+The critical finding: this is the highest-failure vertical in travel (~300 dead startups). We spent two full days on category risk analysis before writing a single line of product spec. The output: 5 failure modes, 3 survivor strategies, and a clear thesis (WhatsApp-compatible link + monetise during trip via experience affiliate).
 
-**Week 2: Batch 2 interviews + synthesis**
+**Days 4-5: Batch 2 interviews + synthesis**
 
 12 additional interviews (Akanksha's cohort) broke three assumptions: budget IS the root cause (not scheduling), the organiser is a network node (not the persona), and alignment is the entire product (not planning). These findings restructured the MVP scope from 12 features to 7.
 
-**Week 3: Build + deploy**
+**Days 6-7: Build + deploy**
 
 Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server components by default. The key build decisions:
 
@@ -492,9 +492,9 @@ Built in Next.js 16 (App Router) with Supabase and Gemini 2.5 Flash. Server comp
 
 Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).
 
-**Week 3-4: Harden + verify**
+**Day 8: Harden + verify**
 
-Comprehensive E2E testing found and fixed: manage_key leaked via `select(*)`, duplicate submissions, budget min > max sent to Gemini, React key collisions, `redirect()` error handling, and a space-concatenation bug ("Aditiwill" instead of "Aditi will"). Added date voting chain, response token edit flow, inline lock confirmation, calendar links (Google Cal + .ics).
+Comprehensive E2E testing found and fixed: manage_key leaked via `select(*)`, duplicate submissions, budget min > max sent to Gemini, React key collisions, `redirect()` error handling, and a space-concatenation bug ("Aditiwill" instead of "Aditi will"). Added date voting chain, response token edit flow, inline lock confirmation, calendar links (Google Cal + .ics). Ran a security audit against OWASP top 10.
 
 Attempted dark mode, reverted (Tailwind v4 `@theme` is build-time only, can't nest in `@media` query). Documented as post-MVP.
 
