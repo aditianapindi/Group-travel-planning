@@ -209,22 +209,43 @@ A fully functional MVP deployed at **nod.sunforged.work** covering the complete 
 
 ### Phased Roadmap
 
-| Phase | Key Steps |
-|-------|-----------|
-| **Now (Validation)** | Share MVP with cohort + real friend groups. Collect: do participants actually respond? Does the organiser share the link? |
-| **Next (V1.1)** | Destination price estimates via Gemini at creation. Experience recommendations with real affiliate tracking (Viator/Klook API). Expense splitting (simple, group-fitted). |
-| **Later (V2)** | Trip Trigger (proactive nudges when constraints align). Multi-trip dashboard. Dark mode. WhatsApp Business API integration for native entry. Anti-Agent recommendations. |
+**Now: Validation**
+Share MVP with cohort + real friend groups. Key questions to answer: does the organiser share the link? Do participants actually respond? Does the group reach lock?
+
+**V1.1: Strengthen the core loop**
+
+| Feature | What it unlocks |
+|---------|----------------|
+| Lightweight auth (magic link / passkey) | Enables proper RLS, multi-trip access, organiser profile. Passkeys preserve zero-friction ethos - no passwords. |
+| Organiser dashboard | One view for all trips: active, locked, planned. Create new trip from dashboard. Trip history. |
+| Destination price estimates | Gemini generates ballpark costs at trip creation so the group sees "Goa ~₹12K/person, Manali ~₹8K/person" before voting. |
+| Expense splitting | Simple, group-fitted. Tied to itinerary activities. Replaces Splitwise for the trip context. |
+| Experience affiliate tracking | Real Viator/Klook API integration with tracking IDs. Revenue begins. |
+| AI nudge messages | Pre-written WhatsApp messages for the organiser: "Waiting on Yash, Priya - 24h left to vote." |
+| Server-side deadline enforcement | Currently client-only. V1.1 blocks late submissions at the database level. |
+
+**V2: Retention + monetisation**
+
+| Feature | What it unlocks |
+|---------|----------------|
+| Trip Trigger | Proactive nudge to the organiser when group constraints align with a deal or holiday. "Your group can all do Oct 15-18 and Goa fits your budget - flights just dropped 20%." Uses accumulated data from past trips. |
+| Repeat group detection | Recognise when the same people travel together again. Pre-fill preferences, suggest destinations based on past votes. This is the data flywheel in action. |
+| Anti-Agent recommendations | AI activity suggestions optimised for the group's combined constraints, not affiliate commissions. Full transparency: "Suggesting this because 4/6 voted cultural + it's within your ₹8-12K range." |
+| WhatsApp Business API | Native entry point - organiser creates a trip inside WhatsApp. Solves the "work with WhatsApp, not against it" thesis. |
+| Dark mode | Tailwind v4 dark: variants per component. |
+| Offline itinerary | Downloaded plan accessible without connectivity during the trip. |
 
 ### Described But Not Built
 
-| Feature | Why Deferred | PRD Status |
-|---------|-------------|------------|
-| Itinerary share flow | Built. Itinerary visible to all once generated. Share Plan bar (copy + WhatsApp + iMessage) lets organiser proactively notify the group. | Built |
-| Destination price estimates | Needs Gemini API call at trip creation + schema change | Designed |
-| Experience affiliate links | Needs Viator/Klook API integration | Thesis validated |
+| Feature | Why Deferred | Status |
+|---------|-------------|--------|
+| Destination price estimates | Needs Gemini API call at creation + schema change | Designed |
+| Experience affiliate links | Needs Viator/Klook API integration with tracking | Thesis validated |
+| Expense splitting | Splitwise exists for MVP. Build once core loop is proven. | Designed |
+| AI nudge messages | WhatsApp-ready messages for organiser to paste | Designed |
+| Lightweight auth | Evaluate passkeys vs magic links. Must not break 30-second participation. | Planned for V1.1 |
 | Multi-trip dashboard | No need until repeat usage proven | Conceptual |
-| Dark mode | Tailwind v4 @theme incompatible with @media nesting - needs dark: variants per component | Attempted, reverted |
-| AI nudge messages | WhatsApp-ready messages for organiser to paste - "Waiting on Yash, Priya" | Designed |
+| Dark mode | Tailwind v4 @theme incompatible with @media nesting | Attempted, reverted |
 
 ---
 
