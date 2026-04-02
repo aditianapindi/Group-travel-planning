@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nod - Group Trip Decision Engine
 
-## Getting Started
+**"Get everyone's nod."** Collapses the 50-message, 2-week trip alignment ordeal into 5 minutes via a shareable link.
 
-First, run the development server:
+**Live prototype:** [nod.sunforged.work](https://nod.sunforged.work)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## What it does
+
+Organiser creates a trip in 60 seconds. Shares a link in WhatsApp. Each participant clicks and responds in 30 seconds: when are you free, how much can you spend, where do you want to go. Engine computes overlap. Organiser locks. AI generates a fitted itinerary. Done.
+
+## Key features
+
+- **Trip creation** with holiday long weekend picker (2026 Indian holidays) + custom date input
+- **Shareable link** - no app download, no login, no sign-up
+- **Participant form** - 30-second interaction: RSVP, destination vote, date vote, budget range
+- **Motivation block** - named accountability, deadline with consequence, behavioural nudges
+- **Real-time vote results** - destination + date tallies, budget overlap via Supabase Realtime
+- **Trip lock** with inline confirmation
+- **AI itinerary** - Gemini 2.5 Flash generates day-by-day plan from group context
+- **Share plan bar** - copy link + WhatsApp + iMessage for organiser
+- **Next steps** - outbound booking links (Booking.com, Airbnb, MakeMyTrip, ixigo, Zoomcar, Klook, Viator)
+- **Calendar links** - Google Calendar + .ics download after lock
+- **Group insights dashboard** - live analytics at [/insights](https://nod.sunforged.work/insights)
+
+## Tech stack
+
+| Layer | Choice |
+|-------|--------|
+| Framework | Next.js 16 (App Router) |
+| Database | Supabase (PostgreSQL + Realtime) |
+| AI | Gemini 2.5 Flash |
+| Styling | Tailwind v4 |
+| Deploy | Vercel |
+
+## Project structure
+
+```
+app/                  Pages, components, API routes
+lib/                  Supabase, holidays, calendar, slug utilities
+research/             Competitor analysis, user interviews, surveys
+insights/             Personas, synthesis, brainstorms
+knowledge/            Session journals, decisions, product principles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## PRD and documentation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Document | Description |
+|----------|-------------|
+| [PRD.md](PRD.md) | Full product requirements document (markdown) |
+| [PRD.html](PRD.html) | Google Docs-friendly version (upload via File > Open) |
+| [PRD-diagrams.md](PRD-diagrams.md) | Mermaid diagram source code |
+| [PRD-diagrams.html](PRD-diagrams.html) | Rendered diagrams (open in browser) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Running locally
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Requires `.env.local` with:
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+GEMINI_API_KEY=...
+```

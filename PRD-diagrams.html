@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nod — PRD Diagrams</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF9F7;
+    --surface: #F7F7F7;
+    --ink: #1A1A1A;
+    --secondary: #6B6B6B;
+    --muted: #8E8E8E;
+    --border: #E5E5E5;
+    --primary: #4A6741;
+    --primary-hover: #3D5636;
+    --success: #2D7A4F;
+    --error: #C53030;
+    --card: #FFFFFF;
+    --tag-bg: #EEF2ED;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: 52px 64px 36px;
+    border-bottom: 2px solid var(--ink);
+    max-width: 1280px;
+    margin: 0 auto;
+    gap: 24px;
+  }
+
+  .header-left {}
+
+  .tag-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 3px 9px;
+    border-radius: 2px;
+  }
+
+  .tag.green { background: var(--tag-bg); border-color: #A8C0A3; color: var(--primary); }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4vw, 58px);
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-meta {
+    text-align: right;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.9;
+    white-space: nowrap;
+  }
+
+  .header-meta strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ── NAV ── */
+  nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  nav a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    padding: 14px 18px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--primary);
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px 80px;
+  }
+
+  /* ── DIAGRAM SECTION ── */
+  .diagram-section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .diagram-section:nth-child(2) { animation-delay: 0.05s; }
+  .diagram-section:nth-child(3) { animation-delay: 0.10s; }
+  .diagram-section:nth-child(4) { animation-delay: 0.15s; }
+  .diagram-section:nth-child(5) { animation-delay: 0.20s; }
+  .diagram-section:nth-child(6) { animation-delay: 0.25s; }
+  .diagram-section:nth-child(7) { animation-delay: 0.30s; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+
+  .section-number {
+    font-family: var(--serif);
+    font-size: 60px;
+    line-height: 1;
+    color: var(--border);
+    flex-shrink: 0;
+    margin-top: -6px;
+    user-select: none;
+  }
+
+  .section-text {}
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.5vw, 30px);
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  /* ── DIAGRAM CARD ── */
+  .diagram-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 40px;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .diagram-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--primary);
+  }
+
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    min-height: 80px;
+  }
+
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+  }
+
+  footer span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--primary);
+    font-size: 18px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    header, nav, main, footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    header { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+    .diagram-card { padding: 24px 16px; }
+    .section-number { font-size: 40px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    nav { display: none; }
+    .diagram-section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="tag-row">
+      <span class="tag green">PRD</span>
+      <span class="tag">Architecture</span>
+      <span class="tag">v0.1</span>
+    </div>
+    <h1><em>Nod</em> — System Diagrams</h1>
+  </div>
+  <div class="header-meta">
+    <strong>nod.sunforged.work</strong><br>
+    Group trips, decided.<br>
+    7 diagrams · April 2026
+  </div>
+</header>
+
+<nav>
+  <a href="#organiser">Organiser Flow</a>
+  <a href="#participant">Participant Flow</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#lifecycle">Trip Lifecycle</a>
+  <a href="#ratchet">Commitment Ratchet</a>
+  <a href="#create">Create Trip</a>
+  <a href="#respond">Participant Response</a>
+</nav>
+
+<main>
+
+  <!-- 1. Organiser Flow -->
+  <div class="diagram-section" id="organiser">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div class="section-text">
+        <div class="section-label">User Journey</div>
+        <h2>Organiser Flow</h2>
+        <p class="section-desc">First-time organiser experience from landing to a fully generated itinerary — including voting, locking, and calendar export.</p>
+      </div>
+    </div>
+    <div class="diagram-card" style="padding: 32px 36px;">
+      <style>
+        .org-flow { font-family: 'DM Sans', sans-serif; width: 100%; }
+        .org-phase-label {
+          font-family: 'DM Mono', monospace;
+          font-size: 9px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #8E8E8E;
+          margin-bottom: 10px;
+        }
+        .org-row {
+          display: flex;
+          align-items: center;
+          gap: 0;
+          margin-bottom: 8px;
+          flex-wrap: nowrap;
+        }
+        .org-node {
+          background: #F7F7F7;
+          border: 1px solid #E5E5E5;
+          border-radius: 6px;
+          padding: 9px 13px;
+          font-size: 12px;
+          color: #1A1A1A;
+          line-height: 1.35;
+          white-space: nowrap;
+          flex-shrink: 0;
+          text-align: center;
+        }
+        .org-node strong { display: block; font-size: 12px; font-weight: 600; }
+        .org-node span { display: block; font-size: 10.5px; color: #6B6B6B; margin-top: 1px; }
+        .org-node.primary {
+          background: #EEF2ED;
+          border-color: #A8C0A3;
+        }
+        .org-node.accent {
+          background: #4A6741;
+          border-color: #3D5636;
+          color: #fff;
+        }
+        .org-node.accent span { color: #c5d9c2; }
+        .org-node.decision {
+          background: #FAF9F7;
+          border-color: #E5E5E5;
+          border-radius: 4px;
+          font-size: 11.5px;
+          font-weight: 600;
+          font-style: italic;
+        }
+        .org-arrow {
+          font-size: 16px;
+          color: #8E8E8E;
+          padding: 0 6px;
+          flex-shrink: 0;
+          line-height: 1;
+        }
+        .org-arrow.down {
+          display: flex;
+          justify-content: center;
+          font-size: 18px;
+          color: #8E8E8E;
+          margin: 2px 0 2px 0;
+          padding: 0;
+        }
+        .org-branch {
+          display: flex;
+          align-items: flex-start;
+          gap: 0;
+          margin-top: 4px;
+        }
+        .org-branch-col {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .org-label {
+          font-family: 'DM Mono', monospace;
+          font-size: 9px;
+          color: #8E8E8E;
+          padding: 0 4px;
+          align-self: center;
+        }
+        .org-connector {
+          width: 1px;
+          background: #E5E5E5;
+          flex-shrink: 0;
+          align-self: stretch;
+          margin: 0 12px;
+        }
+        .org-divider {
+          border: none;
+          border-top: 1px dashed #E5E5E5;
+          margin: 16px 0;
+        }
+        .org-row-wrap {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+      </style>
+
+      <div class="org-flow">
+
+        <!-- Phase 1: Setup -->
+        <div class="org-phase-label">Phase 1 — Setup</div>
+        <div class="org-row">
+          <div class="org-node">
+            <strong>Land</strong>
+            <span>nod.sunforged.work</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node">
+            <strong>Tap "Plan a Trip"</strong>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node">
+            <strong>Fill creation form</strong>
+            <span>Name · destinations · deadline · budget</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node primary">
+            <strong>Submit</strong>
+            <span>Supabase creates trip + slug</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node primary">
+            <strong>Trip page live</strong>
+            <span>?key=manage_key in URL</span>
+          </div>
+        </div>
+
+        <hr class="org-divider">
+
+        <!-- Phase 2: Share & Collect -->
+        <div class="org-phase-label">Phase 2 — Share &amp; Collect</div>
+        <div class="org-row">
+          <div class="org-node">
+            <strong>Organiser votes</strong>
+            <span>Name pre-filled · RSVP hidden</span>
+          </div>
+          <div class="org-arrow" style="color:#E5E5E5">┐</div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0;">
+            <div class="org-node">
+              <strong>Share link</strong>
+              <span>Copy · WhatsApp · iMessage</span>
+            </div>
+            <div style="font-size:11px; color:#8E8E8E;">combines into ↓</div>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node primary">
+            <strong>Responses arrive</strong>
+            <span>Realtime via Supabase</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node decision">
+            Enough responses?
+          </div>
+          <div class="org-arrow">→ Yes →</div>
+          <div class="org-node primary">
+            <strong>Review tallies</strong>
+            <span>Destination · dates · budget overlap</span>
+          </div>
+        </div>
+
+        <hr class="org-divider">
+
+        <!-- Phase 3: Lock & Generate -->
+        <div class="org-phase-label">Phase 3 — Lock &amp; Generate</div>
+        <div class="org-row">
+          <div class="org-node">
+            <strong>Lock trip</strong>
+            <span>Inline confirmation</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node accent">
+            <strong>Generate itinerary</strong>
+            <span>Gemini 2.5 Flash · group context</span>
+          </div>
+          <div class="org-arrow" style="color:#fff0; text-shadow: none;">→</div>
+          <div class="org-arrow">→</div>
+          <div class="org-node">
+            <strong>Review AI plan</strong>
+            <span>Day-by-day · cost per person</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node accent">
+            <strong>Add to calendar</strong>
+            <span>Google Cal · .ics download</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Participant Flow -->
+  <div class="diagram-section" id="participant">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div class="section-text">
+        <div class="section-label">User Journey</div>
+        <h2>Participant Flow</h2>
+        <p class="section-desc">Zero-friction experience for invitees — no app download, no login. 30-second response with optional expansion and edit capability.</p>
+      </div>
+    </div>
+    <div class="diagram-card" style="padding: 32px 36px;">
+      <div class="org-flow">
+
+        <!-- Phase 1: Entry -->
+        <div class="org-phase-label">Phase 1 — Entry</div>
+        <div class="org-row">
+          <div class="org-node">
+            <strong>Receives link</strong>
+            <span>WhatsApp · iMessage</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node">
+            <strong>Opens link</strong>
+            <span>No app · no login</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node primary">
+            <strong>Motivation block</strong>
+            <span>"Priya and Rahul are in · 30 seconds"</span>
+          </div>
+        </div>
+
+        <hr class="org-divider">
+
+        <!-- Phase 2: Vote -->
+        <div class="org-phase-label">Phase 2 — Vote</div>
+        <div class="org-row">
+          <div class="org-node">
+            <strong>Fill core form</strong>
+            <span>RSVP · destination · dates · budget</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node decision">
+            Optional details?
+          </div>
+          <div class="org-arrow">→ Skip →</div>
+          <div class="org-node primary">
+            <strong>Submit</strong>
+            <span>Token saved to localStorage</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node primary">
+            <strong>Confirmation</strong>
+            <span>"3 people responded"</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0; margin: 6px 0 6px 196px;">
+          <div class="org-arrow" style="padding:0 6px; color:#8E8E8E; font-size:13px;">↓ Expand</div>
+          <div class="org-node" style="margin-left:4px;">
+            <strong>Optional details</strong>
+            <span>Headcount · group type · kids</span>
+          </div>
+          <div class="org-arrow" style="font-size:13px; color:#8E8E8E;">→ then Submit ↑</div>
+        </div>
+
+        <hr class="org-divider">
+
+        <!-- Phase 3: After -->
+        <div class="org-phase-label">Phase 3 — After Submission</div>
+        <div class="org-row">
+          <div class="org-node decision">
+            Return later?
+          </div>
+          <div class="org-arrow">→ Yes →</div>
+          <div class="org-node">
+            <strong>Edit link</strong>
+            <span>Pre-fills existing data</span>
+          </div>
+          <div class="org-arrow" style="color:#E5E5E5; font-size:12px;">·····</div>
+          <div class="org-node">
+            <strong>Waiting</strong>
+            <span>Done until notified</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node accent">
+            <strong>Trip locked</strong>
+            <span>Realtime update</span>
+          </div>
+          <div class="org-arrow">→</div>
+          <div class="org-node accent">
+            <strong>Plan is ready</strong>
+            <span>Organiser will share soon</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. System Architecture -->
+  <div class="diagram-section" id="architecture">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div class="section-text">
+        <div class="section-label">Technical</div>
+        <h2>System Architecture</h2>
+        <p class="section-desc">Next.js 16 App Router on Vercel, Supabase for persistence and realtime subscriptions, and Gemini 2.5 Flash for itinerary generation.</p>
+      </div>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart TB
+    subgraph Client["Browser (Mobile-first)"]
+        LP["Landing Page\npage.tsx"]
+        CF["Create Trip Form\ncreate-trip-form.tsx"]
+        TV["Trip View\ntrip-view.tsx"]
+        PF["Participant Form\nparticipant-form.tsx"]
+        VR["Vote Results\nvote-results.tsx"]
+        IV["Itinerary View\nitinerary-view.tsx"]
+        SB["Share Bar\nshare-bar.tsx"]
+    end
+
+    subgraph Server["Next.js 16 App Router (Vercel)"]
+        SA["Server Actions\nactions.ts"]
+        API["API Route\n/api/generate-itinerary"]
+    end
+
+    subgraph Supabase["Supabase"]
+        DB[("PostgreSQL\ntrips + participants")]
+        RT["Realtime\nINSERT / UPDATE\nsubscriptions"]
+    end
+
+    subgraph AI["Gemini 2.5 Flash"]
+        GEN["Itinerary Generation\nGroup context prompt\n30s timeout"]
+    end
+
+    subgraph Libs["Utility Libraries"]
+        HOL["holidays.ts\n2026 Indian holidays"]
+        CAL["calendar.ts\nGoogle Cal URL + .ics"]
+        SLG["slug.ts\nUnique trip slugs"]
+    end
+
+    CF --> SA
+    PF --> SA
+    SA --> DB
+    TV --> RT
+    VR --> RT
+    API --> GEN
+    GEN --> API
+    LP --> CF
+    TV --> SB
+
+    style Client fill:#FAF9F7,stroke:#E5E5E5
+    style Server fill:#F7F7F7,stroke:#E5E5E5
+    style Supabase fill:#4A6741,stroke:#3D5636,color:#fff
+    style AI fill:#2D7A4F,stroke:#1a5c3a,color:#fff
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Trip Lifecycle -->
+  <div class="diagram-section" id="lifecycle">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <div class="section-text">
+        <div class="section-label">State Machine</div>
+        <h2>Trip Lifecycle</h2>
+        <p class="section-desc">Five states from creation to planned, with transitions controlled by organiser actions and Gemini generation.</p>
+      </div>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> Created: Organiser submits form
+    Created --> Open: Trip page live
+    Open --> Open: Participants vote\n(Realtime updates)
+    Open --> Locked: Organiser taps Lock\n(inline confirmation)
+    Locked --> Planned: Generate Itinerary\n(Gemini 2.5 Flash)
+    Planned --> Planned: Organiser reviews\n+ adds to calendar
+
+    note right of Open
+        Votes collected:
+        - Destination (multivote)
+        - Dates (pill select)
+        - Budget (range input)
+        - RSVP (yes/maybe/no)
+    end note
+
+    note right of Locked
+        Voting frozen.
+        Results visible.
+        Calendar links appear.
+    end note
+
+    note right of Planned
+        Itinerary is organiser-only
+        until explicitly shared.
+        Participants see:
+        "The plan is ready!"
+    end note
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Commitment Ratchet -->
+  <div class="diagram-section" id="ratchet">
+    <div class="section-header">
+      <div class="section-number">05</div>
+      <div class="section-text">
+        <div class="section-label">Behavioural Design</div>
+        <h2>Commitment Ratchet</h2>
+        <p class="section-desc">Progressive commitment loop that converts passive group members into active participants through named accountability, deadlines, and calendar anchoring.</p>
+      </div>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid">
+flowchart LR
+    A["Share link\nin WhatsApp"] --> B["Vote\n30 seconds"]
+    B --> C["See others' votes\nNamed accountability"]
+    C --> D["Deadline hits\n'Majority decides\nwithout you'"]
+    D --> E["Organiser locks\nNo more changes"]
+    E --> F["Add to calendar\nGoogle Cal / .ics"]
+
+    A -.- A1["Low commitment\nJust a tap"]
+    B -.- B1["Small investment\nStated preferences"]
+    D -.- D1["Loss aversion\nFear of missing out"]
+    E -.- E1["Sunk cost\nAlready voted"]
+    F -.- F1["Calendar = real\nDate is blocked"]
+
+    style A fill:#FAF9F7,stroke:#E5E5E5
+    style B fill:#F0F4EF,stroke:#E5E5E5
+    style C fill:#D9E8D6,stroke:#E5E5E5
+    style D fill:#BDD4B9,stroke:#E5E5E5
+    style E fill:#8CB086,stroke:#E5E5E5
+    style F fill:#4A6741,stroke:#3D5636,color:#fff
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Organiser Creates Trip -->
+  <div class="diagram-section" id="create">
+    <div class="section-header">
+      <div class="section-number">06</div>
+      <div class="section-text">
+        <div class="section-label">Data Flow</div>
+        <h2>Organiser Creates Trip</h2>
+        <p class="section-desc">Sequence from form submission through slug generation, Supabase INSERT, and WhatsApp share — showing key security boundaries (manage_key).</p>
+      </div>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid">
+sequenceDiagram
+    participant O as Organiser
+    participant App as Next.js
+    participant DB as Supabase
+    participant WA as WhatsApp
+
+    O->>App: Fill creation form
+    App->>App: Generate slug + manage_key
+    App->>DB: INSERT trip (name, destinations,<br>date_options, deadline, manage_key)
+    DB-->>App: Return trip record
+    App->>App: Redirect to /trip/[slug]?key=manage_key
+    App-->>O: Show trip page + share bar
+    O->>WA: Tap share button
+    WA-->>WA: Pre-filled message:<br>"Vote on our trip! [link]"
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Participant Responds -->
+  <div class="diagram-section" id="respond">
+    <div class="section-header">
+      <div class="section-number">07</div>
+      <div class="section-text">
+        <div class="section-label">Data Flow</div>
+        <h2>Participant Responds</h2>
+        <p class="section-desc">End-to-end sequence for vote submission — including response_token generation, Supabase Realtime broadcast to organiser view, and localStorage persistence.</p>
+      </div>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid">
+sequenceDiagram
+    participant P as Participant
+    participant App as Next.js
+    participant DB as Supabase
+    participant RT as Supabase Realtime
+    participant O as Organiser View
+
+    P->>App: Open trip link (no ?key=)
+    App->>DB: SELECT trip + participants
+    DB-->>App: Trip data + existing responses
+    App-->>P: Show motivation block + form
+    P->>App: Submit vote (name, RSVP,<br>destinations, dates, budget)
+    App->>App: Generate response_token (UUID)
+    App->>DB: INSERT participant<br>(strip manage_key, response_token from client)
+    App-->>P: Save response_token to localStorage
+    App-->>P: Show confirmation + names
+    DB->>RT: Broadcast INSERT event
+    RT-->>O: New participant appears<br>(no refresh needed)
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>nod.sunforged.work · PRD v0.1 · April 2026</span>
+  <span class="footer-brand">Nod</span>
+  <span>7 diagrams · Mermaid.js</span>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#EEF2ED',
+      primaryTextColor: '#1A1A1A',
+      primaryBorderColor: '#E5E5E5',
+      lineColor: '#6B6B6B',
+      secondaryColor: '#F7F7F7',
+      tertiaryColor: '#FAF9F7',
+      background: '#FFFFFF',
+      mainBkg: '#F7F7F7',
+      nodeBorder: '#E5E5E5',
+      clusterBkg: '#FAF9F7',
+      clusterBorder: '#E5E5E5',
+      titleColor: '#1A1A1A',
+      edgeLabelBackground: '#FFFFFF',
+      actorBkg: '#F7F7F7',
+      actorBorder: '#E5E5E5',
+      actorTextColor: '#1A1A1A',
+      actorLineColor: '#8E8E8E',
+      signalColor: '#1A1A1A',
+      signalTextColor: '#1A1A1A',
+      noteBkgColor: '#EEF2ED',
+      noteTextColor: '#1A1A1A',
+      noteBorderColor: '#A8C0A3',
+      activationBkgColor: '#EEF2ED',
+      activationBorderColor: '#4A6741',
+      sequenceNumberColor: '#FFFFFF',
+      fontFamily: 'DM Sans, sans-serif',
+      fontSize: '14px',
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 20,
+    },
+    sequence: {
+      diagramMarginX: 24,
+      diagramMarginY: 16,
+      actorMargin: 60,
+      width: 150,
+      height: 48,
+      boxMargin: 10,
+      boxTextMargin: 6,
+      noteMargin: 10,
+      messageMargin: 36,
+    },
+    stateDiagram: {
+      dividerMargin: 10,
+      sizeUnit: 5,
+      padding: 8,
+    }
+  });
+
+  // Smooth scroll for nav
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Highlight active nav on scroll
+  const sections = document.querySelectorAll('.diagram-section');
+  const navLinks = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(a => {
+          a.style.color = a.getAttribute('href') === `#${id}` ? 'var(--ink)' : '';
+          a.style.borderBottomColor = a.getAttribute('href') === `#${id}` ? 'var(--primary)' : '';
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
