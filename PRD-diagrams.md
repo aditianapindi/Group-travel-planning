@@ -10,9 +10,9 @@ Paste each diagram into https://mermaid.live to render as PNG for Google Docs.
 flowchart TD
     A["nod.sunforged.work"] --> B["Landing Page\n'Group trips, decided.'"]
     B --> C["Tap 'Plan a Trip'"]
-    C --> D["Trip Creation Form\nName, destinations, deadline,\nholiday weekends, budget guidance"]
+    C --> D["Trip Creation Form\nName, destinations, deadline,\nholiday weekends + custom dates,\nbudget guidance"]
     D --> E["Submit\nSupabase creates trip + slug"]
-    E --> F["Trip Page\n?key=manage_key in URL"]
+    E --> F["Trip Page\nmanage_key saved to localStorage,\nstripped from URL"]
     F --> G["Organiser votes\nName pre-filled, RSVP hidden"]
     F --> H["Share link\nCopy / WhatsApp / iMessage"]
     H --> I["Wait for responses\nRealtime updates via Supabase"]
@@ -22,12 +22,14 @@ flowchart TD
     J -- "No" --> I
     K --> L["Lock Trip\nInline confirmation"]
     L --> M["Generate Itinerary\nGemini 2.5 Flash + group context"]
-    M --> N["Review AI plan\nDay-by-day + cost per person"]
-    N --> O["Add to Calendar\nGoogle Calendar / .ics download"]
+    M --> N["Review AI plan\nCollapsible timeline + cost summary"]
+    N --> O["Share plan with group\nCopy / WhatsApp / iMessage"]
+    O --> P["Next steps\nBooking links pre-filled"]
+    N --> Q["Add to Calendar\nGoogle Calendar / .ics download"]
 
     style A fill:#FAF9F7,stroke:#333
     style M fill:#e8f4e8,stroke:#333
-    style O fill:#e8f0fe,stroke:#333
+    style P fill:#e8f0fe,stroke:#333
 ```
 
 ---
@@ -49,7 +51,7 @@ flowchart TD
     J -- "Yes" --> K["Edit link shown\nPre-fills existing data"]
     J -- "No" --> L["Done until notified"]
     L --> M["Trip locked by organiser\nRealtime status update"]
-    M --> N["'The plan is ready!\nOrganiser will share it soon.'"]
+    M --> N["Sees itinerary +\nnext steps booking links"]
 
     style A fill:#25D366,stroke:#333,color:#fff
     style C fill:#fff3e0,stroke:#333
@@ -136,10 +138,10 @@ stateDiagram-v2
     end note
 
     note right of Planned
-        Itinerary is organiser-only
-        until explicitly shared.
-        Participants see:
-        "The plan is ready!"
+        Itinerary visible to everyone.
+        Share plan bar for organiser.
+        Next steps booking links.
+        Calendar download.
     end note
 ```
 
@@ -184,7 +186,8 @@ sequenceDiagram
     App->>App: Generate slug + manage_key
     App->>DB: INSERT trip (name, destinations,<br>date_options, deadline, manage_key)
     DB-->>App: Return trip record
-    App->>App: Redirect to /trip/[slug]?key=manage_key
+    App->>App: Redirect to /trip/[slug]
+    Note over App: manage_key saved to localStorage,<br>stripped from URL via replaceState
     App-->>O: Show trip page + share bar
     O->>WA: Tap share button
     WA-->>WA: Pre-filled message:<br>"Vote on our trip! [link]"
@@ -202,7 +205,7 @@ sequenceDiagram
     participant RT as Supabase Realtime
     participant O as Organiser View
 
-    P->>App: Open trip link (no ?key=)
+    P->>App: Open trip link
     App->>DB: SELECT trip + participants
     DB-->>App: Trip data + existing responses
     App-->>P: Show motivation block + form
