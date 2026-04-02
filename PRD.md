@@ -487,13 +487,13 @@ Key build decisions:
 - **Holiday picker**: Hardcoded 2026 Indian holidays in `lib/holidays.ts`. Computed long weekends. Curated list, not calendar grid.
 - **AI itinerary**: Single Gemini endpoint. Group context (destination, dates, budget, size) in prompt. 30-second timeout. Structured JSON response.
 
-**April 1: Harden + deploy (Session 4)**
+**April 1: Harden, polish + deploy (Session 4)**
 
-Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 incompatibility). Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).
+Added date voting chain with holiday long weekend picker. Response tokens for edit-without-organiser. Security fixes (manage_key and response_token stripped from client payloads, URL stripping via replaceState, input validation). Calendar links for commitment. Attempted dark mode, reverted (Tailwind v4 incompatibility). Collapsible itinerary timeline, share plan bar, next steps booking links, custom date input, vote results redesign, group insights dashboard. Ran security audit against OWASP top 10. Deployed to Vercel with custom domain (nod.sunforged.work via Cloudflare CNAME).
 
-**April 2: Polish, security audit, PRD**
+**April 2: PRD**
 
-Collapsible itinerary timeline, share plan bar, next steps booking links, custom date input, vote results redesign, group insights dashboard. Ran security audit against OWASP top 10 - fixed manage_key URL exposure, input validation, hydration mismatch. Documented known limitations (open RLS, realtime token leak) with V1.1 plans. Wrote and finalised PRD.
+Wrote and finalised PRD. Documented known security limitations (open RLS, realtime token leak) with V1.1 plans.
 
 **Key iterations that shaped the product:**
 
