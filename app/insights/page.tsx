@@ -141,8 +141,8 @@ export default async function InsightsPage() {
         <div className="rounded-xl border border-border bg-white px-4 py-3 mb-4">
           <div className="flex items-center gap-1.5 mb-2">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" aria-hidden="true">
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="M2 10h20" />
             </svg>
             <h2 className="text-xs font-medium text-ink">Average budget range</h2>
           </div>
