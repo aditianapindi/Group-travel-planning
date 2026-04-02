@@ -158,7 +158,20 @@ The ~300 dead startups were **planning tools**. Nod is a **decision tool**. The 
 
 **Free + Affiliate.** Planning is free forever. Revenue via experience affiliate commissions (Viator 8%, Klook, GetYourGuide) surfaced contextually after itinerary generation. Group intent data (6 people's combined constraints) is a richer lead than individual search on any marketplace.
 
-Modelled revenue per trip: group of 6, 3-4 activities booked, ~$40-75 per trip. Thin - but the tool needs volume, not margins. This follows the Wanderlog pattern, not the "charge for planning" pattern that killed 300 startups.
+Modelled revenue per trip: group of 6, 3-4 activities booked, ~$40-75 per trip. Thin - but the tool needs volume, not margins. This follows the Wanderlog pattern, not the "charge for planning" pattern that killed ~300 startups.
+
+### The Data Flywheel: How Nod Learns from Groups
+
+Every trip that passes through Nod generates structured group intelligence that no individual search or ChatGPT prompt can produce. A live dashboard at **nod.sunforged.work/insights** surfaces these patterns in real time:
+
+- **Budget reality**: What groups actually budget vs. what individuals claim. Aggregate ranges reveal the real spending comfort zone for Indian group travellers - data no OTA has because they see individual bookings, not group negotiations.
+- **Destination demand**: Which destinations win group votes, not just individual searches. "Goa" might dominate individual travel searches, but group votes might reveal that Vizag or Pondicherry win when budget and dates are factored in.
+- **Commitment patterns**: What percentage of participants say yes, maybe, or no. How group size affects commitment rate. Whether deadlines actually drive responses.
+- **Trip funnel**: How many trips move from creation to votes to lock to plan. Where groups stall. This reveals the behavioural bottlenecks the product should fix next.
+
+This is the connection between Concepts A, B, and C. **Concept A (5-Minute Lock)** collects the data. **Concept B (Trip Trigger)** uses accumulated group constraints to proactively surface opportunities ("Your group can all do Oct 15-18 and Goa fits your budget - flight prices just dropped"). **Concept C (Anti-Agent)** uses group context to recommend activities that fit what 6 people agreed on, not what one person searched for.
+
+The data flywheel strengthens with every trip. The first 100 trips reveal budget norms and destination preferences for Indian friend groups - intelligence that doesn't exist anywhere else.
 
 ---
 
