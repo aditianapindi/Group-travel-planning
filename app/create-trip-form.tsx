@@ -90,6 +90,21 @@ export function CreateTripForm() {
     setError(null);
     setSubmitting(true);
 
+    const tripName = (formData.get("name") as string)?.trim();
+    const createdBy = (formData.get("createdBy") as string)?.trim();
+
+    if (!tripName) {
+      setError("Give your trip a name.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!createdBy) {
+      setError("Enter your name so the group knows who's organising.");
+      setSubmitting(false);
+      return;
+    }
+
     const filled = destinations.filter((d) => d.trim());
     if (filled.length < 2) {
       setError("Add at least 2 destinations to vote on.");
