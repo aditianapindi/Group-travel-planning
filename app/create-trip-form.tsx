@@ -7,6 +7,8 @@ import { getUpcomingLongWeekends, formatDateRange, type DateOption } from "@/lib
 const longWeekends = getUpcomingLongWeekends();
 
 export function CreateTripForm() {
+  const [tripName, setTripName] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
   const [destinations, setDestinations] = useState<string[]>([""]);
   const [selectedDates, setSelectedDates] = useState<DateOption[]>([]);
   const [customStart, setCustomStart] = useState("");
@@ -148,6 +150,8 @@ export function CreateTripForm() {
           autoComplete="off"
           placeholder="Goa October Trip"
           maxLength={80}
+          value={tripName}
+          onChange={(e) => setTripName(e.target.value)}
           aria-required="true"
           className={inputClass}
         />
@@ -165,6 +169,8 @@ export function CreateTripForm() {
           required
           autoComplete="given-name"
           placeholder="Aditi"
+          value={createdBy}
+          onChange={(e) => setCreatedBy(e.target.value)}
           aria-required="true"
           className={inputClass}
         />
